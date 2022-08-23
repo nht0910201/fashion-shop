@@ -1,15 +1,17 @@
 import Header from '../components/Header'
-import Footer from '../components/Footer'
+import Footer from '../components/Footer';
+import {Col,Row} from 'antd'
+
 
 function DefaultLayout({ children }) {
     return (
         <div>
-            <Header />
+            <Header/>
             <div className="container">
                 <div className="content">{children}</div>
             </div>
             <Footer/>
-        </div>
+        </div>   
     );
 }
 export default DefaultLayout;
