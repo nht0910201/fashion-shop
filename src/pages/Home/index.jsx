@@ -1,4 +1,10 @@
+import Card from "../../components/Card";
+
 function Home() {
-    return <h2>Home page</h2>;
+    return (
+        <>
+        </>
+    )
+    
 }
 export default Home;

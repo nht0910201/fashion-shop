@@ -1,17 +1,7 @@
 @import 'normalize.css';
 
 :root {
-    --primary: #fe2c55;
-    --black: #000;
-    --white: #fff;
-    --text-color: #161823;
-
-    --font-family: 'ProximaNova', sans-serif;
-
-    // Default layout
-    --default-layout-header-height: 60px;
-    --default-layout-width: 1150px;
-    --default-layout-horizontal-spacer: 24px;
+   
 }
 
 * {
@@ -20,15 +10,9 @@
     box-sizing: border-box;
 }
 
-html {
-    font-size: 62.5%;
-}
-
 body {
-    font-family: var(--font-family);
-    font-size: 1.6rem;
+    font-family: 'Roboto',sans-serif;
+    // font-size: 62.5%;
     line-height: 1.5;
     text-rendering: optimizespeed;
-    color: var(--text-color);
-    overflow-y: overlay;
 }
