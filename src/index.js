@@ -4,15 +4,19 @@ import './index.css';
 import App from './App';
 import GlobalStyles from './components/GlobalStyles'
 import { NextUIProvider } from '@nextui-org/react';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    <Provider store={store}>
     <GlobalStyles>
       <NextUIProvider>
         <App />
       </NextUIProvider>
-    </GlobalStyles>    
+    </GlobalStyles> 
+    </Provider>   
   </React.StrictMode>
 );
 
