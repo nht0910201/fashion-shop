@@ -1,9 +1,9 @@
-import axiosConfig from '../api'
+import {post} from '../api/axiosConfig'
 
 export const userLogin = async (data={}) =>{
     try {
-        const response = await axiosConfig.post('/auth/login',data);
-        return console.log(response);
+        const response = await post('/auth/login',data);
+        return response
     } catch (error) { console.log(error); };
 
 }

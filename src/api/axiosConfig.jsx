@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosConfig = axios.create({
-    baseURL: 'http://localhost:8080/api'
+    baseURL: 'https://fashion-store-capstone.herokuapp.com/api'
 });
 
 export const get = async (path, params = {}) => {

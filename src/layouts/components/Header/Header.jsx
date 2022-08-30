@@ -74,9 +74,9 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function Header() {
   const [open, setOpen] = useState(false)
-
+  
   return (
     <div className="bg-white">
       {/* Mobile menu */}
@@ -299,7 +299,7 @@ export default function Example() {
                     <Popover.Group className="ml-8">
                       <div className="h-full flex justify-center space-x-8 z-50">
                         {navigation.categories.map((category, categoryIdx) => (
-                          <Menu category={category} categoryIdx={categoryIdx} />
+                          <Menu category={category} categoryIdx={categoryIdx} key={categoryIdx}/>
                         ))}
                         {/* {navigation.pages.map((page) => (
                           <a
