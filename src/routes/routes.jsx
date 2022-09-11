@@ -31,6 +31,8 @@ const publicRoutes = [
     { path: config.routes.orderDetail, component:OrderDetail, layout: DefaultLayout },
 ];
 
-const privateRoutes = [];
+const privateRoutes = [
+    
+];
 
 export { publicRoutes, privateRoutes };

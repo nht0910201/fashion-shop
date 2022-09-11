@@ -1,26 +1,52 @@
 import { useState } from "react"
 import { useDispatch } from 'react-redux';
 import { userLogin } from "../../services/AuthService";
+import { useNavigate } from "react-router-dom";
 import * as authAction from '../../redux//auth/authSlice'
-
+import Swal from 'sweetalert2'
 export default function Login() {
     const dispatch = useDispatch();
+    let navigate = useNavigate();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const login = async ({username,password}) =>{
-        const  res = await userLogin({username,password})
-        dispatch(authAction.login(res));
+    const login = async ({ username, password }) => {
+        const res = await userLogin({ username, password })
+        if (res.data.success) {
+            dispatch(authAction.login(res.data));
+            Swal.fire({
+                title: 'LOGIN SUCCESSFULLY',
+                text: "WELCOME TO MY STORE",
+                icon: 'success',
+                confirmButtonColor: '#32CD32',
+                confirmButtonText: 'Home'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/')
+                }
+            })
+        }
+        else{
+            Swal.fire({
+                title: 'LOGIN FAIL',
+                text: "Email or Password incorrect",
+                icon: 'error',
+                showConfirmButton:false,
+                showCancelButton: true,
+                cancelButtonColor: '#DC143C'
+            })
+        }
     }
-    const onChangeUsernameHanle = (e) =>{
+    const onChangeUsernameHanle = (e) => {
         setUsername(e.target.value)
     }
-    const onChangePasswordHanle = (e) =>{
+    const onChangePasswordHanle = (e) => {
         setPassword(e.target.value)
     }
-    const handleLogin = () =>{
-        login({username,password})
+    const handleLogin = () => {
+        login({ username, password })
     }
-     
+
     return (
         <>
             <div className="min-h-full flex flex-col justify-center py-6 sm:px-3 lg:px-4">
@@ -102,6 +128,7 @@ export default function Login() {
                                 >
                                     Sign in
                                 </button>
+
                             </div>
                             <div className="mt-1 text-grey-dark">
                                 I don't have an account ?

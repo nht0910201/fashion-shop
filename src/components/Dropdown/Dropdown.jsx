@@ -10,36 +10,40 @@ import HistoryOrder from '../Icon/HistoryOrder'
 import LogoutIcon from '../Icon/LogoutIcon'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 import { userSelector } from '../../redux/auth/authSlice';
 import * as authAction from '../../redux/auth/authSlice'
+import { getUserFromLocalStorage } from '../../utils/userHanle'
 // import { classNames } from 'classnames/bind';
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
-const optionMenu = [
-    { name: 'Đăng nhập', icon: <LoginIcon />, href: '/login' },
-    { name: 'Đăng ký', icon: <RegisterIcon />, href: '/register' },
-    { name: 'Thông tin cá nhân', icon: <InfoIcon />, href: '/profile' },
-    { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrderStatus' },
-    { name: 'Lịch sử đơn hàng', icon: <HistoryOrder />, href: '/orderHistory' },
-    // { name: 'Đăng xuất', icon: <LogoutIcon />, href: '/' },
-]
 export default function Dropdown() {
     const dispatch = useDispatch();
-    let userCur = useSelector(userSelector)
+    let navigate = useNavigate();
+    // let userCur = useSelector(userSelector)
+    let userCur=getUserFromLocalStorage()
+    const optionMenu = [
+        { name: 'Đăng nhập', icon: <LoginIcon />, href: '/login' },
+        { name: 'Đăng ký', icon: <RegisterIcon />, href: '/register' },
+        { name: 'Thông tin cá nhân', icon: <InfoIcon />, href:`/profile/${userCur?.id}` },
+        { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrderStatus' },
+        { name: 'Lịch sử đơn hàng', icon: <HistoryOrder />, href: '/orderHistory' },
+    ]
     let newOptionMenu = []
     const [a, b, ...rest] = optionMenu
-    if (userCur.email === '') {
+    if (userCur?.id === undefined) {
         newOptionMenu = [a, b]
+        navigate('/')
     } else {
         newOptionMenu = [...rest]
     }
     const handleLogout = () =>{
-        dispatch(authAction.logout())
+        navigate('/')
+        dispatch(authAction.logout()) 
     }
-    
+     
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -76,7 +80,7 @@ export default function Dropdown() {
                         
                         <Menu.Item>
                             {({ active }) => (
-                                <button hidden={userCur.email !== ''?false:true} onClick={handleLogout} id='btn' className={classNames(
+                                <button hidden={userCur?.id !== undefined?false:true} onClick={handleLogout} id='btn' className={classNames(
                                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                         'block px-4 py-2 text-sm w-full', 'flex justify-between'
                                 )}>

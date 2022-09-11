@@ -1,87 +1,95 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { MenuIcon, SearchIcon, ShoppingCartIcon, UserIcon, XIcon } from '@heroicons/react/outline'
 import Menu from '../../../components/Menu'
 import { Dropdown } from '../../../components/Dropdown'
+import { getAllCategory } from './../../../services/CategoryService';
 
 const currencies = ['CAD', 'USD', 'AUD', 'EUR', 'GBP']
-const navigation = {
-  categories: [
-    {
-      name: 'Women',
-      featured: [
-        { name: 'Sleep', href: '#' },
-        { name: 'Swimwear', href: '#' },
-        { name: 'Underwear', href: '#' },
-      ],
-      collection: [
-        { name: 'Everything', href: '#' },
-        { name: 'Core', href: '#' },
-        { name: 'New Arrivals', href: '#' },
-        { name: 'Sale', href: '#' },
-      ],
-      categories: [
-        { name: 'Basic Tees', href: '#' },
-        { name: 'Artwork Tees', href: '#' },
-        { name: 'Bottoms', href: '#' },
-        { name: 'Underwear', href: '#' },
-        { name: 'Accessories', href: '#' },
-      ],
-      brands: [
-        { name: 'Full Nelson', href: '#' },
-        { name: 'My Way', href: '#' },
-        { name: 'Re-Arranged', href: '#' },
-        { name: 'Counterfeit', href: '#' },
-        { name: 'Significant Other', href: '#' },
-      ],
-    },
-    {
-      name: 'Men',
-      featured: [
-        { name: 'Casual', href: '#' },
-        { name: 'Boxers', href: '#' },
-        { name: 'Outdoor', href: '#' },
-      ],
-      collection: [
-        { name: 'Everything', href: '#' },
-        { name: 'Core', href: '#' },
-        { name: 'New Arrivals', href: '#' },
-        { name: 'Sale', href: '#' },
-      ],
-      categories: [
-        { name: 'Artwork Tees', href: '#' },
-        { name: 'Pants', href: '#' },
-        { name: 'Accessories', href: '#' },
-        { name: 'Boxers', href: '#' },
-        { name: 'Basic Tees', href: '#' },
-      ],
-      brands: [
-        { name: 'Significant Other', href: '#' },
-        { name: 'My Way', href: '#' },
-        { name: 'Counterfeit', href: '#' },
-        { name: 'Re-Arranged', href: '#' },
-        { name: 'Full Nelson', href: '#' },
-      ],
-    },
-  ],
-  pages: [
-    { name: 'Company', href: '#' },
-    { name: 'Stores', href: '#' },
-  ],
-}
+// const navigation = {
+//   categories: [
+//     {
+//       name: 'Women',
+//       featured: [
+//         { name: 'Sleep', href: '#' },
+//         { name: 'Swimwear', href: '#' },
+//         { name: 'Underwear', href: '#' },
+//       ],
+//       collection: [
+//         { name: 'Everything', href: '#' },
+//         { name: 'Core', href: '#' },
+//         { name: 'New Arrivals', href: '#' },
+//         { name: 'Sale', href: '#' },
+//       ],
+//       categories: [
+//         { name: 'Basic Tees', href: '#' },
+//         { name: 'Artwork Tees', href: '#' },
+//         { name: 'Bottoms', href: '#' },
+//         { name: 'Underwear', href: '#' },
+//         { name: 'Accessories', href: '#' },
+//       ],
+//       brands: [
+//         { name: 'Full Nelson', href: '#' },
+//         { name: 'My Way', href: '#' },
+//         { name: 'Re-Arranged', href: '#' },
+//         { name: 'Counterfeit', href: '#' },
+//         { name: 'Significant Other', href: '#' },
+//       ],
+//     },
+//     {
+//       name: 'Men',
+//       featured: [
+//         { name: 'Casual', href: '#' },
+//         { name: 'Boxers', href: '#' },
+//         { name: 'Outdoor', href: '#' },
+//       ],
+//       collection: [
+//         { name: 'Everything', href: '#' },
+//         { name: 'Core', href: '#' },
+//         { name: 'New Arrivals', href: '#' },
+//         { name: 'Sale', href: '#' },
+//       ],
+//       categories: [
+//         { name: 'Artwork Tees', href: '#' },
+//         { name: 'Pants', href: '#' },
+//         { name: 'Accessories', href: '#' },
+//         { name: 'Boxers', href: '#' },
+//         { name: 'Basic Tees', href: '#' },
+//       ],
+//       brands: [
+//         { name: 'Significant Other', href: '#' },
+//         { name: 'My Way', href: '#' },
+//         { name: 'Counterfeit', href: '#' },
+//         { name: 'Re-Arranged', href: '#' },
+//         { name: 'Full Nelson', href: '#' },
+//       ],
+//     },
+//   ],
+//   pages: [
+//     { name: 'Company', href: '#' },
+//     { name: 'Stores', href: '#' },
+//   ],
+// }
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Header() {
-  const [open, setOpen] = useState(false)
-  
+  const [categories, setCategories] = useState([])
+  useEffect(() => {
+    async function getData() {
+      let Categories = await getAllCategory()
+      setCategories(Categories.data)
+    }
+    getData()
+  }, []);
   return (
-    <div className="bg-white">
-      {/* Mobile menu */}
-      <Transition.Root show={open} as={Fragment}>
-        <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setOpen}>
+    <div className="bg-lime-100">
+      <div>
+        {/* Mobile menu */}
+        {/* <Transition.Root show={mobileMenuOpen} as={Fragment}>
+        <Dialog as="div" className="fixed inset-0 flex z-40 lg:hidden" onClose={setMobileMenuOpen}>
           <Transition.Child
             as={Fragment}
             enter="transition-opacity ease-linear duration-300"
@@ -108,14 +116,14 @@ export default function Header() {
                 <button
                   type="button"
                   className="-m-2 p-2 rounded-md inline-flex items-center justify-center text-gray-400"
-                  onClick={() => setOpen(false)}
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <span className="sr-only">Close menu</span>
                   <XIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>
 
-              {/* Links */}
+            
               <Tab.Group as="div" className="mt-2">
                 <div className="border-b border-gray-200">
                   <Tab.List className="-mb-px flex px-4 space-x-8">
@@ -233,7 +241,7 @@ export default function Header() {
               </div>
 
               <div className="border-t border-gray-200 py-6 px-4 space-y-6">
-                {/* Currency selector */}
+                
                 <form>
                   <div className="inline-block">
                     <label htmlFor="mobile-currency" className="sr-only">
@@ -273,127 +281,110 @@ export default function Header() {
             </div>
           </Transition.Child>
         </Dialog>
-      </Transition.Root>
-      {/* Web */}
-      <header className="relative">
-        <nav aria-label="Top">
-          {/* Secondary navigation */}
-          <div className="bg-amber-50">
-            <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="border-b border-gray-200">
-                <div className="h-16 flex items-center justify-between">
-                  {/* Logo (lg+) */}
-                  <div className="hidden lg:flex lg:items-center">
-                    <a href="#">
-                      <span className="sr-only">Workflow</span>
-                      <img
-                        className="h-8 w-auto"
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Louis_Vuitton_logo_and_wordmark.svg/1200px-Louis_Vuitton_logo_and_wordmark.svg.png"
-                        alt=""
-                      />
-                    </a>
-                  </div>
+       </Transition.Root> */}
+        <header className="relative">
+          <nav aria-label="Top">
+            {/* Header Web */}
+            <div className="bg-lime-50">
+              <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="border-b border-gray-200">
+                  <div className="h-16 flex items-center justify-between">
+                    {/* Logo (lg+) */}
+                    <div className="hidden lg:flex lg:items-center">
+                      <a href="/">
+                        <span className="sr-only">Workflow</span>
+                        <img
+                          className="h-8 w-auto"
+                          src="https://i.pinimg.com/474x/50/bb/d2/50bbd258adfb026e38441c113cbb81f9.jpg"
+                          alt=""
+                        />
+                      </a>
+                    </div>
 
-                  <div className="hidden h-full lg:flex">
-                    {/* Mega menus */}
-                    <Popover.Group className="ml-8">
-                      <div className="h-full flex justify-center space-x-8 z-50">
-                        {navigation.categories.map((category, categoryIdx) => (
-                          <Menu category={category} categoryIdx={categoryIdx} key={categoryIdx}/>
-                        ))}
-                        {/* {navigation.pages.map((page) => (
-                          <a
-                            key={page.name}
-                            href={page.href}
-                            className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-800"
-                          >
-                            {page.name}
-                          </a>
-                        ))} */}
-                      </div>
-                    </Popover.Group>
-                  </div>
+                    <div className="hidden h-full lg:flex">
+                      <Popover.Group className="ml-8">
+                        <div className="h-full flex justify-center space-x-8">
+                          {categories.map((category) => (
+                            <Menu category={category} key={category.id} />
+                          ))}
+                        </div>
+                      </Popover.Group>
+                    </div>
 
-                  {/* Mobile menu and search (lg-) */}
-                  <div className="flex-1 flex items-center lg:hidden">
-                    <button
-                      type="button"
-                      className="-ml-2 bg-white p-2 rounded-md text-gray-400"
-                      onClick={() => setOpen(true)}
-                    >
-                      <span className="sr-only">Open menu</span>
-                      <MenuIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
+                    {/* Mobile menu and search (lg-) */}
+                    <div className="flex-1 flex items-center lg:hidden">
+                      {/* <button
+                        type="button"
+                        className="-ml-2 bg-white p-2 rounded-md text-gray-400"
+                        onClick={() => setMobileMenuOpen(true)}
+                      >
+                        <span className="sr-only">Open menu</span>
+                        <MenuIcon className="h-6 w-6" aria-hidden="true" />
+                      </button> */}
 
-                    {/* Search */}
-                    <a href="#" className="ml-2 p-2 text-gray-400 hover:text-gray-500">
-                      <span className="sr-only">Search</span>
-                      <SearchIcon className="w-6 h-6" aria-hidden="true" />
-                    </a>
-                  </div>
-                  {/* Web search */}
-                  <div className="flex-1 flex items-center justify-end">
-                    <div className="flex items-center lg:ml-8">
-                      <div className="flex space-x-8">
-                        <div className="hidden lg:flex">
-                          {/* <a href="#" className="-m-2 p-2 text-gray-400 hover:text-gray-500">
-                            
-                            <span className="sr-only">Search</span>
-                            <SearchIcon className="w-6 h-6" aria-hidden="true" /> 
-                          </a> */}
-                          <div className='mt-1.5'>
-                            <div className="mt-1 flex rounded-md shadow-sm">
-                              <div className="relative flex items-stretch flex-grow focus-within:z-10">
-                                <input
-                                  type="search"
-                                  name="search"
-                                  id="search"
-                                  className="border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-gray-300"
-                                  placeholder="Search"
-                                />
+                      {/* Search */}
+                      <a href="#" className="ml-2 p-2 text-gray-400 hover:text-gray-500">
+                        <span className="sr-only">Search</span>
+                        <SearchIcon className="w-6 h-6" aria-hidden="true" />
+                      </a>
+                    </div>
+                    {/* Web Search */}
+                    <div className="flex-1 flex items-center justify-end">
+                      <div className="flex items-center lg:ml-8">
+                        <div className="flex space-x-8">
+                          <div className="hidden lg:flex">
+                            {/* <a href="#" className="-m-2 p-2 text-gray-400 hover:text-gray-500">
+                              <span className="sr-only">Search</span>
+                              <SearchIcon className="w-6 h-6" aria-hidden="true" />
+                            </a> */}
+                            <div className='mt-1.5'>
+                              <div className="mt-1 flex rounded-md shadow-sm">
+                                <div className="relative flex items-stretch flex-grow focus-within:z-10">
+                                  <input
+                                    type="search"
+                                    name="search"
+                                    id="search"
+                                    className="border border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full rounded-none rounded-l-md pl-10 sm:text-sm border-gray-300"
+                                    placeholder="Search"
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                                  </svg>
+                                </button>
                               </div>
-                              <button
-                                type="button"
-                                className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                                </svg>
-
-                              </button>
                             </div>
                           </div>
-                        </div>
 
-                        <div className="flex">
-                          <a href="#" className="m-1 p-2 text-gray-400 hover:text-gray-500">
-                            <Dropdown />
-                            {/* <span className="sr-only">Account</span>
-                            <UserIcon className="w-6 h-6" aria-hidden="true" /> */}
+                          <div className="flex">
+                            <a href="#" className="m-1 p-2 text-gray-400 hover:text-gray-500">
+                              <Dropdown />
+                            </a>
+                          </div>
+                        </div>
+                        <span className="mx-4 h-6 w-px bg-gray-200 lg:mx-6" aria-hidden="true" />
+                        <div className="flow-root">
+                          <a href="/shoppingCart" className="group -m-2 p-2 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                            {/* <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
+                          <span className="sr-only">items in cart, view bag</span> */}
                           </a>
                         </div>
-                      </div>
-
-                      <span className="mx-4 h-6 w-px bg-gray-200 lg:mx-6" aria-hidden="true" />
-
-                      <div className="flow-root">
-                        <a href="/shoppingCart" className="group -m-2 p-2 flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                          </svg>
-
-                          {/* <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">0</span>
-                          <span className="sr-only">items in cart, view bag</span> */}
-                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </nav>
-      </header>
+          </nav>
+        </header>
+      </div>
     </div>
   )
 }

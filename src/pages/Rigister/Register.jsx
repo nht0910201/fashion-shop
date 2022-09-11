@@ -1,4 +1,67 @@
+import {useState} from 'react'
+import { useNavigate } from "react-router-dom";
+import { userRegister } from "../../services/AuthService";
+import Swal from 'sweetalert2'
 function Register() {
+    let navigate = useNavigate();
+    const [name, setName] = useState('');
+    const handleChangeName = (e) =>{
+        setName(e.target.value)
+    }
+    const [email, setEmail] = useState('');
+    const handleChangeEmail = (e) =>{
+        setEmail(e.target.value)
+    }
+    const [password, setPassword] = useState('');
+    const handleChangePassword = (e) =>{
+        setPassword(e.target.value)
+    }
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const handleChangeConfirmPassword = (e) =>{
+        setConfirmPassword(e.target.value)
+    }
+    const [phone, setPhone] = useState('');
+    const handleChangePhone = (e) =>{
+        setPhone(e.target.value)
+    }
+    const [address, setAddress] = useState('');
+    const handleChangeAddress = (e) =>{
+        setAddress(e.target.value)
+    }
+    const [gender, setGender] = useState('other');
+    const handleChangeGender = (e) =>{
+        setGender(e.target.value)
+        console.log(e.target.value)
+    }
+    const register = async ({name,email,password,phone,address,gender}) =>{
+        const  res = await userRegister({name,email,password,phone,address,gender})
+        return res
+    }
+    const handleOnClick = async () =>{
+        let check = await register({name,email,password,phone,address,gender})
+        if(check.data.success){
+            Swal.fire({
+                title: 'REGISTER SUCCESSFULLY',
+                text: "You Can Sign In To System",
+                icon: 'success',
+                confirmButtonColor: '#32CD32',
+                confirmButtonText: 'Login'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/login')
+                }
+            })
+        }else{
+            Swal.fire({
+                title: 'REGISTER FAIL',
+                text: "Please Check Information Again",
+                icon: 'error',
+                showConfirmButton:false,
+                showCancelButton: true,
+                cancelButtonColor: '#DC143C'
+            })
+        }
+    }
     return (
         <div class="flex items-center justify-center min-h-fit bg-white">
             <div class="px-8 py-6 mx-4 mt-4 text-left bg-green-50 shadow-lg border rounded-lg md:w-1/3 lg:w-1/3 sm:w-1/3">
@@ -11,46 +74,63 @@ function Register() {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                     </svg> */}
-                    <img className="w-10 h-10 text-blue-600" fill="none" viewBox="0 0 24 24" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Louis_Vuitton_logo_and_wordmark.svg/1200px-Louis_Vuitton_logo_and_wordmark.svg.png"/>
-                    
+                    <img className="w-10 h-10 text-blue-600" fill="none" viewBox="0 0 24 24" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Louis_Vuitton_logo_and_wordmark.svg/1200px-Louis_Vuitton_logo_and_wordmark.svg.png" />
+
                 </div>
                 <h3 class="mt-2 text-3xl font-bold text-center">Join us</h3>
-                <form action="">
+                <div>
                     <div class="mt-4">
                         <div>
                             <label class="block" for="Name">Name</label>
-                            <input type="text" placeholder="Name"
+                            <input type="text" placeholder="Name" onChange={handleChangeName} value={name}
                                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
                         <div class="mt-4">
                             <label class="block" for="email">Email</label>
-                            <input type="text" placeholder="Email"
+                            <input type="email" placeholder="Email" onChange={handleChangeEmail} value={email}
                                 class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
                         <div class="mt-4">
                             <label class="block">Password</label>
-                            <input type="password" placeholder="Password"
-                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"/>
+                            <input type="password" placeholder="Password" onChange={handleChangePassword} value={password}
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
                         <div class="mt-4">
                             <label class="block">Confirm Password</label>
-                            <input type="password" placeholder="Password"
-                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"/>
+                            <input type="password" placeholder="Password" onChange={handleChangeConfirmPassword} value={confirmPassword}
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
-                            <span class="text-xs text-red-400">Password must be same!</span>
-                            <div class="flex">
-                                <button class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
-                                    Sign Up
-                                </button>
-                            </div>
-                            <div class="mt-6 text-grey-dark">
-                                Already have an account ?
-                                <a class="text-blue-600 hover:underline ml-1" href="/login">
-                                    Log in
-                                </a>
-                            </div>
+                        <span class="text-xs text-red-400">Password must be same!</span>
+                        <div class="mt-4">
+                            <label class="block">Phone</label>
+                            <input type="text" placeholder="Phone" onChange={handleChangePhone} value={phone}
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
                         </div>
-                </form>
+                        <div class="mt-4">
+                            <label class="block">Address</label>
+                            <input type="text" placeholder="Address" onChange={handleChangeAddress} value={address}
+                                class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600" />
+                        </div>
+                        <div class="mt-4">
+                            <label for="gender" class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Select an option</label>
+                            <select id="gender" value={gender} onChange={handleChangeGender} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value='male'>Male</option>
+                                <option value='female'>Female</option>
+                            </select>
+                        </div>
+                        <div class="flex">
+                            <button onClick={handleOnClick} class="w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">
+                                Sign Up
+                            </button>
+                        </div>
+                        <div class="mt-6 text-grey-dark">
+                            Already have an account ?
+                            <a class="text-blue-600 hover:underline ml-1" href="/login">
+                                Log in
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

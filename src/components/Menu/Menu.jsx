@@ -1,14 +1,20 @@
 import { Fragment, useState } from 'react'
 import { Dialog, Popover, Tab, Transition } from '@headlessui/react'
 import { MenuIcon, SearchIcon, ShoppingCartIcon, UserIcon, XIcon } from '@heroicons/react/outline'
+import { Link } from 'react-router-dom'
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
-  }
+}
+const rootCat = [
+    { name: 'Sản phẩm' },
+    { name: 'Nam' },
+    { name: 'Nữ' }
+]
 
-function Menu({ category, categoryIdx }) {
+function Menu({ category }) {
     return (
-        <Popover key={category.name} className="flex">
+        <Popover key={category.id} className="flex">
             {({ open }) => (
                 <>
                     <div className="relative flex">
@@ -33,37 +39,45 @@ function Menu({ category, categoryIdx }) {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <Popover.Panel className="absolute top-full inset-x-0 text-gray-500 sm:text-sm">
+                        <Popover.Panel className="absolute z-20 top-full inset-x-0 text-gray-500 sm:text-sm">
                             {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
                             <div className="absolute inset-0 top-1/2 bg-white shadow" aria-hidden="true" />
 
-                            <div className="relative bg-white z-10">
+                            <div className="relative bg-white">
                                 <div className="max-w-7xl mx-auto px-8">
                                     <div className="grid grid-cols-2 items-start gap-y-10 gap-x-8 pt-10 pb-12">
                                         <div className="grid grid-cols-2 gap-y-10 gap-x-8">
                                             <div>
                                                 <p
-                                                    id={`desktop-featured-heading-${categoryIdx}`}
+                                                    id={`desktop-featured-heading-${category.id}`}
                                                     className="font-medium text-gray-900"
                                                 >
-                                                    Featured
+                                                    {category.name}
                                                 </p>
                                                 <ul
                                                     role="list"
-                                                    aria-labelledby={`desktop-featured-heading-${categoryIdx}`}
+                                                    aria-labelledby={`desktop-featured-heading-${category.id}`}
                                                     className="mt-6 space-y-6 sm:mt-4 sm:space-y-4"
                                                 >
-                                                    {category.featured.map((item) => (
-                                                        <li key={item.name} className="flex">
-                                                            <a href={item.href} className="hover:text-gray-800">
-                                                                {item.name}
-                                                            </a>
+                                                    {category.subCategories.map((subCategory) => (
+                                                        <li key={subCategory.id} className="flex">
+                                                            {/* <a href='/listProduct/''${subCategory.id}' className="hover:text-gray-800">
+                                                                {subCategory.name}
+                                                            </a> */}
+                                                            <Link to={{
+                                                                pathname: `/listProduct/${subCategory.id}`
+                                                            }} className="hover:text-gray-800">
+                                                                {subCategory.name}
+                                                            </Link>
                                                         </li>
                                                     ))}
                                                 </ul>
                                             </div>
-                                            <div>
-                                                <p id="desktop-categories-heading" className="font-medium text-gray-900">
+                                            {/* <div>
+                                                <p
+                                                    id="desktop-categories-heading"
+                                                    className="font-medium text-gray-900"
+                                                >
                                                     Categories
                                                 </p>
                                                 <ul
@@ -79,11 +93,14 @@ function Menu({ category, categoryIdx }) {
                                                         </li>
                                                     ))}
                                                 </ul>
-                                            </div>
+                                            </div> */}
                                         </div>
-                                        <div className="grid grid-cols-2 gap-y-10 gap-x-8">
+                                        {/* <div className="grid grid-cols-2 gap-y-10 gap-x-8">
                                             <div>
-                                                <p id="desktop-collection-heading" className="font-medium text-gray-900">
+                                                <p
+                                                    id="desktop-collection-heading"
+                                                    className="font-medium text-gray-900"
+                                                >
                                                     Collection
                                                 </p>
                                                 <ul
@@ -119,7 +136,7 @@ function Menu({ category, categoryIdx }) {
                                                     ))}
                                                 </ul>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>

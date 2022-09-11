@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addToLocalStorage,clearFromLocalStorage } from "../../utils/tokenHandle";
+import { addUserToLocalStorage, clearUserFromLocalStorage } from "../../utils/userHanle";
 
 const authSlice = createSlice({
     name:'auth',
     initialState:{
         user:{
+            id:"",
             email:"",
             name:"",
-            avatar:null,
+            avatar:"",
             gender:"",
             role:"",
             accessToken:""
@@ -15,21 +17,18 @@ const authSlice = createSlice({
     },
     reducers:{
         login(state,action){
-            const {email,name,avatar,gender,role,accessToken} = action.payload.data
+            let {id,email,name,avatar,gender,role,accessToken} = action.payload.data
+            if(avatar===null)
+            {
+                avatar = 'https://cdn0.iconfinder.com/data/icons/set-ui-app-android/32/8-512.png'
+            }
+            addUserToLocalStorage(id,email,name,avatar,gender,role)
             addToLocalStorage(accessToken)
-            state.user.email = email || state.user.email
-            state.user.name = name || state.user.name
-            state.user.avatar = avatar
-            state.user.gender = gender || state.user.gender
-            state.user.role = role || state.user.role
         },
         logout(state,action){
-            state.user.email = ""
-            state.user.name = ""
-            state.user.avatar = null
-            state.user.gender = ""
-            state.user.role = ""
+            clearUserFromLocalStorage();
             clearFromLocalStorage();
+            window.location.reload()
         }
     }
 })

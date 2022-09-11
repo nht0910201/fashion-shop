@@ -1,45 +1,65 @@
 import { CheckIcon, ClockIcon, QuestionMarkCircleIcon, XIcon } from '@heroicons/react/solid'
+import { useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getCart } from '../../services/CartService';
+import { addProductToCart } from '../../services/ProductService';
 
-const products = [
-  {
-    id: 1,
-    name: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Sienna',
-    inStock: true,
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg',
-    imageAlt: "Front of men's Basic Tee in sienna.",
-  },
-  {
-    id: 2,
-    name: 'Basic Tee',
-    href: '#',
-    price: '$32.00',
-    color: 'Black',
-    inStock: false,
-    leadTime: '3–4 weeks',
-    size: 'Large',
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-02.jpg',
-    imageAlt: "Front of men's Basic Tee in black.",
-  },
-  {
-    id: 3,
-    name: 'Nomad Tumbler',
-    href: '#',
-    price: '$35.00',
-    color: 'White',
-    inStock: true,
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg',
-    imageAlt: 'Insulated bottle with white base and black snap lid.',
-  },
-]
+// const products = [
+//   {
+//     id: 1,
+//     name: 'Basic Tee',
+//     href: '#',
+//     price: '$32.00',
+//     color: 'Sienna',
+//     inStock: true,
+//     size: 'Large',
+//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-01.jpg',
+//     imageAlt: "Front of men's Basic Tee in sienna.",
+//   },
+//   {
+//     id: 2,
+//     name: 'Basic Tee',
+//     href: '#',
+//     price: '$32.00',
+//     color: 'Black',
+//     inStock: false,
+//     leadTime: '3–4 weeks',
+//     size: 'Large',
+//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-02.jpg',
+//     imageAlt: "Front of men's Basic Tee in black.",
+//   },
+//   {
+//     id: 3,
+//     name: 'Nomad Tumbler',
+//     href: '#',
+//     price: '$35.00',
+//     color: 'White',
+//     inStock: true,
+//     imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-01-product-03.jpg',
+//     imageAlt: 'Insulated bottle with white base and black snap lid.',
+//   },
+// ]
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
 
 function ShoppingCart() {
-    return ( 
-        <div className="bg-white">
+  
+  const [cart, setCart] = useState({})
+  let res = {}
+  useEffect(() => {
+    async function getData() {
+      res = await getCart()
+      console.log(res)
+      setCart(res.data)
+    }
+    getData()
+  }, [])
+
+  // const [quantity, setquantity] = useState(res.data.)
+  return (
+    <div className="bg-white">
       <div className="max-w-2xl mx-auto pt-4 pb-6 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <form className="mt-12 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start xl:gap-x-16">
           <section aria-labelledby="cart-heading" className="lg:col-span-7">
@@ -48,12 +68,12 @@ function ShoppingCart() {
             </h2>
 
             <ul role="list" className="border-t border-b border-gray-200 divide-y divide-gray-200">
-              {products.map((product, productIdx) => (
-                <li key={product.id} className="flex py-6 sm:py-10">
+              {cart.items?.map((cartItem) => (
+                <li key={cartItem.itemId} className="flex py-6 sm:py-10">
                   <div className="flex-shrink-0">
                     <img
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
+                      src={cartItem.image}
+                      alt=''
                       className="w-24 h-24 rounded-md object-center object-cover sm:w-48 sm:h-48"
                     />
                   </div>
@@ -63,27 +83,31 @@ function ShoppingCart() {
                       <div>
                         <div className="flex justify-between">
                           <h3 className="text-sm">
-                            <a href={product.href} className="font-medium text-gray-700 hover:text-gray-800">
-                              {product.name}
+                            <a href='#' className="font-medium text-gray-700 hover:text-gray-800">
+                              {cartItem.name}
                             </a>
                           </h3>
                         </div>
                         <div className="mt-1 flex text-sm">
-                          <p className="text-gray-500">{product.color}</p>
-                          {product.size ? (
-                            <p className="ml-4 pl-4 border-l border-gray-200 text-gray-500">{product.size}</p>
+                          <span className={classNames(
+                            'z-10 h-8 w-8 border border-black border-opacity-20 rounded-full'
+                          )} style={{ backgroundColor: cartItem.color }}></span>
+                          {cartItem.size ? (
+                            <p className="ml-4 pl-4 border-l border-gray-200 text-gray-500">{cartItem.size}</p>
                           ) : null}
                         </div>
-                        <p className="mt-1 text-sm font-medium text-gray-900">{product.price}</p>
+                        <p className="mt-1 text-sm font-medium text-gray-900">Price: {cartItem.price}</p>
+                        <p className="mt-1 text-sm font-medium text-gray-900">Sub Price: {cartItem.subPrice}</p>
                       </div>
 
                       <div className="mt-4 sm:mt-0 sm:pr-9">
-                        <label htmlFor={`quantity-${productIdx}`} className="sr-only">
-                          Quantity, {product.name}
+                        <label htmlFor={`quantity-${cartItem.itemId}`} className="sr-only">
+                          Quantity, {cartItem.name}
                         </label>
                         <select
-                          id={`quantity-${productIdx}`}
-                          name={`quantity-${productIdx}`}
+                          id={`quantity-${cartItem.itemId}`}
+                          name={`quantity-${cartItem.itemId}`}
+                          
                           className="max-w-full rounded-md border border-gray-300 py-1.5 text-base leading-5 font-medium text-gray-700 text-left shadow-sm focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         >
                           <option value={1}>1</option>
@@ -95,7 +119,7 @@ function ShoppingCart() {
                           <option value={7}>7</option>
                           <option value={8}>8</option>
                         </select>
-
+        
                         <div className="absolute top-0 right-0">
                           <button type="button" className="-m-2 p-2 inline-flex text-gray-400 hover:text-gray-500">
                             <span className="sr-only">Remove</span>
@@ -105,7 +129,7 @@ function ShoppingCart() {
                       </div>
                     </div>
 
-                    <p className="mt-4 flex text-sm text-gray-700 space-x-2">
+                    {/* <p className="mt-4 flex text-sm text-gray-700 space-x-2">
                       {product.inStock ? (
                         <CheckIcon className="flex-shrink-0 h-5 w-5 text-green-500" aria-hidden="true" />
                       ) : (
@@ -113,7 +137,7 @@ function ShoppingCart() {
                       )}
 
                       <span>{product.inStock ? 'In stock' : `Ships in ${product.leadTime}`}</span>
-                    </p>
+                    </p> */}
                   </div>
                 </li>
               ))}
@@ -132,7 +156,7 @@ function ShoppingCart() {
             <dl className="mt-6 space-y-4">
               <div className="flex items-center justify-between">
                 <dt className="text-sm text-gray-600">Subtotal</dt>
-                <dd className="text-sm font-medium text-gray-900">$99.00</dd>
+                <dd className="text-sm font-medium text-gray-900">${cart.totalPrice}</dd>
               </div>
               <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
                 <dt className="flex items-center text-sm text-gray-600">
@@ -144,7 +168,7 @@ function ShoppingCart() {
                 </dt>
                 <dd className="text-sm font-medium text-gray-900">$5.00</dd>
               </div>
-              <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
+              {/* <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
                 <dt className="flex text-sm text-gray-600">
                   <span>Tax estimate</span>
                   <a href="#" className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500">
@@ -153,29 +177,29 @@ function ShoppingCart() {
                   </a>
                 </dt>
                 <dd className="text-sm font-medium text-gray-900">$8.32</dd>
-              </div>
+              </div> */}
               <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
                 <dt className="text-base font-medium text-gray-900">Order total</dt>
-                <dd className="text-base font-medium text-gray-900">$112.32</dd>
+                <dd className="text-base font-medium text-gray-900">${cart.totalPrice}</dd>
               </div>
             </dl>
 
             <div className="mt-6">
               <Link to={'/order'}>
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500"
-              >
-                Make an order
-              </button>
+                <button
+                  type="submit"
+                  className="w-full bg-indigo-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-indigo-500"
+                >
+                  Make an order
+                </button>
               </Link>
-              
+
             </div>
           </section>
         </form>
       </div>
     </div>
-     );
+  );
 }
 
 export default ShoppingCart;

@@ -1,3 +1,6 @@
+import { clearUserFromLocalStorage } from "./userHanle";
+import { isExpired, decodeToken } from "react-jwt";
+
 export const addToLocalStorage = (token) => {
     const curToken = window.localStorage.getItem('accessToken');
     if (curToken !== token && token) {
@@ -11,7 +14,15 @@ export const addToLocalStorage = (token) => {
 export const getFromLocalStorage = () => {
     const curToken = window.localStorage.getItem('accessToken');
     if (curToken) {
-        return JSON.parse(curToken);
+        console.log(Date.now()/1000)
+        console.log(isExpired(curToken))
+        if (isExpired(curToken)) {
+            clearUserFromLocalStorage()
+            clearFromLocalStorage()
+        } else {
+            return JSON.parse(curToken);
+
+        }
     } else {
         console.log("Get token failed")
         return null
