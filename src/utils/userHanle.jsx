@@ -51,8 +51,8 @@ export const getUserFromLocalStorage = () => {
         return user
     } 
     else {
-        console.log("Get token failed")
-        return null
+        console.log("Get user failed")
+        // return null
     }
 }
 export const clearUserFromLocalStorage = () => {

@@ -1,8 +1,9 @@
+import { lazy } from 'react';
 import config from '../config';
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import {DefaultLayout,HeaderOnly} from '../layouts'
-import ListProduct from '../pages/ListProduct';
+// import ListProduct from '../pages/ListProduct';
 import DetailProduct from '../pages/DetailProduct';
 import Profile from '../pages/Profile';
 import ShoppingCart from '../pages/ShoppingCart';
@@ -13,12 +14,14 @@ import Order from '../pages/Order';
 import OrderHistory from '../pages/OrderHistory/OrderHistory';
 import MyOrderStatus from '../pages/MyOrderStatus';
 import OrderDetail from '../pages/OrderDetail';
+const ListProduct = lazy(()=>import('../pages/ListProduct'))
+
 
 
 const publicRoutes = [
+    { path: config.routes.listProduct, component: ListProduct, layout: DefaultLayout },
     { path: config.routes.home, component: Home, layout: DefaultLayout },
     { path: config.routes.login, component: Login, layout: HeaderOnly },
-    { path: config.routes.listProduct, component: ListProduct, layout: DefaultLayout },
     { path: config.routes.detailProduct, component: DetailProduct, layout: DefaultLayout },
     { path: config.routes.proflie, component: Profile, layout: HeaderOnly },
     { path: config.routes.shoppingCart, component: ShoppingCart, layout: DefaultLayout },

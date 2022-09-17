@@ -210,23 +210,6 @@ export default function DetailProduct() {
                         {/* Image gallery */}
                         <div className="mt-8 lg:mt-0 lg:col-start-1 lg:col-span-7 lg:row-start-1 lg:row-span-3">
                             <h2 className="sr-only">Images</h2>
-                            {/* <Carousel>
-                                {product?.options?.map((option) =>
-                                    option.variants.map((variant) =>
-                                        variant.images.map((image) => {
-                                            return <Carousel.Item interval={2000}>
-                                                <img
-                                                    key={`${image.id}`}
-                                                    className="d-block w-"
-                                                    src={`${image.url}`}
-                                                    alt="image"
-                                                />
-                                            </Carousel.Item>
-                                        })
-                                    )
-                                )}
-
-                            </Carousel> */}
                             <Swiper
                                 cssMode={true}
                                 navigation={true}

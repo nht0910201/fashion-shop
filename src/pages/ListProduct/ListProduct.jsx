@@ -2,7 +2,6 @@ import { Link, useParams } from "react-router-dom"
 import { useState } from 'react';
 import { useEffect } from "react";
 import { getProductByCategory } from "../../services/ProductService";
-
 export default function ListProduct() {
     const [products,setProducts] = useState([])
     const {id}= useParams();
@@ -24,10 +23,10 @@ export default function ListProduct() {
                     <div className="relative w-full pb-6 -mb-6 overflow-x-auto">
                         <ul
                             role="list"
-                            className="mx-4 inline-flex space-x-8 sm:mx-6 lg:mx-0 lg:space-x-0 lg:grid lg:grid-cols-4 lg:gap-x-8"
+                            className=" inline-flex space-x-8 sm:mx-6 lg:mx-0 lg:space-x-0 lg:grid lg:grid-cols-5 lg:gap-x-8"
                         >
                             {products.map((product) => (
-                                <li key={product.id} className="w-64 inline-flex flex-col text-center lg:w-auto">
+                                <li key={product.id} className="w-64 mr-0 inline-flex flex-col text-center lg:w-5/6">
                                     <Link to={`/detailProduct/${product.id}`}>
                                         <div className="group relative">
                                             <div className="w-full bg-gray-200 rounded-md overflow-hidden aspect-w-1 aspect-h-1">
@@ -41,12 +40,12 @@ export default function ListProduct() {
                                             </div>
                                             <div className="mt-6">
                                                 <p className="text-sm text-gray-500">{product.color}</p>
-                                                <h3 className="mt-1 font-semibold text-gray-900">
+                                                <h5 className="mt-1 font-semibold text-gray-900">
                                                     <a href={product.id}>
                                                         <span className="absolute inset-0" />
                                                         {product.name}
                                                     </a>
-                                                </h3>
+                                                </h5>
                                                 {/* format price */}
                                                 <p className="mt-1 text-gray-900">{product.price}</p>
                                             </div>
