@@ -8,13 +8,12 @@ import { SearchIcon } from "./SearchIcon.jsx";
 import { icons } from './Icon'
 import { Link } from "@nextui-org/react";
 import * as authAction from '../../../redux/auth/authSlice'
-import LoginIcon from '../../../components/Icon/LoginIcon';
-import RegisterIcon from '../../../components/Icon/RegisterIcon';
 import InfoIcon from '../../../components/Icon/InfoIcon';
 import NowOrder from '../../../components/Icon/NowrOrder';
 import HistoryOrder from '../../../components/Icon/HistoryOrder';
 import { getUserFromLocalStorage } from '../../../utils/userHanle';
-import LogoutIcon from '../../../components/Icon/LogoutIcon';
+import ModalLogin from './ModalLogin';
+import { Logo } from './Logo';
 
 export default function Header() {
   const [categories, setCategories] = useState([])
@@ -30,31 +29,30 @@ export default function Header() {
   let navigate = useNavigate();
   let userCur = getUserFromLocalStorage()
   const optionMenu = [
-    { name: 'Đăng nhập', icon: <LoginIcon />, href: '/login' },
-    { name: 'Đăng ký', icon: <RegisterIcon />, href: '/register' },
+    // { name: 'Đăng nhập', icon: <LoginIcon />, href: '/login' },
+    // { name: 'Đăng ký', icon: <RegisterIcon />, href: '/register' },
     { name: 'Thông tin cá nhân', icon: <InfoIcon />, href: `/profile/${userCur?.id}` },
     { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrderStatus' },
     { name: 'Lịch sử đơn hàng', icon: <HistoryOrder />, href: '/orderHistory' },
   ]
-  let newOptionMenu = []
-  const [a, b, ...rest] = optionMenu
-  if (userCur?.id === undefined) {
-    newOptionMenu = [a, b]
-  } else {
-    newOptionMenu = [...rest]
-  }
+  // let newOptionMenu = []
+  // const [a, b, ...rest] = optionMenu
+  // if (userCur?.id === undefined) {
+  //   newOptionMenu = [a, b]
+  // } else {
+  //   newOptionMenu = [...rest]
+  // }
   const handleLogout = () => {
     navigate('/')
     dispatch(authAction.logout())
   }
   return (
     <Layout>
-      <Navbar isBordered variant="sticky">
+      <Navbar maxWidth={'fluid'} isBordered variant="sticky">
         <Navbar.Toggle showIn={'xs'} />
         <Navbar.Brand>
-          {/* <AcmeLogo /> */}
           <Text b color="inherit" hideIn="xs">
-            ACME
+            <Link href='/'><Logo/>FASHION</Link> 
           </Text>
         </Navbar.Brand>
         <Navbar.Content
@@ -104,7 +102,6 @@ export default function Header() {
                 items={category.subCategories}
               >
                 {(item) => (
-
                   <Dropdown.Item
                     key={item.id}
                     icon={icons.scale}
@@ -153,34 +150,50 @@ export default function Header() {
               placeholder="Search..."
             />
           </Navbar.Item>
-          <Dropdown placement="bottom-right">
-            <Navbar.Item>
-              <Dropdown.Trigger>
-                <Avatar
-                  bordered
-                  as="button"
-                  color="primary"
-                  size="md"
-                  src={userCur?.id !== undefined ? "https://i.pravatar.cc/150?u=a042581f4e29026704d" : "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/OOjs_UI_icon_userAvatar.svg/2048px-OOjs_UI_icon_userAvatar.svg.png"}
-                />
-              </Dropdown.Trigger>
-            </Navbar.Item>
-            <Dropdown.Menu
-              aria-label="User menu actions"
-              color="secondary"
-              onAction={(key) => {
-                window.location.href = key
-              }}
-              css={{ paddingTop: '$0' }}
-            >
-              {newOptionMenu.map((option) => (
-                <Dropdown.Item key={option.href} withDivider color="default">
-                  {option.name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-          <Button hidden={userCur?.id !== undefined ? false : true} onClick={handleLogout} color={'error'} light css={{ minWidth: 'min-content' }}><LogoutIcon /></Button>
+          {userCur?.id !== undefined ?
+            <>
+              <Dropdown placement="bottom-right">
+                <Navbar.Item>
+                  <Dropdown.Trigger>
+                    <Avatar
+                      bordered
+                      as="button"
+                      color="primary"
+                      size="md"
+                      src={userCur?.id !== undefined ? userCur?.avatar : "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/OOjs_UI_icon_userAvatar.svg/2048px-OOjs_UI_icon_userAvatar.svg.png"}
+                    />
+                  </Dropdown.Trigger>
+                </Navbar.Item>
+                <Dropdown.Menu
+                  aria-label="User menu actions"
+                  color="secondary"
+                  onAction={(key) => {
+                    window.location.href = key
+                  }}
+                  css={{ paddingTop: '$0' }}
+                >
+                  {/* <Dropdown.Item key={''} withDivider color="default">
+                    <ModalLogin show={userCur?.id !== undefined ? false : true} />
+                  </Dropdown.Item> */}
+                  {optionMenu.map((option) => (
+                    <Dropdown.Item key={option.href} color="default">
+                      {option.name}
+                    </Dropdown.Item>
+                  ))}
+                  <Dropdown.Item withDivider color="default">
+                    <Button onClick={handleLogout} color={'error'} light css={{ display: "flex", justifyContent: "flex-start", padding: "$0" }}>Đăng xuất</Button>
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </>
+            :
+            <>
+              <ModalLogin />
+              <Button auto flat as={Link} href="/register">
+                Đăng ký
+              </Button>
+            </>
+          }
         </Navbar.Content>
         <Navbar.Collapse>
           {categories.map((category) => (

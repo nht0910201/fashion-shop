@@ -1,5 +1,5 @@
 import { clearUserFromLocalStorage } from "./userHanle";
-import { isExpired, decodeToken } from "react-jwt";
+import { isExpired} from "react-jwt";
 
 export const addToLocalStorage = (token) => {
     const curToken = window.localStorage.getItem('accessToken');
