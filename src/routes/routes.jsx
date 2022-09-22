@@ -13,9 +13,11 @@ import MyOrderStatus from '../pages/MyOrderStatus';
 import OrderDetail from '../pages/OrderDetail';
 import SignUp from '../pages/SignUp';
 import ListProduct from '../pages/ListProduct';
+import Oauth2 from '../pages/Oauth2';
 
 const publicRoutes = [
     { path: config.routes.listProduct, component: ListProduct, layout: DefaultLayout },
+    { path: config.routes.search, component: ListProduct, layout: DefaultLayout },
     { path: config.routes.home, component: Home, layout: DefaultLayout },
     { path: config.routes.detailProduct, component: DetailProduct, layout: DefaultLayout },
     { path: config.routes.proflie, component: Profile, layout: HeaderOnly },
@@ -27,6 +29,7 @@ const publicRoutes = [
     { path: config.routes.orderHistory, component:OrderHistory, layout: DefaultLayout },
     { path: config.routes.myOrderStatus, component:MyOrderStatus, layout: DefaultLayout },
     { path: config.routes.orderDetail, component:OrderDetail, layout: DefaultLayout },
+    { path: config.routes.oauth2 ,component:Oauth2},
 ];
 
 const privateRoutes = [

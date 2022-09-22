@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Text, Input, Row } from "@nextui-org/react";
+import { Modal, Button, Text, Input, Row, Link } from "@nextui-org/react";
 import { Mail } from "./Mail";
 import { Password } from "./Password";
 import * as authAction from '../../../redux/auth/authSlice'
@@ -9,6 +9,7 @@ import { useState } from "react";
 import { userLogin } from "../../../services/AuthService";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Facebook, Google } from "@mui/icons-material";
 
 export default function ModalLogin() {
     const [visible, setVisible] = React.useState(false);
@@ -33,10 +34,10 @@ export default function ModalLogin() {
                 autoClose: 3000,
                 hideProgressBar: false,
                 closeOnClick: true,
-                pauseOnHover:false,
+                pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
-                });
+            });
         }
     }
     const onChangeUsernameHanle = (e) => {
@@ -51,7 +52,7 @@ export default function ModalLogin() {
 
     return (
         <div>
-            <Button auto light onClick={handler} css={{ display: "flex", justifyContent: "flex-start", padding: "$0" }}>
+            <Button auto light color={'primary'} onClick={handler} css={{ display: "flex", justifyContent: "flex-start", padding: "$0" }}>
                 Đăng nhập
             </Button>
             <Modal
@@ -91,17 +92,21 @@ export default function ModalLogin() {
                         onChange={onChangePasswordHanle}
                         contentLeft={<Password fill="currentColor" />}
                     />
-                    <Row justify="space-between">
+                    <Row justify="end" css={{borderBottom:"$black",width:'auto'}}>
                         <Text size={14}>Forgot password?</Text>
                     </Row>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button auto flat color="error" onClick={closeHandler}>
+                <Modal.Footer justify="center">
+                    {/* <Button auto flat color="error" onClick={closeHandler}>
                         Close
-                    </Button>
-                    <Button auto onClick={handleLogin}>
+                    </Button> */}
+                    <Button ghost color={"primary"} onClick={handleLogin}>
                         Sign in
                     </Button>
+                    <Row justify="center">
+                        <Link css={{marginRight:'$5'}} href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/google"><Google /></Link>
+                        <Link href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/facebook"><Facebook /></Link>
+                    </Row>
                 </Modal.Footer>
                 <ToastContainer />
             </Modal>

@@ -18,3 +18,12 @@ export const userRegister = async (data={}) =>{
     };
 
 }
+export const verifyUser = async (data={}) =>{
+    try {
+        const response = await post('/auth/verify',data);
+        return response
+    } catch (error) {
+         return error.response
+    };
+
+}

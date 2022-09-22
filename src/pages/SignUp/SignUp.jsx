@@ -7,7 +7,6 @@ import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
-import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
@@ -15,7 +14,7 @@ import TextField from '@mui/material/TextField';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { userRegister } from '../../services/AuthService';
+import { userRegister, verifyUser } from '../../services/AuthService';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
@@ -28,7 +27,7 @@ const theme = createTheme();
 
 export default function SignUp() {
     const [activeStep, setActiveStep] = useState(0);
-    const handleNext = (e) => {
+    const handleNext = async (e) => {
         let checkName = !validator.isEmpty(name)
         let checkEmail = validator.isEmail(email)
         let checkAddress = !validator.isEmpty(address)
@@ -36,8 +35,12 @@ export default function SignUp() {
         let checkPassword = !validator.isEmpty(password) && password.length>=8
         let checkConfirmPass = !validator.isEmpty(confirmPassword) && (password === confirmPassword)
         if (checkName && checkEmail && checkAddress && checkPhone && checkPassword && checkConfirmPass) {
-            console.log('true')
-            setActiveStep(activeStep + 1);
+            let check = await register({name,email,password,phone,address,gender})
+            if(check.data.success){
+                setActiveStep(activeStep + 1);
+            }
+        }else{
+
         }
     };
     const handleBack = () => {
@@ -71,7 +74,6 @@ export default function SignUp() {
     const [gender, setGender] = useState('male');
     const handleChangeGender = (e) => {
         setGender(e.target.value)
-        console.log(e.target.value)
     }
     const [otp, setOtp] = useState('');
     const handleChangeOtp= (e) => {
@@ -81,30 +83,22 @@ export default function SignUp() {
         const res = await userRegister({ name, email, password, phone, address, gender })
         return res
     }
+    let type = 'register';
     const handleOnClick = async () => {
-        // let check = await register({name,email,password,phone,address,gender})
-        // if(check.data.success){
-        // Swal.fire({
-        //     title: 'REGISTER SUCCESSFULLY',
-        //     text: "You Can Sign In To System",
-        //     icon: 'success',
-        //     confirmButtonColor: '#32CD32',
-        //     confirmButtonText: 'Login'
-        //   }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         navigate('/login')
-        //     }
-        // })
-        // }else{
-        // Swal.fire({
-        //     title: 'REGISTER FAIL',
-        //     text: "Please Check Information Again",
-        //     icon: 'error',
-        //     showConfirmButton:false,
-        //     showCancelButton: true,
-        //     cancelButtonColor: '#DC143C'
-        // })
-        // }
+        let check = await verifyUser({otp,email,type});
+        if(check.data.success){
+            navigate('/') 
+        }else{
+            toast.error('Xác thực thất bại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                });
+        }
     }
     return (
         <ThemeProvider theme={theme}>

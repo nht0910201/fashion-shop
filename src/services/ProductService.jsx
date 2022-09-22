@@ -26,3 +26,13 @@ export const addProductToCart = async (data={}) => {
         return error.response.data 
     };
 }
+
+export const searchProduct = async (q) =>{
+    try {
+        const response = await get(`/products/search?q=${q}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
+
+}

@@ -14,8 +14,6 @@ export const addToLocalStorage = (token) => {
 export const getFromLocalStorage = () => {
     const curToken = window.localStorage.getItem('accessToken');
     if (curToken) {
-        console.log(Date.now()/1000)
-        console.log(isExpired(curToken))
         if (isExpired(curToken)) {
             clearUserFromLocalStorage()
             clearFromLocalStorage()

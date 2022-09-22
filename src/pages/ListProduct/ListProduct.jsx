@@ -1,20 +1,30 @@
-import { Link, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
 import { useState } from 'react';
 import { useEffect } from "react";
-import { getProductByCategory } from "../../services/ProductService";
+import { getProductByCategory, searchProduct } from "../../services/ProductService";
 export default function ListProduct() {
-    const [products,setProducts] = useState([])
-    const {id}= useParams();
-    useEffect(()=>{
-        async function getData () {
-            let res = await getProductByCategory(id)
-        if(res.success)
-            {
+    const [products, setProducts] = useState([])
+    let { id } = useParams();
+    const locate = useLocation()
+    let keySearch = new URLSearchParams(locate.search).get('q')
+    useEffect(() => {
+        async function getData() {
+            let res 
+            switch (locate.pathname) {
+                case '/search':
+                    res = await searchProduct(keySearch)
+                    break;
+                default:
+                    res = await getProductByCategory(id)
+                    break;
+            }
+            if (res.success) {
                 setProducts(res.data)
             }
         }
         getData()
-    },[id])
+    }, [keySearch, id])
+
     return (
         <div className="bg-white">
             <div className="py-4 sm:py-8 lg:max-w-7xl lg:mx-auto lg:px-8">
@@ -30,13 +40,13 @@ export default function ListProduct() {
                                     <Link to={`/detailProduct/${product.id}`}>
                                         <div className="group relative">
                                             <div className="w-full bg-gray-200 rounded-md overflow-hidden aspect-w-1 aspect-h-1">
-                                                
+
                                                 <img
                                                     src={product.images[0]?.url || 'https://i1.sndcdn.com/artworks-uYhZ8klDRg0o0q2b-ThJo0w-t500x500.jpg'}
                                                     // alt={product.imageAlt}
                                                     className="w-full h-full object-center object-cover group-hover:opacity-75"
                                                 />
-                                                
+
                                             </div>
                                             <div className="mt-6">
                                                 <p className="text-sm text-gray-500">{product.color}</p>

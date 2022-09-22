@@ -64,7 +64,6 @@ function Profile() {
     const data = new FormData();
     data.append('file',file)
     let res = await updateAvatarUserByID(data,id)
-    console.log(res)
     if(res.data.success){
       Swal.fire({
         title: 'SUCCESSFULLY',

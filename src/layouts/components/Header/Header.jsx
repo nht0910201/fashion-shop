@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAllCategory } from './../../../services/CategoryService';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Navbar, Text, Avatar, Dropdown, Input, Button } from "@nextui-org/react";
 import { Layout } from "./Layout.jsx";
 import { SearchIcon } from "./SearchIcon.jsx";
@@ -14,6 +14,7 @@ import HistoryOrder from '../../../components/Icon/HistoryOrder';
 import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './ModalLogin';
 import { Logo } from './Logo';
+import { searchProduct } from '../../../services/ProductService';
 
 export default function Header() {
   const [categories, setCategories] = useState([])
@@ -45,6 +46,13 @@ export default function Header() {
   const handleLogout = () => {
     navigate('/')
     dispatch(authAction.logout())
+  }
+  const [search,setSearch] = useState('')
+  const handleSearchChange = (e) =>{
+      setSearch(e.target.value);
+  }
+  const handleSearch = async () =>{
+    navigate(`/search?q=${search}`)
   }
   return (
     <Layout>
@@ -133,7 +141,8 @@ export default function Header() {
             <Input
               clearable
               contentLeft={
-                <SearchIcon fill="var(--nextui-colors-accents6)" size={16} />
+                // <SearchIcon fill="var(--nextui-colors-accents6)" size={16} />
+                <Button onClick={handleSearch} light size={16}><SearchIcon fill="var(--nextui-colors-accents6)" size={16} /></Button>
               }
               contentLeftStyling={false}
               css={{
@@ -148,6 +157,8 @@ export default function Header() {
                 },
               }}
               placeholder="Search..."
+              value={search}
+              onChange={handleSearchChange}
             />
           </Navbar.Item>
           {userCur?.id !== undefined ?
@@ -189,7 +200,7 @@ export default function Header() {
             :
             <>
               <ModalLogin />
-              <Button auto flat as={Link} href="/register">
+              <Button auto ghost as={Link} href="/register">
                 Đăng ký
               </Button>
             </>
