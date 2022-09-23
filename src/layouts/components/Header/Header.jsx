@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getAllCategory } from './../../../services/CategoryService';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Navbar, Text, Avatar, Dropdown, Input, Button } from "@nextui-org/react";
 import { Layout } from "./Layout.jsx";
 import { SearchIcon } from "./SearchIcon.jsx";
@@ -14,7 +14,6 @@ import HistoryOrder from '../../../components/Icon/HistoryOrder';
 import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './ModalLogin';
 import { Logo } from './Logo';
-import { searchProduct } from '../../../services/ProductService';
 
 export default function Header() {
   const [categories, setCategories] = useState([])
