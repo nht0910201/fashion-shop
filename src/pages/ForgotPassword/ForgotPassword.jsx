@@ -1,27 +1,274 @@
+import * as React from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { resetPassword, verifyUser } from '../../services/AuthService';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import validator from 'validator';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { addToLocalStorage } from './../../utils/tokenHandle';
+import { forgotPassword } from '../../services/UserService';
+
+const steps = ['Tài khoản', 'Xác thực', 'Đặt mật khẩu'];
+
+const theme = createTheme();
+
 function ForgotPassword() {
+    let navigate = useNavigate()
+    const [activeStep, setActiveStep] = useState(0);
+    const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfrimPassword] = useState('');
+    const handleChangeEmail = (e) => {
+        setEmail(e.target.value)
+    }
+    const handleChangeOtp = (e) => {
+        setOtp(e.target.value)
+    }
+    const handleChangeNewPassword = (e) => {
+        setNewPassword(e.target.value)
+    }
+    const handleChangeConfirmPass = (e) => {
+        setConfrimPassword(e.target.value)
+    }
+    const type = 'reset'
+
+    const [id, setId] = useState('')
+    const handleNext = async (e) => {
+        const wait = toast.loading("Vui lòng chờ ...")
+        let checkEmail = validator.isEmail(email)
+        let checkOtp = !validator.isEmpty(otp)
+        if (activeStep === 0) {
+            if (checkEmail) {
+                let check = await resetPassword({ email })
+                toast.update(wait, { render: "Mã xác thực đã được gửi đến email", type: "success", isLoading: false, autoClose: 1500 });
+                if (check.data.success) {
+                    setActiveStep(activeStep + 1);
+                }
+            } else {
+                toast.update(wait, { render: "Vui lòng nhập chính xác email", type: "error", isLoading: false, autoClose: 1500 });
+            }
+        }
+        else if (activeStep === 1) {
+            if (checkOtp) {
+                let checkOtp = await verifyUser({ otp, email, type })
+                if (checkOtp.data.success) {
+                    toast.update(wait, { render: "Xác thực OTP thành công", type: "success", isLoading: false, autoClose: 1500 });
+                    setId(checkOtp.data.data.id);
+                    addToLocalStorage(checkOtp.data.data.token)
+                    setActiveStep(activeStep + 1);
+                } else {
+                    toast.update(wait, { render: "OTP không đúng", type: "error", isLoading: false, autoClose: 1500 });
+                }
+            }
+            else {
+                toast.update(wait, { render: "Vui lòng nhập OTP", type: "error", isLoading: false, autoClose: 1500 });
+            }
+        }
+    };
+    const handleBack = () => {
+        setActiveStep(activeStep - 1);
+    };
+    let oldPassword = otp
+    const updatePass = async () => {
+        const w = toast.loading("Vui lòng chờ ...")
+        let checkPassword = !validator.isEmpty(newPassword) && newPassword.length >= 6
+        let checkConfirmPass = !validator.isEmpty(confirmPassword) && (newPassword === confirmPassword)
+        if (checkPassword && checkConfirmPass) {
+            let res = await forgotPassword({ oldPassword, newPassword }, id)
+            if (res.success) {
+                toast.update(w, {
+                    render: "Đổi mật khẩu thành công",
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 1500,
+                    onClose: () => navigate('/')
+                });
+            } else {
+                toast.update(w, {
+                    render: "Đổi mật khẩu thất bại",
+                    type: "error",
+                    isLoading: false,
+                    autoClose: 1500,
+                });
+            }
+        } else {
+            toast.update(w, {
+                render: "Vui lòng nhập lại mật khẩu",
+                type: "error",
+                isLoading: false,
+                autoClose: 1500,
+            });
+        }
+    }
+    const handleOnClick = () => {
+        updatePass();
+    }
+    const sendOTPagain = async () => {
+        let res = await resetPassword({ email })
+        if (res.data.success) {
+            toast.success('Gửi OTP thành công', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        } else {
+            toast.error('Gửi OTP thất bại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+    }
+    const sendOTP = () => {
+        sendOTPagain()
+    }
     return (
-        <div class="flex items-center justify-center h-screen bg-white">
-            <div class="bg-white rounded-2xl border shadow-xl p-10 max-w-lg">
-                <div class="flex flex-col items-center space-y-4">
-                    <h1 class="font-bold text-2xl text-gray-700 w-full text-center">
-                        Reset Password
-                    </h1>
-                    <p class="text-sm text-gray-500 text-center w-5/6">
-                        You forget your password ? Please enter your email
-                    </p>
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        class="border-2 rounded-lg w-full h-12 px-4"
-                    />
-                    <button
-                        class="bg-red-400 text-white rounded-md hover:bg-red-500 font-semibold px-4 py-3 w-full"
-                    >
-                        Send
-                    </button>
-                </div>
-            </div>
-        </div>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+                <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+                    <Typography component="h1" variant="h4" align="center">
+                        KHÔI PHỤC MẬT KHẨU
+                    </Typography>
+                    <Stepper activeStep={activeStep} sx={{ pt: 3, pb: 5 }}>
+                        {steps.map((label) => (
+                            <Step key={label}>
+                                <StepLabel>{label}</StepLabel>
+                            </Step>
+                        ))}
+                    </Stepper>
+                    <React.Fragment>
+                        {activeStep === 0 ? <>
+                            <Typography variant="h6" style={{ textAlign: 'center' }} gutterBottom>
+                                Tài khoản
+                            </Typography>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        id="email"
+                                        name="email"
+                                        label="Email"
+                                        fullWidth
+                                        type={'email'}
+                                        // autoComplete="family-name"
+                                        variant="standard"
+                                        value={email}
+                                        onChange={handleChangeEmail}
+                                    // error={validator.isEmail(email) ? false : true}
+                                    // helperText='Vui lòng nhập chính xác email'
+                                    />
+                                </Grid>
+                            </Grid>
+                        </> : <></>}
+                        {activeStep === 1 ? <>
+                            <Typography variant="h6" align="center" gutterBottom>
+                                XÁC THỰC
+                            </Typography>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        id="OTP"
+                                        label="OTP"
+                                        type={'password'}
+                                        fullWidth
+                                        variant="standard"
+                                        value={otp}
+                                        onChange={handleChangeOtp}
+                                    // error={validator.isEmpty(otp) ? true : false}
+                                    // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
+                                    />
+                                </Grid>
+                                <Button style={{ fontSize: 12, marginLeft: 'auto', marginRight: 'auto', marginTop: '3px' }} color="secondary" onClick={sendOTP}>Gửi lại OTP</Button>
+                            </Grid>
+                        </> : <></>}
+                        {activeStep === 2 ? <>
+                            <Grid container spacing={3}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        id="newPassword"
+                                        label="Mật khẩu mới"
+                                        type={'password'}
+                                        fullWidth
+                                        variant="standard"
+                                        value={newPassword}
+                                        onChange={handleChangeNewPassword}
+                                    // error={validator.isEmpty(otp) ? true : false}
+                                    // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
+                                    />
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        required
+                                        id="confirmPass"
+                                        label="Xác nhận lại mật khẩu"
+                                        type={'password'}
+                                        fullWidth
+                                        variant="standard"
+                                        value={confirmPassword}
+                                        onChange={handleChangeConfirmPass}
+                                    // error={validator.isEmpty(otp) ? true : false}
+                                    // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
+                                    />
+                                </Grid>
+                            </Grid>
+                        </> :
+                            <></>
+                        }
+                        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <Button onClick={handleBack}
+                                sx={{ mt: 3, ml: 1 }}
+                                disabled={activeStep === 0 ? true : false}
+                            >
+                                <ArrowBackIcon />
+                            </Button>
+                            <Button
+                                onClick={handleNext}
+                                sx={{ mt: 3, ml: 1 }}
+                                disabled={activeStep === steps.length - 1 ? true : false}
+                            >
+                                <ArrowForwardIcon />
+                            </Button>
+                            <Button
+                                variant="contained"
+                                onClick={handleOnClick}
+                                sx={{ mt: 3, ml: 1 }}
+                                // hidden={activeStep !== steps.length - 1 ? true : false}
+                                disabled={activeStep === steps.length - 1 ? false : true}
+                            >
+                                Lưu
+                            </Button>
+                        </Box>
+                    </React.Fragment>
+                </Paper>
+                <ToastContainer />
+            </Container>
+        </ThemeProvider>
     );
 }
 

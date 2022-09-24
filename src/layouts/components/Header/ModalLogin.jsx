@@ -92,8 +92,10 @@ export default function ModalLogin() {
                         onChange={onChangePasswordHanle}
                         contentLeft={<Password fill="currentColor" />}
                     />
-                    <Row justify="end" css={{borderBottom:"$black",width:'auto'}}>
-                        <Text size={14}>Forgot password?</Text>
+                    <Row justify="end" css={{ borderBottom: "$black", width: 'auto' }}>
+                        <Link href="/forgotPassword">
+                            <Text size={14} css={{color:'Red'}}>Forgot password?</Text>
+                        </Link>
                     </Row>
                 </Modal.Body>
                 <Modal.Footer justify="center">
@@ -104,7 +106,7 @@ export default function ModalLogin() {
                         Sign in
                     </Button>
                     <Row justify="center">
-                        <Link css={{marginRight:'$5'}} href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/google"><Google /></Link>
+                        <Link css={{ marginRight: '$5' }} href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/google"><Google /></Link>
                         <Link href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/facebook"><Facebook /></Link>
                     </Row>
                 </Modal.Footer>

@@ -1,23 +1,21 @@
 import * as React from 'react';
-// import Avatar from '@mui/material/Avatar';
-import { Avatar } from '@nextui-org/react';
+import { Avatar, Row } from '@nextui-org/react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { ChangeCircleOutlined, CheckCircleOutline } from '@mui/icons-material';
-import { getUserByID, updateAvatarUserByID, updateUserByID } from '../../services/UserService';
+import { getUserByID, updateUserByID } from '../../services/UserService';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ModalChangePass from './ModalChangePass';
+import ModalChangeAvatar from './ModalChangeAvatar';
 
-const theme = createTheme();
 
 export default function ProfileInfo() {
     const { id } = useParams();
@@ -45,7 +43,6 @@ export default function ProfileInfo() {
         setUser({ ...user, gender: e.target.value.toLowerCase() })
         console.log(e.target.value)
     }
-
     const updateInfo = async (data, id) => {
         let res = await updateUserByID(data, id)
         if (res.success) {
@@ -74,155 +71,93 @@ export default function ProfileInfo() {
     const handleSaveInfo = () => {
         updateInfo(user, id)
     }
-    const [file, setFile] = useState(null)
-    const handleUploadFile = (e) => {
-        setFile(e.target.files[0])
-    }
-    const updateAvatar = async (id) => {
-        const data = new FormData();
-        data.append('file', file)
-        let res = await updateAvatarUserByID(data, id)
-        console.log(res)
-        if (res.data.success) {
-            window.localStorage.setItem('avatar', JSON.stringify(res.data.data.avatar));
-            setUser({ ...res.data, avatar: res.data.data.avatar })
-            toast.success('Cập nhật thông tin thành công', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
-        } else {
-            toast.error('Cập nhật không thành công', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
-        }
-    }
-    const handleSaveAvatar = () => {
-        updateAvatar(id)
-
-    }
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    {/* <Avatar alt="Remy Sharp" sx={{ width: 56, height: 56 }} src="https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg" /> */}
-                    <Avatar
-                        src={user.avatar === '' ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/OOjs_UI_icon_userAvatar.svg/2048px-OOjs_UI_icon_userAvatar.svg.png' : user.avatar}
-                        css={{ size: "$20" }}
+        <Container sx={{ boxShadow: 3, borderRadius: 1 }} component="main" maxWidth="sm" >
+            <CssBaseline />
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar
+                    src={user.avatar}
+                    css={{ size: "$20", marginTop: '$10' }}
+
+                />
+                <Typography component="h1" variant="h5">
+                    <ModalChangeAvatar user={user}/>
+                </Typography>
+                <Box noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="name"
+                        InputLabelProps={{ shrink: true }}
+                        label="Name"
+                        type="text"
+                        name="name"
+                        value={user.name}
+                        onChange={handleChangeName}
                     />
-                    <Typography component="h1" variant="h5">
-                        <Button
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="phone"
+                        InputLabelProps={{ shrink: true }}
+                        label="Phone"
+                        type="text"
+                        id="phone"
+                        value={user.phone}
+                        onChange={handleChangePhone}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="address"
+                        InputLabelProps={{ shrink: true }}
+                        label="Address"
+                        type="text"
+                        id="address"
+                        value={user.address}
+                        onChange={handleChangeAddress}
+                    />
+                    <FormControl fullWidth margin='normal'>
+                        <InputLabel shrink id="gender-label">Gender</InputLabel>
+                        <Select
+                            labelId="gender-label"
 
-                            variant="text"
-                            component="label"
+                            label="Gender"
+                            id="gender"
+                            value={'other'}
+                            onChange={handleChangeGender}
                         >
-                            <ChangeCircleOutlined />
-                            <input
-                                type="file"
-                                hidden
-                                onChange={handleUploadFile}
-                                accept=".jpg,.png"
-                            />
-                        </Button>
-                        <Button
-
-                            variant="text"
-                            component="label"
-                            color='success'
-                            onClick={handleSaveAvatar}
-                        >
-                            <CheckCircleOutline />
-                        </Button>
-                    </Typography>
-                    <Box noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="name"
-                            InputLabelProps={{ shrink: true }}
-                            label="Name"
-                            // placeholder='Name'
-                            type="text"
-                            name="name"
-                            value={user.name}
-                            onChange={handleChangeName}
-                        // autoComplete="email"
-                        // autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="phone"
-                            InputLabelProps={{ shrink: true }}
-                            label="Phone"
-                            type="text"
-                            id="phone"
-                            value={user.phone}
-                            onChange={handleChangePhone}
-                        // autoComplete="current-password"
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="address"
-                            InputLabelProps={{ shrink: true }}
-                            label="Address"
-                            type="text"
-                            id="address"
-                            value={user.address}
-                            onChange={handleChangeAddress}
-                        // autoComplete="current-password"
-                        />
-                        <FormControl fullWidth margin='normal'>
-                            <InputLabel shrink id="gender-label">Gender</InputLabel>
-                            <Select
-                                labelId="gender-label"
-
-                                label="Gender"
-                                id="gender"
-                                value={'other'}
-                                onChange={handleChangeGender}
-                            >
-                                <MenuItem value='male'>Male</MenuItem>
-                                <MenuItem value='female'>Female</MenuItem>
-                                <MenuItem value='other'>Other</MenuItem>
-                            </Select>
-                        </FormControl>
+                            <MenuItem value='male'>Male</MenuItem>
+                            <MenuItem value='female'>Female</MenuItem>
+                            <MenuItem value='other'>Other</MenuItem>
+                        </Select>
+                    </FormControl>
+                    <Row justify="space-around" align='center'>
+                        <ModalChangePass/>
                         <Button
                             type="button"
-                            fullWidth
                             variant="contained"
                             onClick={handleSaveInfo}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Lưu
                         </Button>
-                    </Box>
+                    </Row>
+
                 </Box>
-                <ToastContainer />
-            </Container>
-        </ThemeProvider>
+            </Box>
+            <ToastContainer />
+        </Container>
     );
 }

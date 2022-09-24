@@ -4,7 +4,6 @@ import Home from '../pages/Home'
 import {DefaultLayout,HeaderOnly} from '../layouts'
 import DetailProduct from '../pages/DetailProduct';
 import ShoppingCart from '../pages/ShoppingCart';
-import ChangePassword from '../pages/ChangePassword';
 import ForgotPassword from '../pages/ForgotPassword';
 import Order from '../pages/Order';
 import OrderHistory from '../pages/OrderHistory/OrderHistory';
@@ -23,7 +22,6 @@ const publicRoutes = [
     { path: config.routes.profile, component: ProfileInfo, layout: HeaderOnly },
     { path: config.routes.shoppingCart, component: ShoppingCart, layout: DefaultLayout },
     { path: config.routes.register, component: SignUp, layout: HeaderOnly },
-    { path: config.routes.changePassword, component:ChangePassword, layout: HeaderOnly },
     { path: config.routes.forgotPassword, component:ForgotPassword, layout: HeaderOnly },
     { path: config.routes.order, component:Order, layout: DefaultLayout },
     { path: config.routes.orderHistory, component:OrderHistory, layout: DefaultLayout },

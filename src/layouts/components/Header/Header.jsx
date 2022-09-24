@@ -14,12 +14,13 @@ import HistoryOrder from '../../../components/Icon/HistoryOrder';
 import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './ModalLogin';
 import { Logo } from './Logo';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Header() {
   const [categories, setCategories] = useState([])
   useEffect(() => {
     async function getData() {
-      let Categories = await getAllCategory()
+      let Categories = await getAllCategory();
       setCategories(Categories.data)
     }
     getData()

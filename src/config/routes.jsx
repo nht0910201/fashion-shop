@@ -1,7 +1,6 @@
 const routes = {
     home: '/',
     register:'/register',
-    changePassword:'/changePassword',
     forgotPassword:'/forgotPassword',
     listProduct:'/listProduct/:id',
     search:'/search',

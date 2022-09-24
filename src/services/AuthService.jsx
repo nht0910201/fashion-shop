@@ -25,5 +25,12 @@ export const verifyUser = async (data={}) =>{
     } catch (error) {
          return error.response
     };
-
+}
+export const resetPassword = async (data={}) =>{
+    try {
+        const response = await post('/auth/reset',data);
+        return response
+    } catch (error) {
+         return error.response
+    };
 }
