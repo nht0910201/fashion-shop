@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Skeleton } from '@mui/material';
 import { getUserByID, updateUserByID } from '../../services/UserService';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalChangePass from './ModalChangePass';
 import ModalChangeAvatar from './ModalChangeAvatar';
+import Loading from '../../components/Loading/Loading';
 
 
 export default function ProfileInfo() {
@@ -41,7 +42,6 @@ export default function ProfileInfo() {
     }
     const handleChangeGender = (e) => {
         setUser({ ...user, gender: e.target.value.toLowerCase() })
-        console.log(e.target.value)
     }
     const updateInfo = async (data, id) => {
         let res = await updateUserByID(data, id)
@@ -71,7 +71,11 @@ export default function ProfileInfo() {
     const handleSaveInfo = () => {
         updateInfo(user, id)
     }
-
+    if (user.id === undefined) {
+        return (
+            <Loading/>
+        )
+    }
     return (
         <Container sx={{ boxShadow: 3, borderRadius: 1 }} component="main" maxWidth="sm" >
             <CssBaseline />
@@ -89,7 +93,7 @@ export default function ProfileInfo() {
 
                 />
                 <Typography component="h1" variant="h5">
-                    <ModalChangeAvatar user={user}/>
+                    <ModalChangeAvatar user={user} />
                 </Typography>
                 <Box noValidate sx={{ mt: 1 }}>
                     <TextField
@@ -144,7 +148,7 @@ export default function ProfileInfo() {
                         </Select>
                     </FormControl>
                     <Row justify="space-around" align='center'>
-                        <ModalChangePass/>
+                        <ModalChangePass />
                         <Button
                             type="button"
                             variant="contained"

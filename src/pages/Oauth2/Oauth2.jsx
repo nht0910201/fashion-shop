@@ -8,7 +8,7 @@ function Oauth2() {
     let locate = useLocation()
     let navigate = useNavigate()
     let params = new URLSearchParams(locate.search);
-    if (params.get('success')) {
+    if (params.get('success')===true) {
         let oauth2 = decodeToken(params.get('token'))
         let userId = oauth2.sub.split(',')[0]
         addToLocalStorage(params.get('token'))

@@ -15,6 +15,9 @@ import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './ModalLogin';
 import { Logo } from './Logo';
 import 'react-toastify/dist/ReactToastify.css';
+import { ShoppingBagOutlined } from '@mui/icons-material';
+import Loading from '../../../components/Loading/Loading';
+import { Skeleton } from '@mui/material';
 
 export default function Header() {
   const [categories, setCategories] = useState([])
@@ -30,29 +33,29 @@ export default function Header() {
   let navigate = useNavigate();
   let userCur = getUserFromLocalStorage()
   const optionMenu = [
-    // { name: 'Đăng nhập', icon: <LoginIcon />, href: '/login' },
-    // { name: 'Đăng ký', icon: <RegisterIcon />, href: '/register' },
     { name: 'Thông tin cá nhân', icon: <InfoIcon />, href: `/profile/${userCur?.id}` },
     { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrderStatus' },
     { name: 'Lịch sử đơn hàng', icon: <HistoryOrder />, href: '/orderHistory' },
   ]
-  // let newOptionMenu = []
-  // const [a, b, ...rest] = optionMenu
-  // if (userCur?.id === undefined) {
-  //   newOptionMenu = [a, b]
-  // } else {
-  //   newOptionMenu = [...rest]
-  // }
   const handleLogout = () => {
     navigate('/')
     dispatch(authAction.logout())
   }
-  const [search,setSearch] = useState('')
-  const handleSearchChange = (e) =>{
-      setSearch(e.target.value);
+  const [search, setSearch] = useState('')
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
   }
-  const handleSearch = async () =>{
+  const handleSearch = async () => {
     navigate(`/search?q=${search}`)
+  }
+  const handleClickCart = () => {
+    navigate('/shoppingcart')
+  }
+  if (categories.length === 0) {
+    return (
+      <Loading/>
+      // <Skeleton variant="rectangular" width={'auto'} height={76} />
+    )
   }
   return (
     <Layout>
@@ -60,7 +63,7 @@ export default function Header() {
         <Navbar.Toggle showIn={'xs'} />
         <Navbar.Brand>
           <Text b color="inherit" hideIn="xs">
-            <Link href='/'><Logo/>FASHION</Link> 
+            <Link href='/'><Logo />FASHION</Link>
           </Text>
         </Navbar.Brand>
         <Navbar.Content
@@ -106,7 +109,7 @@ export default function Header() {
                     },
                   },
                 }}
-                onAction={(key) => { window.location.href = `/listProduct/${key}` }}
+                onAction={(key) => { window.location.href = `/productList/${key}` }}
                 items={category.subCategories}
               >
                 {(item) => (
@@ -163,6 +166,7 @@ export default function Header() {
           </Navbar.Item>
           {userCur?.id !== undefined ?
             <>
+              <Button onClick={handleClickCart} size={'xs'} light css={{ padding: '$0' }}><ShoppingBagOutlined /></Button>
               <Dropdown placement="bottom-right">
                 <Navbar.Item>
                   <Dropdown.Trigger>
@@ -196,6 +200,7 @@ export default function Header() {
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
+
             </>
             :
             <>

@@ -13,10 +13,12 @@ import SignUp from '../pages/SignUp';
 import ListProduct from '../pages/ListProduct';
 import Oauth2 from '../pages/Oauth2';
 import ProfileInfo from '../pages/ProfileInfo';
+import ProductList from './../pages/ProductList/ProductList';
 
 const publicRoutes = [
     { path: config.routes.listProduct, component: ListProduct, layout: DefaultLayout },
-    { path: config.routes.search, component: ListProduct, layout: DefaultLayout },
+    { path: config.routes.productList, component: ProductList, layout: DefaultLayout },
+    { path: config.routes.search, component: ProductList, layout: DefaultLayout },
     { path: config.routes.home, component: Home, layout: DefaultLayout },
     { path: config.routes.detailProduct, component: DetailProduct, layout: DefaultLayout },
     { path: config.routes.profile, component: ProfileInfo, layout: HeaderOnly },

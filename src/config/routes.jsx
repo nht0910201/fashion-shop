@@ -3,6 +3,7 @@ const routes = {
     register:'/register',
     forgotPassword:'/forgotPassword',
     listProduct:'/listProduct/:id',
+    productList:'/productList/:id',
     search:'/search',
     detailProduct:'/detailProduct/:id',
     profile:'/profile/:id',
