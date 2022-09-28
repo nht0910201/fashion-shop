@@ -5,7 +5,7 @@ import {
     Row,
     Col,
     Badge,
-    Spacer
+    Spacer,
 } from "@nextui-org/react";
 import Typography from '@mui/material/Typography';
 import { useState } from "react";
@@ -39,7 +39,7 @@ export default function ProductList() {
     return (
         <Grid.Container gap={1}>
             {products.map((product) => (
-                <Grid xs md={4} lg={2} justify={"center"}>
+                <Grid xs md={3} lg={2} sm={3} justify={"center"}>
                     <Card css={{ w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/detailProduct/${product.id}` }} >
                         <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
                             <Badge hidden={product.discount <= 0 ? true : false}>New</Badge>
@@ -61,19 +61,12 @@ export default function ProductList() {
                         </Card.Body>
 
                         <Card.Footer
-                        // isBlurred
-                        // css={{
-                        //     position: "absolute",
-                        //     bgBlur: "#0f111466",
-                        //     borderTop: "$borderWeights$light solid $gray800",
-                        //     bottom: 0,
-                        //     zIndex: 1,
-                        // }}
+                            css={{ marginTop: "$2" }}
                         >
                             <Row>
                                 <Col>
                                     <Tooltip title={product.name}>
-                                        <Typography  noWrap variant="subtitle1" component="div">
+                                        <Typography noWrap variant="subtitle1" component="div">
                                             {product.name}
                                         </Typography>
                                     </Tooltip>
@@ -84,18 +77,19 @@ export default function ProductList() {
                                     </Row>
                                     <Row justify="space-between" >
                                         <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
-                                            {product.discount > 0 ? product.price : '' }
+                                            {product.discount > 0 ? product.price : ''}
                                         </Text>
-                                        <Spacer hidden={product.discount > 0 ? true : false} y={1.3}/>
+                                        <Spacer hidden={product.discount > 0 ? true : false} y={1.3} />
                                         <Badge isSquared color="error" hidden={product.discount <= 0 ? true : false}>
                                             -{product.discount}%
                                         </Badge>
                                     </Row>
-                                    
-
-                                    {/* <Text color="#d1d1d1" size={12}>
-                                            Get a good night's sleep.
-                                        </Text> */}
+                                    <Row>
+                                        {product.images.map((image) => (
+                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                            </Badge>
+                                        ))}
+                                    </Row>
                                 </Col>
                             </Row>
                         </Card.Footer>

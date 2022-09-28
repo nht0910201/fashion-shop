@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react'
 import { getAllCategory } from './../../../services/CategoryService';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Navbar, Text, Avatar, Dropdown, Input, Button } from "@nextui-org/react";
+import { Navbar, Text, Avatar, Dropdown, Input, Button, Tooltip } from "@nextui-org/react";
 import { Layout } from "./Layout.jsx";
-import { SearchIcon } from "./SearchIcon.jsx";
-import { icons } from './Icon'
 import { Link } from "@nextui-org/react";
 import * as authAction from '../../../redux/auth/authSlice'
 import InfoIcon from '../../../components/Icon/InfoIcon';
@@ -15,9 +13,9 @@ import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './ModalLogin';
 import { Logo } from './Logo';
 import 'react-toastify/dist/ReactToastify.css';
-import { ShoppingBagOutlined } from '@mui/icons-material';
+import { Search, ShoppingBagOutlined } from '@mui/icons-material';
 import Loading from '../../../components/Loading/Loading';
-import { Skeleton } from '@mui/material';
+import Categories from './Categories';
 
 export default function Header() {
   const [categories, setCategories] = useState([])
@@ -53,77 +51,34 @@ export default function Header() {
   }
   if (categories.length === 0) {
     return (
-      <Loading/>
+      <Loading />
       // <Skeleton variant="rectangular" width={'auto'} height={76} />
     )
   }
   return (
     <Layout>
-      <Navbar maxWidth={'fluid'} isBordered variant="sticky">
+      <Navbar shouldHideOnScroll maxWidth={'fluid'} isBordered variant="sticky">
         <Navbar.Toggle showIn={'sm'} />
         <Navbar.Brand>
-          <Text b color="inherit" hideIn="sm">
-            <Link href='/'><Logo />FASHION</Link>
+          <Text b color="inherit" hideIn="sm" css={{marginRight:'$10'}}>
+            <Link color={'warning'} href='/'><Logo /></Link>
           </Text>
+          <Navbar.Content
+            enableCursorHighlight
+            activeColor="warning"
+            hideIn="sm"
+            variant="default"
+          >
+            <Navbar.Link isActive href="#">Trang chủ</Navbar.Link>
+            <Tooltip content={<Categories categories={categories} />} css={{ left: '$0', transform: 'none' }} placement='bottom'>
+              <Navbar.Link href="#">
+                Sản phẩm
+              </Navbar.Link>
+            </Tooltip>
+            <Navbar.Link href="#">Giới thiệu</Navbar.Link>
+            <Navbar.Link href="#">Liên hệ</Navbar.Link>
+          </Navbar.Content>
         </Navbar.Brand>
-        <Navbar.Content
-          enableCursorHighlight
-          activeColor="secondary"
-          hideIn="sm"
-          variant="default"
-        >
-          {categories.map((category) => (
-            <Dropdown isBordered key={category.id}>
-              <Navbar.Item>
-                <Dropdown.Button
-                  auto
-                  light
-                  css={{
-                    px: 0,
-                    dflex: "center",
-                    svg: { pe: "none" },
-                  }}
-                  iconRight={icons.chevron}
-                  ripple={false}
-
-                >
-                  {category.name}
-                </Dropdown.Button>
-              </Navbar.Item>
-              <Dropdown.Menu
-                aria-label="ACME features"
-                css={{
-                  $$dropdownMenuWidth: "340px",
-                  $$dropdownItemHeight: "70px",
-                  "& .nextui-dropdown-item": {
-                    py: "$4",
-                    // dropdown item left icon
-                    svg: {
-                      color: "$secondary",
-                      mr: "$4",
-                    },
-                    // dropdown item title
-                    "& .nextui-dropdown-item-content": {
-                      w: "100%",
-                      fontWeight: "$semibold",
-                    },
-                  },
-                }}
-                onAction={(key) => { window.location.href = `/productList/${key}` }}
-                items={category.subCategories}
-              >
-                {(item) => (
-                  <Dropdown.Item
-                    key={item.id}
-                    icon={icons.scale}
-                  >
-                    {item.name}
-                  </Dropdown.Item>
-                )}
-              </Dropdown.Menu>
-            </Dropdown>
-          ))}
-        </Navbar.Content>
         {/* Search  */}
         <Navbar.Content
           css={{
@@ -143,11 +98,12 @@ export default function Header() {
           >
             <Input
               clearable
-              contentLeft={
-                // <SearchIcon fill="var(--nextui-colors-accents6)" size={16} />
-                <Button onClick={handleSearch} light size={16}><SearchIcon fill="var(--nextui-colors-accents6)" size={16} /></Button>
+              contentRight={
+                <Button onClick={handleSearch} light size={16}><Search /></Button>
               }
-              contentLeftStyling={false}
+              contentRightStyling={false}
+              underlined
+              color='warning'
               css={{
                 w: "100%",
                 "@xsMax": {
@@ -159,7 +115,7 @@ export default function Header() {
                   dflex: "center",
                 },
               }}
-              placeholder="Search..."
+              placeholder="Tìm kiếm"
               value={search}
               onChange={handleSearchChange}
             />
