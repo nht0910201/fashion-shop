@@ -1,7 +1,6 @@
 import { Fragment, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from './routes';
-import DefaultLayout from '../src/layouts'
 
 function App() {
 

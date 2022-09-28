@@ -10,7 +10,7 @@ function DefaultLayout({ children }) {
         <div>
             {/* <div id="preloader" className={cx('preloader')}></div> */}
             <Header/>
-            <div className="container">
+            <div className="w-auto">
                 <div className="content">{children}</div>
             </div>
             <Footer/>

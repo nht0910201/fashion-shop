@@ -4,7 +4,7 @@ function HeaderOnly({ children }) {
     return (
         <div>
             <Header />
-            <div className="container">
+            <div className="w-auto">
                 <div className="content">{children}</div>
             </div>
         </div>

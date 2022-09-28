@@ -60,16 +60,16 @@ export default function Header() {
   return (
     <Layout>
       <Navbar maxWidth={'fluid'} isBordered variant="sticky">
-        <Navbar.Toggle showIn={'xs'} />
+        <Navbar.Toggle showIn={'sm'} />
         <Navbar.Brand>
-          <Text b color="inherit" hideIn="xs">
+          <Text b color="inherit" hideIn="sm">
             <Link href='/'><Logo />FASHION</Link>
           </Text>
         </Navbar.Brand>
         <Navbar.Content
           enableCursorHighlight
           activeColor="secondary"
-          hideIn="xs"
+          hideIn="sm"
           variant="default"
         >
           {categories.map((category) => (

@@ -3,14 +3,16 @@ import {
     Card,
     Text,
     Row,
-    Image,
-    Button,
-    Link,
+    Col,
+    Badge,
+    Spacer
 } from "@nextui-org/react";
+import Typography from '@mui/material/Typography';
 import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { getProductByCategory, searchProduct } from "../../services/ProductService";
+import { Tooltip } from "@mui/material";
 
 export default function ProductList() {
     const [products, setProducts] = useState([])
@@ -35,52 +37,71 @@ export default function ProductList() {
         getData()
     }, [keySearch, id])
     return (
-        <Grid.Container>
-            <Grid.Container>
-                <Text>Filter</Text>
-            </Grid.Container>
-            <Grid.Container gap={1} >
-                {products.map((product) => (
-                    <Grid xs lg={2} md={4} alignItems={'center'}>
-                        <Link href={`/detailProduct/${product.id}`}>
-                            <Card color="black">
-                                <Card.Body>
-                                    <Row justify="center" align="center">
-                                        <Image
-                                            objectFit="cover"
-                                            src={product.images[0]?.url}
-                                        // src='https://www.converse.com/dw/image/v2/BJJF_PRD/on/demandware.static/-/Sites-cnv-master-catalog-we/default/dw22670114/images/d_08/162050C_D_08X1.jpg?sw=406'
-                                        ></Image>
-                                    </Row>
-                                    <Row justify="center" align="center">
-                                        <Text h4 size={14} css={{ m: 0 }}>
+        <Grid.Container gap={1}>
+            {products.map((product) => (
+                <Grid xs md={4} lg={2} justify={"center"}>
+                    <Card css={{ w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/detailProduct/${product.id}` }} >
+                        <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+                            <Badge hidden={product.discount <= 0 ? true : false}>New</Badge>
+                            {/* <Col>
+                                <Text h3 color="red">
+                                    {product.discount}
+                                </Text>
+                            </Col> */}
+                        </Card.Header>
+
+                        <Card.Body css={{ p: 0, overflow: 'hidden' }}>
+                            <Card.Image
+                                src={product.images[0]?.url}
+                                objectFit="cover"
+                                width="100%"
+                                height="100%"
+                                alt="Relaxing app background"
+                            />
+                        </Card.Body>
+
+                        <Card.Footer
+                        // isBlurred
+                        // css={{
+                        //     position: "absolute",
+                        //     bgBlur: "#0f111466",
+                        //     borderTop: "$borderWeights$light solid $gray800",
+                        //     bottom: 0,
+                        //     zIndex: 1,
+                        // }}
+                        >
+                            <Row>
+                                <Col>
+                                    <Tooltip title={product.name}>
+                                        <Typography  noWrap variant="subtitle1" component="div">
                                             {product.name}
+                                        </Typography>
+                                    </Tooltip>
+                                    <Row>
+                                        <Text color="black" b size={18} >
+                                            {product.discountPrice}
                                         </Text>
                                     </Row>
-                                    <Row justify="center" align="center">
-                                        <Text h4 size={16} color={'red'} css={{ m: 0, textDecorationLine: 'line-through' }}>
-                                            Giá: {product.price}
+                                    <Row justify="space-between" >
+                                        <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
+                                            {product.discount > 0 ? product.price : '' }
                                         </Text>
+                                        <Spacer hidden={product.discount > 0 ? true : false} y={1.3}/>
+                                        <Badge isSquared color="error" hidden={product.discount <= 0 ? true : false}>
+                                            -{product.discount}%
+                                        </Badge>
                                     </Row>
-                                    <Row justify="center" align="center">
-                                        <Text h4 size={15} color={'blue'} css={{ m: 0 }}>
-                                            Giảm: {product.discount} %
-                                        </Text>
-                                    </Row>
-                                    <Row justify="center" align="center">
-                                        <Text h4 size={15} color={'green'} css={{ m: 0 }}>
-                                            Còn: {product.price - product.price * product.discount / 100}
-                                        </Text>
-                                    </Row>
-                                    {/* <Row justify="center" align="center">
-                                <Button css={{ mt: 10 }}>Add to Cart</Button>
-                            </Row> */}
-                                </Card.Body>
-                            </Card>
-                        </Link>
-                    </Grid>
-                ))}
-            </Grid.Container>
+                                    
+
+                                    {/* <Text color="#d1d1d1" size={12}>
+                                            Get a good night's sleep.
+                                        </Text> */}
+                                </Col>
+                            </Row>
+                        </Card.Footer>
+                    </Card>
+                </Grid>
+            ))}
         </Grid.Container>
 
     );
