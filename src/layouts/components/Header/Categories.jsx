@@ -7,17 +7,22 @@ export default function Categories({ categories }) {
                 {categories.map((category) => (
                     <Col>
                         <Link href={`/productList/${category.id}`}>
-                            <Text b >{category.name}</Text>
+                            <Text 
+                                css={{"&:hover":{textDecoration: 'underline', color:'$warning'}}} b >
+                                {category.name}
+                            </Text>
                         </Link>
                         
                         {category.subCategories.map((sub) => (
                             <Link href={`/productList/${sub.id}`}>
-                                <Text>{sub.name}</Text>
+                                <Text 
+                                    css={{"&:hover":{textDecoration: 'underline', color:'$warning'}}}>
+                                    {sub.name}
+                                </Text>
                             </Link>
                             
                         ))}
                     </Col>
-                    
                 ))}
             </Row>
         </Container>

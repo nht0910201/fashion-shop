@@ -37,8 +37,8 @@ export default function ModalChangeAvatar({ user }) {
     }
     return (
         <div>
-            <Button auto light color="secondary" onClick={() => setVisible(true)}>
-                ĐỔI ẢNH
+            <Button auto size={50} light onClick={() => setVisible(true)}>
+                <PhotoCamera/>
             </Button>
             <Modal
                 scroll

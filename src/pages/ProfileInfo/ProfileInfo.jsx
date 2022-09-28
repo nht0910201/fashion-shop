@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Avatar, Row } from '@nextui-org/react';
+import { Avatar, Badge, Row } from '@nextui-org/react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -87,14 +87,23 @@ export default function ProfileInfo() {
                     alignItems: 'center',
                 }}
             >
-                <Avatar
-                    src={user.avatar}
-                    css={{ size: "$20", marginTop: '$10' }}
-
-                />
-                <Typography component="h1" variant="h5">
+                <Badge
+                    content={<ModalChangeAvatar user={user} />}
+                    
+                    disableOutline
+                    placement="bottom-right"
+                    css={{ p: 0 }}
+                    shape="circle"
+                    size="xs">
+                    <Avatar
+                        src={user.avatar}
+                        css={{ size: "$20", marginTop: '$10' }}
+                    />
+                </Badge>
+               
+                {/* <Typography component="h1" variant="h5">
                     <ModalChangeAvatar user={user} />
-                </Typography>
+                </Typography> */}
                 <Box noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"

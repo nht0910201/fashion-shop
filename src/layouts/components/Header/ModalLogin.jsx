@@ -80,7 +80,7 @@ export default function ModalLogin() {
                         onChange={onChangeUsernameHanle}
                         contentLeft={<Mail fill="currentColor" />}
                     />
-                    <Input
+                    <Input.Password
                         clearable
                         bordered
                         fullWidth

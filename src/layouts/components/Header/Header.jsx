@@ -57,7 +57,7 @@ export default function Header() {
   }
   return (
     <Layout>
-      <Navbar shouldHideOnScroll maxWidth={'fluid'} isBordered variant="sticky">
+      <Navbar shouldHideOnScroll maxWidth={'fluid'} isBordered variant={"sticky"}>
         <Navbar.Toggle showIn={'sm'} />
         <Navbar.Brand>
           <Text b color="inherit" hideIn="sm" css={{marginRight:'$10'}}>
@@ -70,7 +70,11 @@ export default function Header() {
             variant="default"
           >
             <Navbar.Link isActive href="#">Trang chủ</Navbar.Link>
-            <Tooltip content={<Categories categories={categories} />} css={{ left: '$0', transform: 'none' }} placement='bottom'>
+            <Tooltip 
+              content={<Categories categories={categories} />} 
+              css={{ left: '$0', transform: 'none' }} 
+              placement='bottom'
+              hideArrow >
               <Navbar.Link href="#">
                 Sản phẩm
               </Navbar.Link>
@@ -129,7 +133,7 @@ export default function Header() {
                     <Avatar
                       bordered
                       as="button"
-                      color="primary"
+                      color="warning"
                       size="md"
                       src={userCur?.id !== undefined ? userCur?.avatar : "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/OOjs_UI_icon_userAvatar.svg/2048px-OOjs_UI_icon_userAvatar.svg.png"}
                     />
@@ -167,12 +171,12 @@ export default function Header() {
             </>
           }
         </Navbar.Content>
-        <Navbar.Collapse>
+        <Navbar.Collapse showIn={'sm'}>
           {categories.map((category) => (
             category.subCategories.map((subCategory, index) => (
               <Navbar.CollapseItem
                 key={index}
-                activeColor="secondary"
+                activeColor="warning"
               >
                 <Link
                   color="inherit"
