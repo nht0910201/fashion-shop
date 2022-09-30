@@ -4,9 +4,8 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { FormControl, InputLabel, MenuItem, Select, Skeleton } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { getUserByID, updateUserByID } from '../../services/UserService';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -16,6 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import ModalChangePass from './ModalChangePass';
 import ModalChangeAvatar from './ModalChangeAvatar';
 import Loading from '../../components/Loading/Loading';
+import { UpdateSuccessReload } from './../../components/Alert/UpdateSuccessReload';
+import { UpdateError } from '../../components/Alert';
 
 
 export default function ProfileInfo() {
@@ -44,28 +45,31 @@ export default function ProfileInfo() {
         setUser({ ...user, gender: e.target.value.toLowerCase() })
     }
     const updateInfo = async (data, id) => {
+        const wait = toast.loading("Vui lòng chờ ...")
         let res = await updateUserByID(data, id)
         if (res.success) {
-            toast.success('Cập nhật thông tin thành công', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
+            // toast.success('Cập nhật thông tin thành công', {
+            //     position: "top-right",
+            //     autoClose: 3000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     pauseOnHover: false,
+            //     draggable: true,
+            //     progress: undefined,
+            // });
+            UpdateSuccessReload(wait,'Cập nhật thông tin thành công',false)
             setUser({ ...res.data, gender: res.data.gender.toLowerCase() })
         } else {
-            toast.error('Cập nhật không thành công', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
+            // toast.error('Cập nhật không thành công', {
+            //     position: "top-right",
+            //     autoClose: 3000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     pauseOnHover: false,
+            //     draggable: true,
+            //     progress: undefined,
+            // });
+            UpdateError(wait,'Cập nhật không thành công')
         }
     }
     const handleSaveInfo = () => {

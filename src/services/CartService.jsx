@@ -1,4 +1,4 @@
-import { get } from "../api/axiosConfig";
+import { get,del } from "../api/axiosConfig";
 
 export const getCart = async () =>{
     try {
@@ -7,5 +7,13 @@ export const getCart = async () =>{
     } catch (error) { 
         return error.response.data 
     };
+}
 
+export const removeItemFromCart = async (cartItemId) =>{
+    try {
+        const response = await del(`/cart/${cartItemId}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
 }

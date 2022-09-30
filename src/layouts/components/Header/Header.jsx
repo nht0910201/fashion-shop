@@ -47,7 +47,7 @@ export default function Header() {
     navigate(`/search?q=${search}`)
   }
   const handleClickCart = () => {
-    navigate('/shoppingcart')
+    navigate('/cart')
   }
   if (categories.length === 0) {
     return (

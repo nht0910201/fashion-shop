@@ -1,5 +1,6 @@
-import { Modal, useModal, Button, Text} from "@nextui-org/react";
-import Avatar from '@mui/material/Avatar';
+import { Modal, useModal, Button, Text,Avatar, Image} from "@nextui-org/react";
+// import Avatar from '@mui/material/Avatar';
+
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,7 +12,6 @@ import { UpdateError } from "../../components/Alert/UpdateError";
 
 
 export default function ModalChangeAvatar({ user }) {
-    console.log(user)
     const { setVisible, bindings } = useModal();
     const [file, setFile] = useState(null)
     const [preview, setPreview] = useState('')
@@ -41,8 +41,7 @@ export default function ModalChangeAvatar({ user }) {
                 <PhotoCamera/>
             </Button>
             <Modal
-                scroll
-                width="700px"
+                width='700px'
                 aria-labelledby="modal-title"
                 aria-describedby="modal-description"
                 {...bindings}
@@ -52,15 +51,16 @@ export default function ModalChangeAvatar({ user }) {
                         CHỌN ẢNH ĐẠI DIỆN
                     </Text>
                 </Modal.Header>
-                <Modal.Body style={{ marginLeft: 'auto', marginRight: 'auto' }}  >
-                    <Avatar
+                <Modal.Body autoMargin>
+                    <Image
                         alt="...Loading"
+                        css={{borderRadius:'$2xl'}}
                         src={preview === '' ? user.avatar : preview}
-                        sx={{ width: 340, height: 340, justifyItems: 'center' }}
                     />
                     <IconButton
                         color="primary"
                         component="label"
+                        sx={{borderRadius:10}}
                     >
                         <Text size={16} color='blue'>Tải ảnh lên</Text>
                         <PhotoCamera sx={{marginLeft:1}}/>
