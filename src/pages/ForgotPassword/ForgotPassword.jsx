@@ -15,19 +15,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { resetPassword, verifyUser } from '../../services/AuthService';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addToLocalStorage } from './../../utils/tokenHandle';
 import { forgotPassword } from '../../services/UserService';
+import { UpdateSuccessReload } from './../../components/Alert/UpdateSuccessReload';
+import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavigate";
+import {UpdateError } from '../../components/Alert/UpdateError'
 
 const steps = ['Tài khoản', 'Xác thực', 'Đặt mật khẩu'];
 
 const theme = createTheme();
 
 function ForgotPassword() {
-    let navigate = useNavigate()
     const [activeStep, setActiveStep] = useState(0);
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
@@ -55,28 +56,33 @@ function ForgotPassword() {
         if (activeStep === 0) {
             if (checkEmail) {
                 let check = await resetPassword({ email })
-                toast.update(wait, { render: "Mã xác thực đã được gửi đến email", type: "success", isLoading: false, autoClose: 1500 });
+                // toast.update(wait, { render: "Mã xác thực đã được gửi đến email", type: "success", isLoading: false, autoClose: 1500 });
+                UpdateSuccessReload(wait,'Mã xác thực đã được gửi đến email',false)
                 if (check.data.success) {
                     setActiveStep(activeStep + 1);
                 }
             } else {
-                toast.update(wait, { render: "Vui lòng nhập chính xác email", type: "error", isLoading: false, autoClose: 1500 });
+                // toast.update(wait, { render: "Vui lòng nhập chính xác email", type: "error", isLoading: false, autoClose: 1500 });
+                UpdateError(wait,'Vui lòng nhập chính xác email')
             }
         }
         else if (activeStep === 1) {
             if (checkOtp) {
                 let checkOtp = await verifyUser({ otp, email, type })
                 if (checkOtp.data.success) {
-                    toast.update(wait, { render: "Xác thực OTP thành công", type: "success", isLoading: false, autoClose: 1500 });
+                    // toast.update(wait, { render: "Xác thực OTP thành công", type: "success", isLoading: false, autoClose: 1500 });
+                    UpdateSuccessReload(wait,'Xác thực OTP thành công',false)
                     setId(checkOtp.data.data.id);
                     addToLocalStorage(checkOtp.data.data.token)
                     setActiveStep(activeStep + 1);
                 } else {
-                    toast.update(wait, { render: "OTP không đúng", type: "error", isLoading: false, autoClose: 1500 });
+                    // toast.update(wait, { render: "OTP không đúng", type: "error", isLoading: false, autoClose: 1500 });
+                    UpdateError(wait,'OTP không đúng')
                 }
             }
             else {
-                toast.update(wait, { render: "Vui lòng nhập OTP", type: "error", isLoading: false, autoClose: 1500 });
+                // toast.update(wait, { render: "Vui lòng nhập OTP", type: "error", isLoading: false, autoClose: 1500 });
+                UpdateError(wait,'Vui lòng nhập OTP')
             }
         }
     };
@@ -91,55 +97,62 @@ function ForgotPassword() {
         if (checkPassword && checkConfirmPass) {
             let res = await forgotPassword({ oldPassword, newPassword }, id)
             if (res.success) {
-                toast.update(w, {
-                    render: "Đổi mật khẩu thành công",
-                    type: "success",
-                    isLoading: false,
-                    autoClose: 1500,
-                    onClose: () => navigate('/')
-                });
+                // toast.update(w, {
+                //     render: "Đổi mật khẩu thành công",
+                //     type: "success",
+                //     isLoading: false,
+                //     autoClose: 1500,
+                //     onClose: () => navigate('/')
+                // });
+                let url = '/'
+                UpdateSuccessNavigate(w,'Đổi mật khẩu thành công',url)
             } else {
-                toast.update(w, {
-                    render: "Đổi mật khẩu thất bại",
-                    type: "error",
-                    isLoading: false,
-                    autoClose: 1500,
-                });
+                // toast.update(w, {
+                //     render: "Đổi mật khẩu thất bại",
+                //     type: "error",
+                //     isLoading: false,
+                //     autoClose: 1500,
+                // });
+                UpdateError(w,'Đổi mật khẩu thất bại')
             }
         } else {
-            toast.update(w, {
-                render: "Vui lòng nhập lại mật khẩu",
-                type: "error",
-                isLoading: false,
-                autoClose: 1500,
-            });
+            // toast.update(w, {
+            //     render: "Vui lòng nhập lại mật khẩu",
+            //     type: "error",
+            //     isLoading: false,
+            //     autoClose: 1500,
+            // });
+            UpdateError(w,'Vui lòng nhập lại mật khẩu')
         }
     }
     const handleOnClick = () => {
         updatePass();
     }
     const sendOTPagain = async () => {
+        const Wait = toast.loading("Vui lòng chờ ...")
         let res = await resetPassword({ email })
         if (res.data.success) {
-            toast.success('Gửi OTP thành công', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
+            // toast.success('Gửi OTP thành công', {
+            //     position: "top-right",
+            //     autoClose: 3000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     pauseOnHover: false,
+            //     draggable: true,
+            //     progress: undefined,
+            // });
+            UpdateSuccessReload(Wait,'Gửi OTP thành công',false)
         } else {
-            toast.error('Gửi OTP thất bại', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-            });
+            // toast.error('Gửi OTP thất bại', {
+            //     position: "top-right",
+            //     autoClose: 3000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     pauseOnHover: false,
+            //     draggable: true,
+            //     progress: undefined,
+            // });
+            UpdateError(Wait,'Gửi OTP thất bại')
         }
     }
     const sendOTP = () => {
@@ -194,7 +207,6 @@ function ForgotPassword() {
                                         required
                                         id="OTP"
                                         label="OTP"
-                                        type={'password'}
                                         fullWidth
                                         variant="standard"
                                         value={otp}

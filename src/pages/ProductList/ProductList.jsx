@@ -5,14 +5,13 @@ import {
     Row,
     Col,
     Badge,
-    Spacer,
 } from "@nextui-org/react";
 import Typography from '@mui/material/Typography';
 import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { getProductByCategory, searchProduct } from "../../services/ProductService";
-import { Tooltip } from "@mui/material";
+import { Rating, Tooltip } from "@mui/material";
 
 export default function ProductList() {
     const [products, setProducts] = useState([])
@@ -40,9 +39,9 @@ export default function ProductList() {
         <Grid.Container gap={1}>
             {products.map((product) => (
                 <Grid xs={6} sm={3} lg={2} justify={"center"}>
-                    <Card css={{ filter:'none', w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/detailProduct/${product.id}` }} >
+                    <Card css={{ filter: 'none', w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
                         <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
-                            <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>New</Badge>
+                            <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>-{product.discount}%</Badge>
                             {/* <Col>
                                 <Text h3 color="red">
                                     {product.discount}
@@ -50,7 +49,7 @@ export default function ProductList() {
                             </Col> */}
                         </Card.Header>
 
-                        <Card.Body css={{ p: 0}}>
+                        <Card.Body css={{ p: 0 }}>
                             <Card.Image
                                 src={product.images[0]?.url}
                                 objectFit="cover"
@@ -61,7 +60,7 @@ export default function ProductList() {
                         </Card.Body>
 
                         <Card.Footer
-                            css={{ marginTop: "$2", zIndex: 1, overflow:'unset' }}
+                            css={{ marginTop: "$2", zIndex: 1, overflow: 'unset' }}
                         >
                             <Row>
                                 <Col>
@@ -70,25 +69,23 @@ export default function ProductList() {
                                             {product.name}
                                         </Typography>
                                     </Tooltip>
-                                    <Row>
+                                    <Row justify="space-between">
+                                        <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
+                                            {product.discount > 0 ? product.price : ''}
+                                        </Text>
                                         <Text color="black" b size={18} >
                                             {product.discountPrice}
                                         </Text>
                                     </Row>
-                                    <Row justify="space-between" >
-                                        <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
-                                            {product.discount > 0 ? product.price : ''}
-                                        </Text>
-                                        <Spacer hidden={product.discount > 0 ? true : false} y={1.3} />
-                                        <Badge isSquared color="error" hidden={product.discount <= 0 ? true : false}>
-                                            -{product.discount}%
-                                        </Badge>
-                                    </Row>
-                                    <Row>
-                                        {product.images.map((image) => (
-                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
-                                            </Badge>
-                                        ))}
+                                    <Row justify="space-between">
+                                        <Col>
+                                            {product.images.map((image) => (
+                                                <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                                </Badge>
+                                            ))}
+                                        </Col>
+                                        <Rating size="small" value={5} readOnly />
+
                                     </Row>
                                 </Col>
                             </Row>

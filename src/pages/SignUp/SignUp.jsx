@@ -16,11 +16,11 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { userRegister, verifyUser } from '../../services/AuthService';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavigate";
+import {UpdateError } from '../../components/Alert/UpdateError'
 const steps = ['Thông tin', 'Xác thực'];
 
 const theme = createTheme();
@@ -40,13 +40,20 @@ export default function SignUp() {
                 setActiveStep(activeStep + 1);
             }
         }else{
-
+            toast.error('Vui lòng kiểm tra lại các thông tin', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
     };
     const handleBack = () => {
         setActiveStep(activeStep - 1);
     };
-    let navigate = useNavigate();
     const [name, setName] = useState('');
     const handleChangeName = (e) => {
         setName(e.target.value)
@@ -85,19 +92,23 @@ export default function SignUp() {
     }
     let type = 'register';
     const handleOnClick = async () => {
+        const wait = toast.loading("Vui lòng chờ ...")
         let check = await verifyUser({otp,email,type});
         if(check.data.success){
-            navigate('/') 
+            let url='/'
+            UpdateSuccessNavigate(wait,'Đăng ký thành công',url)
+            // navigate('/') 
         }else{
-            toast.error('Xác thực thất bại', {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-                });
+            // toast.error('Xác thực thất bại', {
+            //     position: "top-right",
+            //     autoClose: 3000,
+            //     hideProgressBar: false,
+            //     closeOnClick: true,
+            //     pauseOnHover: false,
+            //     draggable: true,
+            //     progress: undefined,
+            // });
+            UpdateError(wait,'Xác thực thất bại')
         }
     }
     return (
@@ -133,8 +144,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={name}
                                         onChange={handleChangeName}
-                                        error={validator.isEmpty(name) ? true : false}
-                                        helperText='Vui lòng nhập tên'
+                                        // error={validator.isEmpty(name) ? true : false}
+                                        // helperText='Vui lòng nhập tên'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -164,8 +175,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={email}
                                         onChange={handleChangeEmail}
-                                        error={validator.isEmail(email) ? false : true}
-                                        helperText='Vui lòng nhập chính xác email'
+                                        // error={validator.isEmail(email) ? false : true}
+                                        // helperText='Vui lòng nhập chính xác email'
                                     />
                                     <span id="errEmail"></span>
                                 </Grid>
@@ -180,8 +191,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={address}
                                         onChange={handleChangeAddress}
-                                        error={validator.isEmpty(address) ? true : false}
-                                        helperText='Vui lòng nhập địa chỉ'
+                                        // error={validator.isEmpty(address) ? true : false}
+                                        // helperText='Vui lòng nhập địa chỉ'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -195,8 +206,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={phone}
                                         onChange={handleChangePhone}
-                                        error={validator.isEmpty(phone) ? true : false}
-                                        helperText='Vui lòng nhập số điện thoại'
+                                        // error={validator.isEmpty(phone) ? true : false}
+                                        // helperText='Vui lòng nhập số điện thoại'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -209,8 +220,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={password}
                                         onChange={handleChangePassword}
-                                        error={(validator.isEmpty(password) || password.length<8) ? true : false}
-                                        helperText='Vui lòng nhập password tối thiểu có độ dài 8 kí tự'
+                                        // error={(validator.isEmpty(password) || password.length<8) ? true : false}
+                                        // helperText='Vui lòng nhập password tối thiểu có độ dài 8 kí tự'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -223,8 +234,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={confirmPassword}
                                         onChange={handleChangeConfirmPassword}
-                                        error={validator.isEmpty(confirmPassword) ? true : false}
-                                        helperText='Vui lòng nhập lại password đã nhập ở trên'
+                                        // error={validator.isEmpty(confirmPassword) ? true : false}
+                                        // helperText='Vui lòng nhập lại password đã nhập ở trên'
                                     />
                                 </Grid>
                             </Grid>
@@ -244,8 +255,8 @@ export default function SignUp() {
                                         variant="standard"
                                         value={otp}
                                         onChange={handleChangeOtp}
-                                        error={validator.isEmpty(otp) ? true : false}
-                                        helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
+                                        // error={validator.isEmpty(otp) ? true : false}
+                                        // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
                                     />
                                 </Grid>
                                 <Button style={{ fontSize: 12, marginLeft:'auto', marginRight:'auto', marginTop:'3px'}} color="secondary">Gửi lại OTP</Button>

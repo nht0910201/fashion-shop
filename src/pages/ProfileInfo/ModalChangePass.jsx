@@ -3,7 +3,7 @@ import { Modal, Button, Text, Input } from "@nextui-org/react";
 import { Password } from "./Password";
 import { useState } from "react";
 import { changePassword } from "../../services/UserService";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { clearUserFromLocalStorage } from './../../utils/userHanle';
@@ -14,10 +14,8 @@ export default function ModalChangePass() {
     const [visible, setVisible] = useState(false);
     const handler = () => setVisible(true);
     const {id} = useParams()
-    let navigate = useNavigate()
     const closeHandler = () => {
         setVisible(false);
-        console.log("closed");
     };
     const [oldPassword,setoldPassword] = useState('')
     const [newPassword,setnewPassword] = useState('')
@@ -68,7 +66,7 @@ export default function ModalChangePass() {
                     </Text>
                 </Modal.Header>
                 <Modal.Body>
-                    <Input
+                    <Input.Password
                         clearable
                         bordered
                         fullWidth
@@ -80,7 +78,7 @@ export default function ModalChangePass() {
                         onChange={handleChangeoldPassword}
                         contentLeft={<Password fill="currentColor" />}
                     />
-                    <Input
+                    <Input.Password
                         clearable
                         bordered
                         fullWidth
@@ -92,7 +90,7 @@ export default function ModalChangePass() {
                         placeholder="Mật khẩu mới"
                         contentLeft={<Password fill="currentColor" />}
                     />
-                    <Input
+                    <Input.Password
                         clearable
                         bordered
                         fullWidth
