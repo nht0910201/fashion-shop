@@ -5,6 +5,7 @@ import {
     Row,
     Col,
     Badge,
+    Pagination,
 } from "@nextui-org/react";
 import Typography from '@mui/material/Typography';
 import { useState } from "react";
@@ -14,7 +15,13 @@ import { getProductByCategory, searchProduct } from "../../services/ProductServi
 import { Rating, Tooltip } from "@mui/material";
 
 export default function ProductList() {
+    const formatPrice = (value) =>
+        new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(value);
     const [products, setProducts] = useState([])
+    let [page, setPage] = useState(0)
     let { id } = useParams();
     const locate = useLocation()
     let keySearch = new URLSearchParams(locate.search).get('q')
@@ -26,27 +33,25 @@ export default function ProductList() {
                     res = await searchProduct(keySearch)
                     break;
                 default:
-                    res = await getProductByCategory(id)
+                    res = await getProductByCategory(id,page-1)
                     break;
             }
+            console.log(res)
             if (res.success) {
                 setProducts(res.data)
             }
         }
+
         getData()
-    }, [keySearch, id])
+    }, [keySearch, id,page])
+    console.log(page)
     return (
         <Grid.Container gap={1}>
-            {products.map((product) => (
+            {products.list?.map((product) => (
                 <Grid xs={6} sm={3} lg={2} justify={"center"}>
                     <Card css={{ filter: 'none', w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
                         <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
                             <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>-{product.discount}%</Badge>
-                            {/* <Col>
-                                <Text h3 color="red">
-                                    {product.discount}
-                                </Text>
-                            </Col> */}
                         </Card.Header>
 
                         <Card.Body css={{ p: 0 }}>
@@ -71,10 +76,10 @@ export default function ProductList() {
                                     </Tooltip>
                                     <Row justify="space-between">
                                         <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
-                                            {product.discount > 0 ? product.price : ''}
+                                            {product.discount > 0 ? formatPrice(product.price) : ''}
                                         </Text>
                                         <Text color="black" b size={18} >
-                                            {product.discountPrice}
+                                            {formatPrice(product.discountPrice)}
                                         </Text>
                                     </Row>
                                     <Row justify="space-between">
@@ -93,7 +98,12 @@ export default function ProductList() {
                     </Card>
                 </Grid>
             ))}
+            <Grid xs={12}>
+                <Row justify="center">
+                <Pagination color='warning' loop onChange={(page)=>{setPage(page-1)}} total={products.totalPage} />
+                </Row>
+                
+            </Grid>
         </Grid.Container>
-
     );
 }

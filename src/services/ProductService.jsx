@@ -1,8 +1,8 @@
 import { get,post } from "../api/axiosConfig";
 
-export const getProductByCategory = async (id) =>{
+export const getProductByCategory = async (id,page) =>{
     try {
-        const response = await get(`/products/category/${id}`);
+        const response = await get(`/products/category/${id}?size=6&page=${page}`);
         return response
     } catch (error) { 
         return error.response.data 
@@ -30,6 +30,15 @@ export const addProductToCart = async (data={}) => {
 export const searchProduct = async (q) =>{
     try {
         const response = await get(`/products/search?q=${q}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
+
+}
+export const getSortProducts = async (sort) =>{
+    try {
+        const response = await get(`/products?sort=${sort}&size=8`);
         return response
     } catch (error) { 
         return error.response.data 

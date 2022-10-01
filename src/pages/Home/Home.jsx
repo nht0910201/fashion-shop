@@ -4,7 +4,11 @@ import { Autoplay, Pagination, Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { Image } from '@nextui-org/react';
+import { Badge, Button, Card, Col, Divider, Grid, Image, Link, Row, Spacer, Text } from '@nextui-org/react';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { getSortProducts } from '../../services/ProductService';
+import { Rating, Tooltip, Typography } from '@mui/material';
 
 const slider = [
     'https://file.hstatic.net/1000184601/file/banner_d63b88808e864ec4a5174b34be8a029c.jpg',
@@ -15,13 +19,34 @@ const slider = [
 ];
 
 function Home() {
+    const formatPrice = (value) =>
+        new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(value);
+    const [hotProduct, setHotProduct] = useState([])
+    const [newProduct, setNewProduct] = useState([])
+    useEffect(() => {
+        async function getHotProduct() {
+            let resHot = await getSortProducts('discount,desc')
+            if (resHot.success) {
+                setHotProduct(resHot.data)
+            }
+            let resNew = await getSortProducts('createdDate,desc')
+            if (resNew.success) {
+                console.log(resNew)
+                setNewProduct(resNew.data)
+            }
+        }
+        getHotProduct()
+    }, [])
     return (
         <>
             <Swiper
                 autoplay={{
                     delay: 2500,
-                    disableOnInteraction:false
-                  }}
+                    disableOnInteraction: false
+                }}
                 slidesPerView={1}
                 spaceBetween={30}
                 loop={true}
@@ -35,7 +60,205 @@ function Home() {
                     <SwiperSlide key={index}><Image src={img} /></SwiperSlide>
                 ))}
             </Swiper>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam quisquam placeat facilis quidem voluptatibus atque quae sapiente consequatur minus? Adipisci, voluptatem exercitationem. Necessitatibus, eveniet quia vel consequuntur quam repellendus aut!</p>
+            <Spacer y={1} />
+            <Grid.Container gap={1}>
+                <Grid xs={12} sm={6} direction='column'>
+                    <Image autoResize src='https://file.hstatic.net/1000184601/file/banner-chang-trai-phong-cach-2_3ab47ea32b494c49b31a4213620efafa.jpg' />
+                    <Text css={{ textAlign: 'center' }} size={35} b>ÁO</Text>
+                    <Row justify='center'>
+                        <Button as={'a'} css={{ width: '50%', backgroundColor: '$black' }} href={'/productList/630f3e661fbd7419759f5d71'}>
+                            XEM NGAY
+                        </Button>
+                    </Row>
+
+                </Grid>
+                <Grid xs={12} lg={6} direction='column'>
+                    <Image src='https://file.hstatic.net/1000184601/file/banner-chang-trai-phong-cach_4442b04c22a9445b8f12212386978bda.jpg' />
+                    <Text css={{ textAlign: 'center' }} size={35} b>QUẦN</Text>
+                    <Row justify='center'>
+                        <Button as={'a'} css={{ width: '50%', backgroundColor: '$black' }} href={'/productList/630f3e9d1fbd7419759f5d73'}>
+                            XEM NGAY
+                        </Button>
+                    </Row>
+
+                </Grid>
+            </Grid.Container>
+            <Spacer y={1} />
+            <Divider/>
+            <Grid.Container gap={1}>
+                <Row justify='center'>
+                    <Text size={35} b color='warning'>SẢN PHẨM HOT</Text>
+                </Row>
+                <Grid lg={12} xs>
+                    <Swiper
+                        autoplay={{
+                            delay: 2500,
+                            disableOnInteraction: false
+                        }}
+                        breakpoints={{
+                            640: {
+                                slidesPerView: 1,
+                                spaceBetween: 0,
+                            },
+                            768: {
+                                slidesPerView: 2,
+                                spaceBetween: 0,
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                                spaceBetween: 0,
+                            },
+                        }}
+                        // slidesPerView={4}
+                        spaceBetween={0}
+                        loop={true}
+                        // pagination={{
+                        //     clickable: true,
+                        // }}
+                        navigation={true}
+                        modules={[Autoplay, Navigation]}
+                    >
+                        {hotProduct.map((product) => (
+                            <SwiperSlide key={product.id}>
+                                <Card css={{ filter: 'none', w: "85%", h: "480px", backgroundColor: 'transparent', border: 'none', marginLeft: '$12' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
+                                    <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+                                        <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>-{product.discount}%</Badge>
+                                    </Card.Header>
+                                    <Card.Body css={{ p: 0 }}>
+                                        <Card.Image
+                                            src={product.images[0]?.url}
+                                            objectFit="cover"
+                                            width="100%"
+                                            height="100%"
+                                            alt={product.name}
+                                        />
+                                    </Card.Body>
+
+                                    <Card.Footer
+                                        css={{ marginTop: "$2", zIndex: 1, overflow: 'unset' }}
+                                    >
+                                        <Row>
+                                            <Col>
+                                                <Tooltip title={product.name}>
+                                                    <Typography noWrap variant="subtitle1" component="div">
+                                                        {product.name}
+                                                    </Typography>
+                                                </Tooltip>
+                                                <Row justify="space-between">
+                                                    <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
+                                                        {product.discount > 0 ? formatPrice(product.price) : ''}
+                                                    </Text>
+                                                    <Text color="black" b size={18} >
+                                                        {formatPrice(product.discountPrice)}
+                                                    </Text>
+                                                </Row>
+                                                <Row justify="space-between">
+                                                    <Col>
+                                                        {product.images.map((image) => (
+                                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                                            </Badge>
+                                                        ))}
+                                                    </Col>
+                                                    <Rating size="small" value={5} readOnly />
+
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                    </Card.Footer>
+                                </Card>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                </Grid>
+            </Grid.Container>
+            <Divider/>
+            <Grid.Container gap={1}>
+                <Row justify='center'>
+                    <Text size={35} b color='warning'>SẢN PHẨM MỚI</Text>
+                </Row>
+                <Grid lg={12} xs>
+                    <Swiper
+                        autoplay={{
+                            delay: 2500,
+                            disableOnInteraction: false
+                        }}
+                        breakpoints={{
+                            640: {
+                                slidesPerView: 1,
+                                spaceBetween: 0,
+                            },
+                            768: {
+                                slidesPerView: 2,
+                                spaceBetween: 0,
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                                spaceBetween: 0,
+                            },
+                        }}
+                        // slidesPerView={4}
+                        spaceBetween={0}
+                        loop={true}
+                        // pagination={{
+                        //     clickable: true,
+                        // }}
+                        navigation={true}
+                        modules={[Autoplay, Navigation]}
+                    >
+                        {newProduct.map((product) => (
+                            <SwiperSlide key={product.id}>
+                                <Card css={{ filter: 'none', w: "85%", h: "480px", backgroundColor: 'transparent', border: 'none', marginLeft: '$12' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
+                                    <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+                                        <Badge disableOutline enableShadow color={'error'}>Mới</Badge>
+                                    </Card.Header>
+                                    <Card.Body css={{ p: 0 }}>
+                                        <Card.Image
+                                            src={product.images[0]?.url}
+                                            objectFit="cover"
+                                            width="100%"
+                                            height="100%"
+                                            alt={product.name}
+                                        />
+                                    </Card.Body>
+
+                                    <Card.Footer
+                                        css={{ marginTop: "$2", zIndex: 1, overflow: 'unset' }}
+                                    >
+                                        <Row>
+                                            <Col>
+                                                <Tooltip title={product.name}>
+                                                    <Typography noWrap variant="subtitle1" component="div">
+                                                        {product.name}
+                                                    </Typography>
+                                                </Tooltip>
+                                                <Row justify="space-between">
+                                                    <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
+                                                        {product.discount > 0 ? formatPrice(product.price) : ''}
+                                                    </Text>
+                                                    <Text color="black" b size={18} >
+                                                        {formatPrice(product.discountPrice)}
+                                                    </Text>
+                                                </Row>
+                                                <Row justify="space-between">
+                                                    <Col>
+                                                        {product.images.map((image) => (
+                                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                                            </Badge>
+                                                        ))}
+                                                    </Col>
+                                                    <Rating size="small" value={5} readOnly />
+
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                    </Card.Footer>
+                                </Card>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                </Grid>
+            </Grid.Container>
+            <Divider/>
         </>
     );
 }

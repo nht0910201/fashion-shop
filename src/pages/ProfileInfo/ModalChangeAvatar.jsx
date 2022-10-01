@@ -1,6 +1,4 @@
-import { Modal, useModal, Button, Text,Avatar, Image} from "@nextui-org/react";
-// import Avatar from '@mui/material/Avatar';
-
+import { Modal, useModal, Button, Text, Image} from "@nextui-org/react";
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

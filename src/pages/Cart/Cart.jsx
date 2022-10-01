@@ -12,11 +12,13 @@ import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavig
 import { getUserFromLocalStorage } from '../../utils/userHanle';
 import { DeleteForeverOutlined } from '@mui/icons-material';
 import Loading from '../../components/Loading/Loading';
+import { useNavigate } from 'react-router-dom';
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 function Cart() {
+    let navigate = useNavigate()
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -26,7 +28,6 @@ function Cart() {
     useEffect(() => {
         async function getData() {
             let res = await getCart()
-            console.log(res)
             setCart(res.data)
         }
         getData()
@@ -65,6 +66,9 @@ function Cart() {
         } else {
             UpdateError(w, 'Xoá sản phẩm khỏi giỏ hàng thất bại')
         }
+    }
+    const handleClickOrder = () => {
+        navigate('/order')
     }
     // if (Object.values(cart).length === 0) {
     //     return <Grid2 xs={12} sx={{ textAlign: 'center' }}>
@@ -154,7 +158,7 @@ function Cart() {
                         Thanh toán: <Text b size={20}>  {formatPrice(cart.totalPrice)}</Text>
                     </Row>
                     <Row css={{ marginTop: '$10' }}>
-                        <Button css={{ width: '100%' }} color={'default'}>ĐẶT HÀNG</Button>
+                        <Button onClick={handleClickOrder} css={{ width: '100%' }} color={'default'}>ĐẶT HÀNG</Button>
                     </Row>
                 </Col>
             </Grid2>
