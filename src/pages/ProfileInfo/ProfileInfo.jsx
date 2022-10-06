@@ -48,27 +48,9 @@ export default function ProfileInfo() {
         const wait = toast.loading("Vui lòng chờ ...")
         let res = await updateUserByID(data, id)
         if (res.success) {
-            // toast.success('Cập nhật thông tin thành công', {
-            //     position: "top-right",
-            //     autoClose: 3000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: false,
-            //     draggable: true,
-            //     progress: undefined,
-            // });
             UpdateSuccessReload(wait,'Cập nhật thông tin thành công',false)
             setUser({ ...res.data, gender: res.data.gender.toLowerCase() })
         } else {
-            // toast.error('Cập nhật không thành công', {
-            //     position: "top-right",
-            //     autoClose: 3000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: false,
-            //     draggable: true,
-            //     progress: undefined,
-            // });
             UpdateError(wait,'Cập nhật không thành công')
         }
     }
@@ -104,10 +86,7 @@ export default function ProfileInfo() {
                         css={{ size: "$20", marginTop: '$10' }}
                     />
                 </Badge>
-               
-                {/* <Typography component="h1" variant="h5">
-                    <ModalChangeAvatar user={user} />
-                </Typography> */}
+
                 <Box noValidate sx={{ mt: 1 }}>
                     <TextField
                         margin="normal"

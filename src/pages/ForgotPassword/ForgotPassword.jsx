@@ -56,13 +56,11 @@ function ForgotPassword() {
         if (activeStep === 0) {
             if (checkEmail) {
                 let check = await resetPassword({ email })
-                // toast.update(wait, { render: "Mã xác thực đã được gửi đến email", type: "success", isLoading: false, autoClose: 1500 });
                 UpdateSuccessReload(wait,'Mã xác thực đã được gửi đến email',false)
                 if (check.data.success) {
                     setActiveStep(activeStep + 1);
                 }
             } else {
-                // toast.update(wait, { render: "Vui lòng nhập chính xác email", type: "error", isLoading: false, autoClose: 1500 });
                 UpdateError(wait,'Vui lòng nhập chính xác email')
             }
         }
@@ -70,18 +68,15 @@ function ForgotPassword() {
             if (checkOtp) {
                 let checkOtp = await verifyUser({ otp, email, type })
                 if (checkOtp.data.success) {
-                    // toast.update(wait, { render: "Xác thực OTP thành công", type: "success", isLoading: false, autoClose: 1500 });
                     UpdateSuccessReload(wait,'Xác thực OTP thành công',false)
                     setId(checkOtp.data.data.id);
                     addToLocalStorage(checkOtp.data.data.token)
                     setActiveStep(activeStep + 1);
                 } else {
-                    // toast.update(wait, { render: "OTP không đúng", type: "error", isLoading: false, autoClose: 1500 });
                     UpdateError(wait,'OTP không đúng')
                 }
             }
             else {
-                // toast.update(wait, { render: "Vui lòng nhập OTP", type: "error", isLoading: false, autoClose: 1500 });
                 UpdateError(wait,'Vui lòng nhập OTP')
             }
         }
@@ -97,31 +92,12 @@ function ForgotPassword() {
         if (checkPassword && checkConfirmPass) {
             let res = await forgotPassword({ oldPassword, newPassword }, id)
             if (res.success) {
-                // toast.update(w, {
-                //     render: "Đổi mật khẩu thành công",
-                //     type: "success",
-                //     isLoading: false,
-                //     autoClose: 1500,
-                //     onClose: () => navigate('/')
-                // });
                 let url = '/'
                 UpdateSuccessNavigate(w,'Đổi mật khẩu thành công',url)
             } else {
-                // toast.update(w, {
-                //     render: "Đổi mật khẩu thất bại",
-                //     type: "error",
-                //     isLoading: false,
-                //     autoClose: 1500,
-                // });
                 UpdateError(w,'Đổi mật khẩu thất bại')
             }
         } else {
-            // toast.update(w, {
-            //     render: "Vui lòng nhập lại mật khẩu",
-            //     type: "error",
-            //     isLoading: false,
-            //     autoClose: 1500,
-            // });
             UpdateError(w,'Vui lòng nhập lại mật khẩu')
         }
     }
@@ -132,26 +108,8 @@ function ForgotPassword() {
         const Wait = toast.loading("Vui lòng chờ ...")
         let res = await resetPassword({ email })
         if (res.data.success) {
-            // toast.success('Gửi OTP thành công', {
-            //     position: "top-right",
-            //     autoClose: 3000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: false,
-            //     draggable: true,
-            //     progress: undefined,
-            // });
             UpdateSuccessReload(Wait,'Gửi OTP thành công',false)
         } else {
-            // toast.error('Gửi OTP thất bại', {
-            //     position: "top-right",
-            //     autoClose: 3000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: false,
-            //     draggable: true,
-            //     progress: undefined,
-            // });
             UpdateError(Wait,'Gửi OTP thất bại')
         }
     }
@@ -187,12 +145,9 @@ function ForgotPassword() {
                                         label="Email"
                                         fullWidth
                                         type={'email'}
-                                        // autoComplete="family-name"
                                         variant="standard"
                                         value={email}
                                         onChange={handleChangeEmail}
-                                    // error={validator.isEmail(email) ? false : true}
-                                    // helperText='Vui lòng nhập chính xác email'
                                     />
                                 </Grid>
                             </Grid>
@@ -211,8 +166,7 @@ function ForgotPassword() {
                                         variant="standard"
                                         value={otp}
                                         onChange={handleChangeOtp}
-                                    // error={validator.isEmpty(otp) ? true : false}
-                                    // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
+
                                     />
                                 </Grid>
                                 <Button style={{ fontSize: 12, marginLeft: 'auto', marginRight: 'auto', marginTop: '3px' }} color="secondary" onClick={sendOTP}>Gửi lại OTP</Button>
@@ -230,8 +184,6 @@ function ForgotPassword() {
                                         variant="standard"
                                         value={newPassword}
                                         onChange={handleChangeNewPassword}
-                                    // error={validator.isEmpty(otp) ? true : false}
-                                    // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -244,8 +196,6 @@ function ForgotPassword() {
                                         variant="standard"
                                         value={confirmPassword}
                                         onChange={handleChangeConfirmPass}
-                                    // error={validator.isEmpty(otp) ? true : false}
-                                    // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
                                     />
                                 </Grid>
                             </Grid>

@@ -4,7 +4,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { Badge, Button, Card, Col, Divider, Grid, Image, Link, Row, Spacer, Text } from '@nextui-org/react';
+import { Badge, Button, Card, Col, Divider, Grid, Image, Row, Spacer, Text } from '@nextui-org/react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { getSortProducts } from '../../services/ProductService';
@@ -30,12 +30,12 @@ function Home() {
         async function getHotProduct() {
             let resHot = await getSortProducts('discount,desc')
             if (resHot.success) {
-                setHotProduct(resHot.data)
+                setHotProduct(resHot.data.list)
             }
             let resNew = await getSortProducts('createdDate,desc')
             if (resNew.success) {
                 console.log(resNew)
-                setNewProduct(resNew.data)
+                setNewProduct(resNew.data.list)
             }
         }
         getHotProduct()

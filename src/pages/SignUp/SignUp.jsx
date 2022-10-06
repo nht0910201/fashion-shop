@@ -97,17 +97,7 @@ export default function SignUp() {
         if(check.data.success){
             let url='/'
             UpdateSuccessNavigate(wait,'Đăng ký thành công',url)
-            // navigate('/') 
         }else{
-            // toast.error('Xác thực thất bại', {
-            //     position: "top-right",
-            //     autoClose: 3000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: false,
-            //     draggable: true,
-            //     progress: undefined,
-            // });
             UpdateError(wait,'Xác thực thất bại')
         }
     }
@@ -137,23 +127,20 @@ export default function SignUp() {
                                         required
                                         id="name"
                                         name="name"
-                                        label="Name"
+                                        label="Tên"
                                         fullWidth
                                         type={'text'}
-                                        // autoComplete="given-name"
                                         variant="standard"
                                         value={name}
                                         onChange={handleChangeName}
-                                        // error={validator.isEmpty(name) ? true : false}
-                                        // helperText='Vui lòng nhập tên'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <FormControl fullWidth>
-                                        <InputLabel id="gender-label">Age</InputLabel>
+                                        <InputLabel id="gender-label">Giới tính</InputLabel>
                                         <Select
                                             labelId="gender-label"
-                                            label="Gender"
+                                            label="Giới tính"
                                             id="gender"
                                             value={gender}
                                             onChange={handleChangeGender}
@@ -171,12 +158,9 @@ export default function SignUp() {
                                         label="Email"
                                         fullWidth
                                         type={'email'}
-                                        // autoComplete="family-name"
                                         variant="standard"
                                         value={email}
                                         onChange={handleChangeEmail}
-                                        // error={validator.isEmail(email) ? false : true}
-                                        // helperText='Vui lòng nhập chính xác email'
                                     />
                                     <span id="errEmail"></span>
                                 </Grid>
@@ -185,14 +169,12 @@ export default function SignUp() {
                                         required
                                         id="address"
                                         name="address"
-                                        label="Address"
+                                        label="Địa chỉ"
                                         type={'text'}
                                         fullWidth
                                         variant="standard"
                                         value={address}
                                         onChange={handleChangeAddress}
-                                        // error={validator.isEmpty(address) ? true : false}
-                                        // helperText='Vui lòng nhập địa chỉ'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -200,42 +182,36 @@ export default function SignUp() {
                                         required
                                         id="phone"
                                         name="phone"
-                                        label="Phone"
+                                        label="Số điện thoại"
                                         fullWidth
                                         type={'text'}
                                         variant="standard"
                                         value={phone}
                                         onChange={handleChangePhone}
-                                        // error={validator.isEmpty(phone) ? true : false}
-                                        // helperText='Vui lòng nhập số điện thoại'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         required
                                         id="password"
-                                        label="Password"
+                                        label="Mật khẩu"
                                         type={'password'}
                                         fullWidth
                                         variant="standard"
                                         value={password}
                                         onChange={handleChangePassword}
-                                        // error={(validator.isEmpty(password) || password.length<8) ? true : false}
-                                        // helperText='Vui lòng nhập password tối thiểu có độ dài 8 kí tự'
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
                                         required
                                         id="confirm"
-                                        label="Confirm Password"
+                                        label="Nhập lại mật khẩu"
                                         type={'password'}
                                         fullWidth
                                         variant="standard"
                                         value={confirmPassword}
                                         onChange={handleChangeConfirmPassword}
-                                        // error={validator.isEmpty(confirmPassword) ? true : false}
-                                        // helperText='Vui lòng nhập lại password đã nhập ở trên'
                                     />
                                 </Grid>
                             </Grid>
@@ -255,8 +231,6 @@ export default function SignUp() {
                                         variant="standard"
                                         value={otp}
                                         onChange={handleChangeOtp}
-                                        // error={validator.isEmpty(otp) ? true : false}
-                                        // helperText='Vui lòng nhập OTP đã được gửi đến email của bạn'
                                     />
                                 </Grid>
                                 <Button style={{ fontSize: 12, marginLeft:'auto', marginRight:'auto', marginTop:'3px'}} color="secondary">Gửi lại OTP</Button>
@@ -280,7 +254,6 @@ export default function SignUp() {
                                 variant="contained"
                                 onClick={handleOnClick}
                                 sx={{ mt: 3, ml: 1 }}
-                                // hidden={activeStep !== steps.length - 1 ? true : false}
                                 disabled={activeStep === steps.length - 1 ? false : true}
                             >
                                 Đăng ký
