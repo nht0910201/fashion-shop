@@ -14,7 +14,8 @@ const routes = {
     orderHistory:'/orderHistory',
     myOrderStatus:'/myOrderStatus',
     orderDetail:'/orderDetail',
-    oauth2:'/oauth2/redirect'
+    oauth2:'/oauth2/redirect',
+    admin :'/admin'
 };
 
 export default routes;

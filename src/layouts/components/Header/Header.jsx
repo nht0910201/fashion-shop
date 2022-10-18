@@ -3,19 +3,19 @@ import { getAllCategory } from './../../../services/CategoryService';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Navbar, Text, Avatar, Dropdown, Input, Button, Tooltip } from "@nextui-org/react";
-import { Layout } from "./Layout.jsx";
+import { Layout } from "./components/Layout.jsx";
 import { Link } from "@nextui-org/react";
 import * as authAction from '../../../redux/auth/authSlice'
 import InfoIcon from '../../../components/Icon/InfoIcon';
 import NowOrder from '../../../components/Icon/NowrOrder';
 import HistoryOrder from '../../../components/Icon/HistoryOrder';
 import { getUserFromLocalStorage } from '../../../utils/userHanle';
-import ModalLogin from './ModalLogin';
-import { Logo } from './Logo';
+import ModalLogin from './components/ModalLogin';
+import { Logo } from './components/Logo';
 import 'react-toastify/dist/ReactToastify.css';
 import { Search, ShoppingBagOutlined } from '@mui/icons-material';
 import Loading from '../../../components/Loading/Loading';
-import Categories from './Categories';
+import Categories from './components/Categories';
 
 export default function Header() {
   const [categories, setCategories] = useState([])

@@ -1,5 +1,4 @@
-// import { Content } from "./Content.js"
-import { Box } from "./Box.jsx";
+import { Box } from "./Box";
 
 export const Layout = ({ children }) => (
   <Box

@@ -2,11 +2,11 @@ import React from "react";
 import { Modal, Button, Text, Input, Row, Link } from "@nextui-org/react";
 import { Mail } from "./Mail";
 import { Password } from "./Password";
-import * as authAction from '../../../redux/auth/authSlice'
+import * as authAction from '../../../../redux/auth/authSlice'
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { userLogin } from "../../../services/AuthService";
+import { userLogin } from "../../../../services/AuthService";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Facebook, Google } from "@mui/icons-material";

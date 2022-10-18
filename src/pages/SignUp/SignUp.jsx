@@ -14,32 +14,76 @@ import TextField from '@mui/material/TextField';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { userRegister, verifyUser } from '../../services/AuthService';
+import { getDistrict, getProvince, getWard, userRegister, verifyUser } from '../../services/AuthService';
 import { useState } from 'react';
 import validator from 'validator';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavigate";
-import {UpdateError } from '../../components/Alert/UpdateError'
+import { UpdateError } from '../../components/Alert/UpdateError'
+import { useEffect } from 'react';
 const steps = ['Thông tin', 'Xác thực'];
 
 const theme = createTheme();
 
 export default function SignUp() {
+
+    const [provinces, setProvinces] = useState([])
+    const [districts, setDistricts] = useState([])
+    const [wards, setWards] = useState([])
+    const [province, setProvince] = useState()
+    const [district, setDistrict] = useState()
+    const [ward, setWard] = useState()
+    useEffect(() => {
+        async function getProvinceAPI(data) {
+            let provinces = await getProvince({ data })
+            if (provinces.message === 'Success') {
+                setProvinces(provinces.data)
+            }
+        }
+        getProvinceAPI({})
+    }, [])
+    useEffect(() => {
+        async function getDistrictAPI(province_id) {
+            let districts = await getDistrict({ province_id })
+            if (districts.message === 'Success') {
+                setDistricts(districts.data)
+            }
+        }
+        if (province !== undefined) {
+            setDistrict(undefined)
+            setWard(undefined)
+            setDistricts([])
+            setWards([])
+            getDistrictAPI(province)
+        }
+    }, [province])
+    useEffect(() => {
+        async function getWardAPI(district_id) {
+            let wards = await getWard({ district_id })
+            if (wards.message === 'Success') {
+                setWards(wards.data)
+            }
+        }
+        console.log(district)
+        if (district !== undefined) {
+            getWardAPI(district)
+        }
+    }, [district, province])
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = async (e) => {
         let checkName = !validator.isEmpty(name)
         let checkEmail = validator.isEmail(email)
         let checkAddress = !validator.isEmpty(address)
         let checkPhone = !validator.isEmpty(phone)
-        let checkPassword = !validator.isEmpty(password) && password.length>=8
+        let checkPassword = !validator.isEmpty(password) && password.length >= 8
         let checkConfirmPass = !validator.isEmpty(confirmPassword) && (password === confirmPassword)
-        if (checkName && checkEmail && checkAddress && checkPhone && checkPassword && checkConfirmPass) {
-            let check = await register({name,email,password,phone,address,gender})
-            if(check.data.success){
+        if (checkName && checkEmail && checkAddress && checkPhone && checkPassword && checkConfirmPass && province !== undefined && district !== undefined && ward !== undefined) {
+            let check = await register({ name, email, password, phone, province, district, ward, address, gender })
+            if (check.data.success) {
                 setActiveStep(activeStep + 1);
             }
-        }else{
+        } else {
             toast.error('Vui lòng kiểm tra lại các thông tin', {
                 position: "top-right",
                 autoClose: 3000,
@@ -51,9 +95,19 @@ export default function SignUp() {
             });
         }
     };
-    const handleBack = () => {
-        setActiveStep(activeStep - 1);
-    };
+    const handleChangeWard = (e) => {
+        setWard(e.target.value)
+    }
+    const handleChangeDistrict = (e) => {
+        setDistrict(e.target.value)
+        setWard(undefined)
+        setWards([])
+    }
+    const handleChangeProvince = (e) => {
+        setProvince(e.target.value)
+        setDistrict(undefined)
+        setWard(undefined)
+    }
     const [name, setName] = useState('');
     const handleChangeName = (e) => {
         setName(e.target.value)
@@ -83,22 +137,22 @@ export default function SignUp() {
         setGender(e.target.value)
     }
     const [otp, setOtp] = useState('');
-    const handleChangeOtp= (e) => {
+    const handleChangeOtp = (e) => {
         setOtp(e.target.value)
     }
-    const register = async ({ name, email, password, phone, address, gender }) => {
-        const res = await userRegister({ name, email, password, phone, address, gender })
+    const register = async ({ name, email, password, phone, province, district, ward, address, gender }) => {
+        const res = await userRegister({ name, email, password, phone, province, district, ward, address, gender })
         return res
     }
     let type = 'register';
     const handleOnClick = async () => {
         const wait = toast.loading("Vui lòng chờ ...")
-        let check = await verifyUser({otp,email,type});
-        if(check.data.success){
-            let url='/'
-            UpdateSuccessNavigate(wait,'Đăng ký thành công',url)
-        }else{
-            UpdateError(wait,'Xác thực thất bại')
+        let check = await verifyUser({ otp, email, type });
+        if (check.data.success) {
+            let url = '/'
+            UpdateSuccessNavigate(wait, 'Đăng ký thành công', url)
+        } else {
+            UpdateError(wait, 'Xác thực thất bại')
         }
     }
     return (
@@ -136,7 +190,7 @@ export default function SignUp() {
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <FormControl fullWidth>
+                                    <FormControl variant='standard' fullWidth>
                                         <InputLabel id="gender-label">Giới tính</InputLabel>
                                         <Select
                                             labelId="gender-label"
@@ -165,17 +219,82 @@ export default function SignUp() {
                                     <span id="errEmail"></span>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        id="address"
-                                        name="address"
-                                        label="Địa chỉ"
-                                        type={'text'}
-                                        fullWidth
-                                        variant="standard"
-                                        value={address}
-                                        onChange={handleChangeAddress}
-                                    />
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl variant='standard' fullWidth margin='normal'>
+                                                <InputLabel id="province-label">Tỉnh/Thành phố</InputLabel>
+                                                <Select
+                                                    labelId="province-label"
+                                                    label="Tỉnh/Thành phố"
+                                                    id="province"
+                                                    value={province}
+                                                    onChange={handleChangeProvince}
+                                                >
+                                                    {provinces.map((provinceItem) => (
+                                                        <MenuItem key={provinceItem.ProvinceID} value={provinceItem.ProvinceID}>
+                                                            {provinceItem.ProvinceName}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl disabled={province === undefined ? true : false} variant='standard' fullWidth margin='normal'>
+                                                <InputLabel id="district-label">Quận/Huyện</InputLabel>
+                                                <Select
+                                                    labelId="district-label"
+                                                    label="Quận/Huyện"
+                                                    id="district"
+                                                    value={district}
+                                                    onChange={handleChangeDistrict}
+                                                >
+                                                    {districts.map((districtItem) => (
+                                                        <MenuItem key={districtItem.DistrictID} value={districtItem.DistrictID}>
+                                                            {districtItem.DistrictName}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl disabled={district === undefined ? true : false} variant='standard' fullWidth margin='normal'>
+                                                <InputLabel id="ward-label">Phường/Xã</InputLabel>
+                                                <Select
+                                                    labelId="ward-label"
+                                                    label="Phường/Xã"
+                                                    id="ward"
+                                                    value={ward}
+                                                    onChange={handleChangeWard}
+                                                >
+                                                    {wards.map((wardItem) => (
+                                                        <MenuItem key={wardItem.WardCode} value={wardItem.WardCode}>
+                                                            {wardItem.WardName}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                required
+                                                id="address"
+                                                name="address"
+                                                label="Địa chỉ"
+                                                type={'text'}
+                                                fullWidth
+                                                variant="standard"
+                                                sx={{ marginTop: 2 }}
+                                                value={address}
+                                                onChange={handleChangeAddress}
+                                            />
+                                        </Grid>
+                                    </Grid>
+
                                 </Grid>
                                 <Grid item xs={12}>
                                     <TextField
@@ -233,16 +352,16 @@ export default function SignUp() {
                                         onChange={handleChangeOtp}
                                     />
                                 </Grid>
-                                <Button style={{ fontSize: 12, marginLeft:'auto', marginRight:'auto', marginTop:'3px'}} color="secondary">Gửi lại OTP</Button>
+                                <Button style={{ fontSize: 12, marginLeft: 'auto', marginRight: 'auto', marginTop: '3px' }} color="secondary">Gửi lại OTP</Button>
                             </Grid>
                         </> : <></>}
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button onClick={handleBack}
+                            {/* <Button onClick={handleBack}
                                 sx={{ mt: 3, ml: 1 }}
                                 disabled={activeStep === 0 ? true : false}
                             >
                                 <ArrowBackIcon />
-                            </Button>
+                            </Button> */}
                             <Button
                                 onClick={handleNext}
                                 sx={{ mt: 3, ml: 1 }}

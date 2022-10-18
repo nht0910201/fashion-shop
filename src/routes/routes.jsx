@@ -1,5 +1,6 @@
 
 import config from '../config';
+
 import Home from '../pages/Home'
 import {DefaultLayout,HeaderOnly} from '../layouts'
 import ForgotPassword from '../pages/ForgotPassword';
@@ -13,6 +14,7 @@ import ProfileInfo from '../pages/ProfileInfo';
 import ProductList from './../pages/ProductList/ProductList';
 import ProductDetail from '../pages/ProductDetail';
 import Cart from '../pages/Cart';
+import Admin from '../pages/Admin';
 
 const publicRoutes = [
     { path: config.routes.productList, component: ProductList, layout: DefaultLayout },
@@ -31,7 +33,7 @@ const publicRoutes = [
 ];
 
 const privateRoutes = [
-    
+    { path: config.routes.admin, component: Admin, layout: DefaultLayout },
 ];
 
 export { publicRoutes, privateRoutes };

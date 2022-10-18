@@ -5,6 +5,9 @@ const axiosConfig = axios.create({
     baseURL: 'https://fashion-store-capstone.herokuapp.com/api'
     // baseURL:'http://localhost:8080/api'
 });
+const axiosCountry = axios.create({
+    baseURL:'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data',
+})
 axiosConfig.interceptors.request.use(
     function (req) {
         const token = getFromLocalStorage()
@@ -17,6 +20,10 @@ axiosConfig.interceptors.request.use(
     },
 );
 
+export const getCountryPost = async (path,params={}) => {
+    const response = await axiosCountry.post(path,params,{headers:{"token":"e035a837-4333-11ed-9ad7-269dd9db11fd"}});
+    return response.data;
+};
 export const get = async (path, params = {}) => {
     const response = await axiosConfig.get(path, params);
     return response.data;

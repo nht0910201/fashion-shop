@@ -239,7 +239,7 @@ function ProductDetail() {
                         color={'warning'}
                         css={{ width: '100%' }}
                         type="button" onClick={handleAddToCart}                    >
-                        Add to cart
+                        Thêm vào giỏ hàng
                     </Button>
                 </Row>
                 <Row css={{ marginTop: '$10' }} align="center">

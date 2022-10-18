@@ -1,4 +1,4 @@
-import {post} from '../api/axiosConfig'
+import { post, getCountryPost} from '../api/axiosConfig'
 
 export const userLogin = async (data={}) =>{
     try {
@@ -29,6 +29,32 @@ export const verifyUser = async (data={}) =>{
 export const resetPassword = async (data={}) =>{
     try {
         const response = await post('/auth/reset',data);
+        return response
+    } catch (error) {
+         return error.response
+    };
+}
+
+export const getProvince = async (data) =>{
+    try {
+        const response = await getCountryPost('/province',data);
+        return response
+    } catch (error) {
+         return error.response
+    };
+}
+
+export const getDistrict = async (data={}) =>{
+    try {
+        const response = await getCountryPost('/district',data);
+        return response
+    } catch (error) {
+         return error.response
+    };
+}
+export const getWard = async (data={}) =>{
+    try {
+        const response = await getCountryPost('/ward?district_id',data);
         return response
     } catch (error) {
          return error.response
