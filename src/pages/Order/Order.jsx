@@ -1,24 +1,29 @@
+import {  FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { Button, Col, Divider, Grid, Image, Input, Radio, Row, Spacer, Text } from '@nextui-org/react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getDistrict, getProvince, getWard } from '../../services/AuthService';
 import { getCart } from '../../services/CartService';
+import { makeAnOrder } from '../../services/Payment';
+import { getUserByID } from '../../services/UserService';
 import { getUserFromLocalStorage } from '../../utils/userHanle';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { UpdateError } from '../../components/Alert/UpdateError';
+import { UpdateSuccessNavigate } from '../../components/Alert';
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 function Order() {
     let navigate = useNavigate()
     let curUser = getUserFromLocalStorage()
-    const [name, setName] = useState(curUser?.name)
-    const [email, setEmail] = useState(curUser?.email)
-    const [address, setAddress] = useState('')
-    const [phone, setPhone] = useState('')
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
             style: 'currency',
             currency: 'VND'
         }).format(value);
+
     const [cart, setCart] = useState({})
     useEffect(() => {
         async function getData() {
@@ -27,23 +32,131 @@ function Order() {
         }
         getData()
     }, [cart])
+
+    const [user, setUser] = useState({})
+    const [provinces, setProvinces] = useState([])
+    const [districts, setDistricts] = useState([])
+    const [wards, setWards] = useState([])
+    const [province, setProvince] = useState()
+    const [district, setDistrict] = useState()
+    const [ward, setWard] = useState()
+
+    useEffect(() => {
+        async function getData() {
+            let res = await getUserByID(curUser.id)
+            if (res.success) {
+                setUser(res.data)
+            }
+        }
+        getData()
+        
+    },[curUser.id])
+    useEffect(()=>{
+        async function getProvinceAPI(data) {
+            let provinces = await getProvince({ data })
+            if (provinces.message === 'Success') {
+                setProvinces(provinces.data)
+            }
+        }
+        getProvinceAPI({})
+    },[])
+    useEffect(() => {
+        async function getDistrictAPI(province_id) {
+            let districts = await getDistrict({ province_id })
+            if (districts.message === 'Success') {
+                setDistricts(districts.data)
+            }
+        }
+        if (province !== undefined) {
+            getDistrictAPI(province)
+        }
+    }, [province])
+
+    useEffect(() => {
+        async function getWardAPI(district_id) {
+            let wards = await getWard({ district_id })
+            if (wards.message === 'Success') {
+                setWards(wards.data)
+            }
+        }
+        if (district !== undefined) {
+            getWardAPI(district)
+        }
+    }, [province,district])
+    const handleChangeWard = (e) => {
+        setUser({...user,ward:e.target.value});
+        setWard(e.target.value)
+    }
+    const handleChangeDistrict = (e) => {
+        setUser({...user,district:e.target.value});
+        setDistrict(e.target.value)
+        setWard(undefined)
+        setWards([])
+    }
+    const handleChangeProvince = (e) => {
+        setUser({...user,province:e.target.value});
+        setProvince(e.target.value)
+        setDistrict(undefined)
+        setWard(undefined)
+        setDistricts([])
+        setWards([])
+    }
+    const handleChangeName = (e) => {
+        setUser({ ...user, name: e.target.value })
+    }
+    const handleChangePhone = (e) => {
+        setUser({ ...user, phone: e.target.value })
+    }
+    const handleChangeEmail = (e) => {
+        setUser({ ...user, email: e.target.value })
+    }
+    const handleChangeAddress = (e) => {
+        setUser({ ...user, address: e.target.value })
+    }
+
     if (curUser?.id === undefined) {
         navigate('/')
     }
-    const handleChangeName = (e) => {
-        setName(e.target.value)
-    }
-    const handleChangeEmail = (e) => {
-        setEmail(e.target.value)
-    }
-    const handleChangeAddress = (e) => {
-        setAddress(e.target.value)
-    }
-    const handleChangePhone = (e) => {
-        setPhone(e.target.value)
-    }
     const backCart = () => {
         navigate('/cart')
+    }
+    const [paymentType, setPaymentType] = useState('cod')
+
+    const makeOrder = async (paymentType, orderId, user) => {
+        if (province !== undefined && district !== undefined && ward !== undefined && user.name !== '' && user.phone !== '' && user.email !== '') {
+            console.log(user)
+            const wait = toast.loading("Vui lòng chờ ...")
+            console.log(1)
+            let res = await makeAnOrder(paymentType, orderId, user)
+            console.log(res)
+            if (res.data.success) {
+                if(paymentType === 'cod')
+                {
+                    UpdateSuccessNavigate(wait, 'Đặt hàng thành công', '/redirect/payment?success=true&cancel=false')
+                }
+                else{
+                    window.location.href = res.data.data
+                }
+                
+            } else {
+                UpdateError(wait, 'Đặt hàng không thành công')
+            }
+        } else {
+            toast.error('Vui lòng kiểm tra lại các thông tin', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
+    }
+    const handleClickOrder = () => {
+        
+        makeOrder(paymentType, cart.id, user)
     }
     return (
         <Grid.Container gap={2} >
@@ -52,34 +165,94 @@ function Order() {
                     <Text size={'$4xl'}>THÔNG TIN GIAO HÀNG</Text>
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Tên" placeholder="Nguyễn Văn A" value={name} onChange={handleChangeName} />
+                    <Input bordered size='xl' width='90%' label="Tên" placeholder="Nguyễn Văn A" value={user.name} onChange={handleChangeName} />
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Email" placeholder="abc@gmail.com" value={email} onChange={handleChangeEmail} />
+                    <Input bordered size='xl' width='90%' label="Email" placeholder="abc@gmail.com" value={user.email} onChange={handleChangeEmail} />
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Số điện thoại" placeholder="Số điện thoại" value={phone} onChange={handleChangePhone} />
+                    <Input bordered size='xl' width='90%' label="Số điện thoại" placeholder="Số điện thoại" value={user.phone} onChange={handleChangePhone} />
+                </Row>
+                <Row gap={1} css={{ marginTop: '$5' }}>
+                    <FormControl id="province" sx={{ width: '90%' }} margin='normal'>
+                        <InputLabel id="province-label">Tỉnh/Thành phố</InputLabel>
+                        <Select
+                            labelId="province-label"
+                            label="Tỉnh/Thành phố"
+                            
+                            sx={{ borderRadius: '1rem' }}
+                            value={province}
+                            onChange={handleChangeProvince}
+                        >
+                            {provinces.map((provinceItem) => (
+                                <MenuItem key={provinceItem.ProvinceID} value={provinceItem.ProvinceID}>
+                                    {provinceItem.ProvinceName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5', marginBottom: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Địa chỉ" placeholder="Địa chỉ" value={address} onChange={handleChangeAddress} />
+                    <FormControl sx={{ width: '90%' }} margin='normal'>
+                        <InputLabel id="district-label">Quận/Huyện</InputLabel>
+                        <Select
+                            labelId="district-label"
+                            label="Quận/Huyện"
+                            disabled={province === undefined ? true : false}
+                            id="district"
+                            sx={{ borderRadius: '1rem' }}
+                            value={district}
+                            onChange={handleChangeDistrict}
+                        >
+                            {districts.map((districtItem) => (
+                                <MenuItem key={districtItem.DistrictID} value={districtItem.DistrictID}>
+                                    {districtItem.DistrictName}
+                                </MenuItem>
+                            ))}
+                            <MenuItem>abc</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Row>
+                <Row gap={1} css={{ marginTop: '$5', marginBottom: '$5' }}>
+                    <FormControl sx={{ width: '90%' }} margin='normal'>
+                        <InputLabel id="ward-label">Phường/Xã</InputLabel>
+                        <Select
+                            labelId="ward-label"
+                            label="Phường/Xã"
+                            disabled={district === undefined ? true : false}
+                            id="ward"
+                            sx={{ borderRadius: '1rem' }}
+                            value={ward}
+                            onChange={handleChangeWard}
+                        >
+                            {wards.map((wardItem) => (
+                                <MenuItem key={wardItem.WardCode} value={wardItem.WardCode}>
+                                    {wardItem.WardName}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Row>
+                <Row gap={1} css={{ marginTop: '$5' }}>
+                    <Input bordered size='xl' width='90%' label="Địa chỉ" placeholder="Địa chỉ" value={user.address} onChange={handleChangeAddress} />
                 </Row>
                 <Spacer y={1} />
                 <Row gap={1}>
                     <Text size={'$xl'}>Chọn phương thức thanh toán</Text>
                 </Row>
                 <Row gap={1}>
-                    <Radio.Group size='lg' defaultValue="1">
-                        <Radio value="1">
+                    <Radio.Group size='lg' value={paymentType} onChange={setPaymentType}>
+                        <Radio value="cod">
                             <Image width={40} height={40} autoResize objectFit='contain' src=' https://hstatic.net/0/0/global/design/seller/image/payment/cod.svg?v=1' />
                             <Spacer />
                             COD
                         </Radio>
-                        <Radio value="2">
+                        <Radio value="vnpay">
                             <Image width={40} height={40} autoResize objectFit='contain' src='https://hstatic.net/0/0/global/design/seller/image/payment/vnpay_new.svg?v=1' />
                             <Spacer />
                             VN-PAY
                         </Radio>
-                        <Radio value="3">
+                        <Radio value="paypal">
                             <Image width={40} height={40} autoResize objectFit='contain' src='https://www.paypalobjects.com/webstatic/icon/pp258.png' />
                             <Spacer />
                             PAYPAL
@@ -87,8 +260,8 @@ function Order() {
                     </Radio.Group>
                 </Row>
                 <Spacer y={1} />
-                <Row>
-                    <Button size={'lg'} color={'warning'}>
+                <Row justify='center'>
+                    <Button color={'warning'} onClick={handleClickOrder}>
                         Đặt hàng
                     </Button>
                 </Row>
@@ -165,6 +338,7 @@ function Order() {
                     </Col>
                 </Row>
             </Grid>
+            <ToastContainer />
         </Grid.Container>
     );
 }

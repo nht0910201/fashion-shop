@@ -43,3 +43,27 @@ export const updateAvatarUserByID = async (data,id) =>{
         return error.response
     }
 }
+export const getOrders = async () =>{
+    try{
+        const response = await get('/users/order/history');
+        return response
+    }catch(error){
+        return error.response
+    }
+}
+export const getOrder = async (id) =>{
+    try{
+        const response = await get(`/orders/${id}`);
+        return response
+    }catch(error){
+        return error.response
+    }
+}
+export const cancelOrder = async (id) =>{
+    try{
+        const response = await put(`/orders/cancel/${id}`);
+        return response
+    }catch(error){
+        return error.response
+    }
+}

@@ -43,8 +43,7 @@ export default function ProductList() {
         }
 
         getData()
-    }, [keySearch, id,page])
-    console.log(page)
+    }, [keySearch,id,page])
     return (
         <Grid.Container gap={1}>
             {products.list?.map((product) => (
@@ -89,7 +88,7 @@ export default function ProductList() {
                                                 </Badge>
                                             ))}
                                         </Col>
-                                        <Rating size="small" value={5} readOnly />
+                                        <Rating size="small" value={product.rate} readOnly />
 
                                     </Row>
                                 </Col>

@@ -5,18 +5,21 @@ import { getUserFromLocalStorage } from "../../utils/userHanle";
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { RadioGroup } from '@headlessui/react'
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination, Mousewheel, Keyboard, FreeMode, Thumbs} from "swiper";
+import { Autoplay, Navigation, Pagination, Mousewheel, Keyboard, FreeMode, Thumbs } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/free-mode";
 import "swiper/css/thumbs";
-import { Badge, Button, Card, Image, Row, Text } from "@nextui-org/react";
+import { Badge, Button, Card, Col, Divider, Image, Row, Text, Pagination as Pagination2 } from "@nextui-org/react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateSuccessReload } from "../../components/Alert/UpdateSuccessReload";
 import { UpdateError } from '../../components/Alert/UpdateError'
 import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavigate";
+import Review from "./Review";
+import { getReviewsByProduct } from "../../services/ReviewService";
+import { Rating } from "@mui/material";
 
 function ProductDetail() {
     const formatPrice = (value) =>
@@ -24,7 +27,9 @@ function ProductDetail() {
             style: 'currency',
             currency: 'VND'
         }).format(value);
+    let [page, setPage] = useState(0)
     const [product, setProduct] = useState({})
+    const [reviews, setReviews] = useState({})
     const { id } = useParams();
     useEffect(() => {
         async function getData() {
@@ -36,8 +41,16 @@ function ProductDetail() {
                 setColor(res.data.options[0].variants[0].color)
             }
         }
+        async function getReviews() {
+            let reviews = await getReviewsByProduct(id, page-1)
+            if (reviews.success) {
+                setReviews(reviews.data)
+            }
+            console.log(reviews)
+        }
         getData()
-    }, [id])
+        getReviews()
+    }, [id,page])
     let curUser = getUserFromLocalStorage()
     const [colorList, setColorList] = useState([])
     const [color, setColor] = useState('')
@@ -45,9 +58,9 @@ function ProductDetail() {
     const handleChangeSize = (e) => {
         setProductOptionId(e)
         product.options.forEach((option) => {
-            if(option.id === e){
+            if (option.id === e) {
                 setColorList(option.variants)
-                setColor(option.variants[0].color) 
+                setColor(option.variants[0].color)
             }
         })
     }
@@ -94,7 +107,8 @@ function ProductDetail() {
                     thumbs={{ swiper: thumbsSwiper }}
                     loop={true}
                     grabCursor={true}
-                    style={{marginBottom: 10,
+                    style={{
+                        marginBottom: 10,
                         "--swiper-navigation-color": "#f5a524",
                         "--swiper-pagination-color": "#f5a524",
                     }}
@@ -103,13 +117,13 @@ function ProductDetail() {
                         option.variants.map((variant) =>
                             variant.images.map((image) => {
                                 return <SwiperSlide>
-                                        <Image
-                                            key={`${image.id}`}
-                                            height={500}
-                                            src={`${image.url}`}
-                                            alt="...Loading"
-                                            objectFit="contain"
-                                        />
+                                    <Image
+                                        key={`${image.id}`}
+                                        height={500}
+                                        src={`${image.url}`}
+                                        alt="...Loading"
+                                        objectFit="contain"
+                                    />
                                 </SwiperSlide>
                             })
                         )
@@ -260,7 +274,31 @@ function ProductDetail() {
                 </Row>
             </Grid2>
             <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
-                <h2>c</h2>
+                <Row>
+                    <Col>
+                        <Text css={{ marginLeft: '$10' }} size={30}>Đánh giá sản phẩm</Text>
+                    </Col>
+                    <Col css={{ display: 'flex', justifyContent: 'flex-end', marginRight: '$10' }}>
+                        <Review productId={product.id} productName={product.name} />
+                    </Col>
+                </Row>
+
+                {reviews?.list?.length !== 0 ? 
+                    reviews?.list?.map((review) => (
+                        <Row key={review.id} css={{ marginLeft: '$20' }}>
+                            <Col>
+                                <Text>User</Text>
+                                <Rating value={review.rate} readOnly defaultValue={0} precision={0.5} max={5} />
+                                <Text>{review.content}</Text>
+                            </Col>
+                        </Row>
+                )):
+                    <Text>Sản phẩm chưa có đánh giá</Text>
+                }
+                <Row hidden={reviews?.list?.length === 0 ? true : false} justify="center">
+                    <Pagination2 color='warning' loop onChange={(page) => { setPage(page - 1) }} total={reviews.totalPage} />
+                </Row>
+                <Divider/>
             </Grid2>
             <ToastContainer />
         </Grid2>

@@ -17,10 +17,8 @@ const orders = [
                 imageSrc: 'https://tailwindui.com/img/ecommerce-images/order-history-page-02-product-01.jpg',
                 imageAlt: 'Detail of mechanical pencil tip with machined black steel shaft and chrome lead tip.',
             },
-            // More products...
         ],
     },
-    // More orders...
 ]
 
 function OrderHistory() {

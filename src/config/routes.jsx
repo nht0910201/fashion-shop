@@ -12,8 +12,9 @@ const routes = {
     cart:'/cart',
     order:'/order',
     orderHistory:'/orderHistory',
-    myOrderStatus:'/myOrderStatus',
-    orderDetail:'/orderDetail',
+    myOrder:'/myOrder',
+    orderSuccess:'/redirect/payment',
+    orderDetail:'/orderDetail/:id',
     oauth2:'/oauth2/redirect',
     admin :'/admin'
 };

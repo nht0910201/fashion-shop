@@ -32,7 +32,7 @@ export default function Header() {
   let userCur = getUserFromLocalStorage()
   const optionMenu = [
     { name: 'Thông tin cá nhân', icon: <InfoIcon />, href: `/profile/${userCur?.id}` },
-    { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrderStatus' },
+    { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrder' },
     { name: 'Lịch sử đơn hàng', icon: <HistoryOrder />, href: '/orderHistory' },
   ]
   const handleLogout = () => {

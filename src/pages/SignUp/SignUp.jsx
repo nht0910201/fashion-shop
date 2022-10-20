@@ -65,7 +65,6 @@ export default function SignUp() {
                 setWards(wards.data)
             }
         }
-        console.log(district)
         if (district !== undefined) {
             getWardAPI(district)
         }
