@@ -70,7 +70,6 @@ export default function MyOrder() {
                             </Table.Cell>
                         </Table.Row>
                     ))}
-
                 </Table.Body>
                 <Table.Pagination
                     shadow
@@ -112,7 +111,7 @@ export default function MyOrder() {
                                 <StyledBadge type={row.state}>{row.state}</StyledBadge>
                             </Table.Cell>
                             <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
-                                <button>
+                                <button onClick={()=>navigate(`/orderDetail/${row.id}`)}>
                                     <RemoveRedEyeOutlined />
                                 </button>
                             </Table.Cell>

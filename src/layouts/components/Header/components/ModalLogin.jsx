@@ -25,8 +25,13 @@ export default function ModalLogin() {
     const login = async ({ username, password }) => {
         const res = await userLogin({ username, password })
         if (res.data.success) {
-            dispatch(authAction.login(res.data));
-            navigate('/')
+            await dispatch(authAction.login(res.data));
+            if(res.data.data.role==='ROLE_ADMIN' || res.data.data.role==='ROLE_STAFF')
+            {
+                window.location.href = '/admin'
+            }else{
+                navigate('/')
+            }
         }
         else {
             toast.error('Incorrect Username or Password', {

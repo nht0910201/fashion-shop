@@ -36,7 +36,6 @@ export default function ProductList() {
                     res = await getProductByCategory(id,page-1)
                     break;
             }
-            console.log(res)
             if (res.success) {
                 setProducts(res.data)
             }
@@ -84,7 +83,7 @@ export default function ProductList() {
                                     <Row justify="space-between">
                                         <Col>
                                             {product.images.map((image) => (
-                                                <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                                <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color,border:'1px solid black',marginRight:3 }}>
                                                 </Badge>
                                             ))}
                                         </Col>

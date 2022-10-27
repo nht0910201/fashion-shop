@@ -6,9 +6,6 @@ import { Navbar, Text, Avatar, Dropdown, Input, Button, Tooltip } from "@nextui-
 import { Layout } from "./components/Layout.jsx";
 import { Link } from "@nextui-org/react";
 import * as authAction from '../../../redux/auth/authSlice'
-import InfoIcon from '../../../components/Icon/InfoIcon';
-import NowOrder from '../../../components/Icon/NowrOrder';
-import HistoryOrder from '../../../components/Icon/HistoryOrder';
 import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './components/ModalLogin';
 import { Logo } from './components/Logo';
@@ -30,10 +27,15 @@ export default function Header() {
   const dispatch = useDispatch();
   let navigate = useNavigate();
   let userCur = getUserFromLocalStorage()
-  const optionMenu = [
-    { name: 'Thông tin cá nhân', icon: <InfoIcon />, href: `/profile/${userCur?.id}` },
-    { name: 'Đơn hàng hiện tại', icon: <NowOrder />, href: '/myOrder' },
-    { name: 'Lịch sử đơn hàng', icon: <HistoryOrder />, href: '/orderHistory' },
+  const optionClient = [
+    { name: 'Thông tin cá nhân', href: `/profile/${userCur?.id}`},
+    { name: 'Đơn hàng của tôi', href: '/myOrder'},
+    
+  ]
+  const optionAdmin = [
+    { name: 'Thông tin cá nhân', href: `/profile/${userCur?.id}`},
+    { name: 'Đơn hàng của tôi', href: '/myOrder'},
+    { name: 'Quản lý', href: '/admin'},
   ]
   const handleLogout = () => {
     navigate('/')
@@ -49,18 +51,19 @@ export default function Header() {
   const handleClickCart = () => {
     navigate('/cart')
   }
-  if (categories.length === 0) {
-    return (
-      <Loading />
-      // <Skeleton variant="rectangular" width={'auto'} height={76} />
-    )
-  }
+  // if (categories.length === 0) {
+  //   return (
+  //     // <Loading />
+  //     <Skeleton variant="rectangular" width={'auto'} height={76} />
+  //   )
+  // }
+
   return (
     <Layout>
       <Navbar shouldHideOnScroll maxWidth={'fluid'} isBordered variant={"sticky"}>
         <Navbar.Toggle showIn={'sm'} />
         <Navbar.Brand>
-          <Text b color="inherit" hideIn="sm" css={{marginRight:'$10'}}>
+          <Text b color="inherit" hideIn="sm" css={{ marginRight: '$10' }}>
             <Link color={'warning'} href='/'><Logo /></Link>
           </Text>
           <Navbar.Content
@@ -70,9 +73,9 @@ export default function Header() {
             variant="default"
           >
             <Navbar.Link isActive href="#">Trang chủ</Navbar.Link>
-            <Tooltip 
-              content={<Categories categories={categories} />} 
-              css={{ left: '$0', transform: 'none' }} 
+            <Tooltip
+              content={<Categories categories={categories} />}
+              css={{ left: '$0', transform: 'none' }}
               placement='bottom'
               hideArrow >
               <Navbar.Link href="#">
@@ -147,14 +150,24 @@ export default function Header() {
                   }}
                   css={{ paddingTop: '$0' }}
                 >
-                  {/* <Dropdown.Item key={''} withDivider color="default">
-                    <ModalLogin show={userCur?.id !== undefined ? false : true} />
-                  </Dropdown.Item> */}
-                  {optionMenu.map((option) => (
+                  {/* {optionMenu.map((option) => (
                     <Dropdown.Item key={option.href} color="default">
                       {option.name}
                     </Dropdown.Item>
-                  ))}
+                  ))} */}
+                  {userCur.role === 'ROLE_USER' ?
+                    optionClient.map((option) => (
+                      <Dropdown.Item key={option.href} color="default">
+                        {option.name}
+                      </Dropdown.Item>
+                    ))
+                    :
+                    optionAdmin.map((option) => (
+                      <Dropdown.Item key={option.href} color="default">
+                        {option.name}
+                      </Dropdown.Item>
+                    ))
+                  }
                   <Dropdown.Item withDivider color="default">
                     <Button onClick={handleLogout} color={'error'} light css={{ display: "flex", justifyContent: "flex-start", padding: "$0" }}>Đăng xuất</Button>
                   </Dropdown.Item>

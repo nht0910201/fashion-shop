@@ -34,7 +34,6 @@ function Home() {
             }
             let resNew = await getSortProducts('createdDate,desc')
             if (resNew.success) {
-                console.log(resNew)
                 setNewProduct(resNew.data.list)
             }
         }
@@ -72,7 +71,7 @@ function Home() {
                     </Row>
 
                 </Grid>
-                <Grid xs={12} lg={6} direction='column'>
+                <Grid xs={12} sm={6} direction='column'>
                     <Image src='https://file.hstatic.net/1000184601/file/banner-chang-trai-phong-cach_4442b04c22a9445b8f12212386978bda.jpg' />
                     <Text css={{ textAlign: 'center' }} size={35} b>QUẦN</Text>
                     <Row justify='center'>
@@ -155,7 +154,7 @@ function Home() {
                                                 <Row justify="space-between">
                                                     <Col>
                                                         {product.images.map((image) => (
-                                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                                            <Badge isPressable borderWeight={'black'} variant={'dot'} size="xl" style={{ backgroundColor: image.color,border:'1px solid black',marginRight:3}}>
                                                             </Badge>
                                                         ))}
                                                     </Col>
@@ -242,7 +241,7 @@ function Home() {
                                                 <Row justify="space-between">
                                                     <Col>
                                                         {product.images.map((image) => (
-                                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color }}>
+                                                            <Badge enableShadow isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color,border:'1px solid black',marginRight:3}}>
                                                             </Badge>
                                                         ))}
                                                     </Col>

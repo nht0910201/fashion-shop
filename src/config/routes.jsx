@@ -16,7 +16,7 @@ const routes = {
     orderSuccess:'/redirect/payment',
     orderDetail:'/orderDetail/:id',
     oauth2:'/oauth2/redirect',
-    admin :'/admin'
+    admin :'/admin',
 };
 
 export default routes;

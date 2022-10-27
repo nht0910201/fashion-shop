@@ -113,12 +113,13 @@ function ProductDetail() {
                         "--swiper-pagination-color": "#f5a524",
                     }}
                 >
-                    {product?.options?.map((option) =>
-                        option.variants.map((variant) =>
-                            variant.images.map((image) => {
+                    {product?.images?.map((image) =>
+                        // option.variants.map((variant) =>
+                        //     variant.images.map((image) => 
+                            {
                                 return <SwiperSlide>
                                     <Image
-                                        key={`${image.id}`}
+                                        key={`${image.imageId}`}
                                         height={500}
                                         src={`${image.url}`}
                                         alt="...Loading"
@@ -126,8 +127,9 @@ function ProductDetail() {
                                     />
                                 </SwiperSlide>
                             })
-                        )
-                    )}
+                        // )
+                    // )
+                    }
                 </Swiper>
                 <Swiper
                     onSwiper={setThumbsSwiper}
