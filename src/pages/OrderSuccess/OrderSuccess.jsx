@@ -1,4 +1,4 @@
-import { CheckCircleOutlineOutlined, CheckOutlined, CloseOutlined } from "@mui/icons-material";
+import { CheckOutlined, CloseOutlined } from "@mui/icons-material";
 import { Container, CssBaseline, Paper, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Button } from "@nextui-org/react";

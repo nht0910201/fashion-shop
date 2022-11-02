@@ -16,6 +16,8 @@ import Cart from '../pages/Cart';
 import Admin from '../pages/Admin/Manage';
 import MyOrder from '../pages/MyOrder';
 import OrderSuccess from '../pages/OrderSuccess/OrderSuccess';
+import AddProduct from '../pages/Admin/Product/AddProduct';
+import UpdateProduct from '../pages/Admin/Product/UpdateProduct';
 
 const publicRoutes = [
     { path: config.routes.productList, component: ProductList, layout: DefaultLayout },
@@ -51,6 +53,8 @@ const privateRoutes = [
     { path: config.routes.oauth2 ,component:Oauth2},
     
     { path: config.routes.admin, component: Admin, layout: AdminLayout },
+    { path: config.routes.addProduct, component: AddProduct},
+    { path: config.routes.updateProduct, component: UpdateProduct},
 ];
 
 export { publicRoutes, privateRoutes };

@@ -1,8 +1,3 @@
-import { Button } from '@nextui-org/react';
-import classNames from 'classnames/bind';
-import styles from './Footer.module.scss';
-
-const cx = classNames.bind(styles);
 const navigation = {
   main: [
     { name: 'About', href: '#' },

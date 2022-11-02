@@ -23,11 +23,11 @@ export default function ProfileInfo() {
     const { id } = useParams();
     const [user, setUser] = useState({})
     const [provinces, setProvinces] = useState([])
-    const [province, setProvince] = useState()
+    // const [province, setProvince] = useState()
     const [districts, setDistricts] = useState([])
-    const [district, setDistrict] = useState()
+    // const [district, setDistrict] = useState()
     const [wards, setWards] = useState([])
-    const [ward, setWard] = useState()
+    // const [ward, setWard] = useState()
     useEffect(() => {
         async function getData() {
             let res = await getUserByID(id)
@@ -102,7 +102,6 @@ export default function ProfileInfo() {
         let checkWard = user.ward
         if (checkName !== '' && checkPhone !== '' && checkProvince !== undefined && checkDistrict !== undefined && checkWard !== undefined) {
             let res = await updateUserByID(data, id)
-            console.log(res)
             if (res.success) {
                 UpdateSuccessReload(wait, 'Cập nhật thông tin thành công', false)
                 setUser({ ...res.data, gender: res.data.gender.toLowerCase() })

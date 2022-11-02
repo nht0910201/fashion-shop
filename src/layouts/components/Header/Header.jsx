@@ -11,7 +11,7 @@ import ModalLogin from './components/ModalLogin';
 import { Logo } from './components/Logo';
 import 'react-toastify/dist/ReactToastify.css';
 import { Search, ShoppingBagOutlined } from '@mui/icons-material';
-import Loading from '../../../components/Loading/Loading';
+// import Loading from '../../../components/Loading/Loading';
 import Categories from './components/Categories';
 
 export default function Header() {

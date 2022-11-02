@@ -1,4 +1,3 @@
-import { Skeleton } from "@mui/material";
 import { Row, Col, Container, Text, Link } from "@nextui-org/react"
 
 export default function Categories({ categories }) {

@@ -93,7 +93,7 @@ function SideBar() {
                 <Button onClick={handleUserManage} light auto color={'warning'}>Quản lý tài khoản </Button>
             </Collapse>
             <Collapse title="Sản phẩm">
-                <Button css={{ marginBottom: '$2' }} light auto color={'warning'}>Thêm sản phẩm </Button>
+                {/* <Button css={{ marginBottom: '$2' }} onClick={()=>navigate('/admin/addProduct')} light auto color={'warning'}>Thêm sản phẩm </Button> */}
                 <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
             </Collapse>
             <Collapse title="Danh mục">

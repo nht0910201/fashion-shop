@@ -1,4 +1,4 @@
-import { get,post,postImage,put } from "../api/axiosConfig";
+import { get,post,postImage,put,del } from "../api/axiosConfig";
 
 
 export const getUsersByAdmin = async (page) =>{
@@ -24,6 +24,15 @@ export const getAllBrandsByAdmin = async () =>{
         const response = await get('admin/manage/brands');
         return response
     } catch (error) { console.log(error); };
+
+}
+export const getProductsByAdmin = async (page) =>{
+    try {
+        const response = await get(`/manage/products?size=20&page=${page}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
 
 }
 export const getBrandByAdmin = async (id)=>{
@@ -82,5 +91,86 @@ export const updateCategoryByAdmin = async (data={},id) =>{
         return response
     } catch (error) { 
         return error.response
+    };
+}
+
+export const addProductByAdmin = async (data={}) =>{
+    try {
+        const response = await post('/manage/products',data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const addProductOptionByAdmin = async (data={},id) =>{
+    try {
+        const response = await postImage(`/manage/products/option/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const addProductAttrByAdmin = async (data={},id) =>{
+    try {
+        const response = await post(`/manage/products/attribute/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const updateProductByAdmin = async (data={},id) =>{
+    try {
+        const response = await put(`/manage/products/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const updateAttrByAdmin = async (data={},id) =>{
+    try {
+        const response = await put(`/manage/products/attribute/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const delProductAttrByAdmin = async (data={},id) =>{
+    try {
+        const response = await del(`/manage/products/attribute/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
+}
+export const updateProducOptionByAdmin = async (data={},id,oldColor) =>{
+    try {
+        const response = await put(`/manage/products/option/${id}?variantColor=${oldColor}`,data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const uploadImageByAdmin = async (data={},id) =>{
+    try {
+        const response = await postImage(`/manage/products/images/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response
+    };
+}
+export const delImagePooductByAdmin = async (data={},id) =>{
+    try {
+        const response = await del(`/manage/products/images/${id}`,data);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
+}
+export const delProductByAdmin = async (id) =>{
+    try {
+        const response = await del(`/manage/products/${id}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
     };
 }

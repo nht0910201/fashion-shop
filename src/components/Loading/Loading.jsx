@@ -1,6 +1,5 @@
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import Skeleton from '@mui/material/Skeleton';
 
 export default function Loading() {
     return (

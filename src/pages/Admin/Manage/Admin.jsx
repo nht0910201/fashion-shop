@@ -1,15 +1,17 @@
 import { Text } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import Loading from "../../../components/Loading/Loading";
-import { getCatgoriesByAdmin, getUsersByAdmin,getAllBrandsByAdmin } from "../../../services/AdminService";
+import { getCatgoriesByAdmin, getUsersByAdmin,getAllBrandsByAdmin, getProductsByAdmin } from "../../../services/AdminService";
 import TableBrand from "./TableBrand";
 import TableCategories from "./TableCategories";
+import TableProduct from "./TableProduct";
 import TableUser from "./TableUser";
 
 function Admin() {
   const [users, setUsers] = useState([])
   const [categories, setCategories] = useState([])
   const [brands,setBrands] = useState([])
+  const [products,setProducts] = useState([])
   let [pageUSer, setPageUser] = useState(0);
   const [totalPageUser, setTotallPageUser] = useState(0)
   const [quantityUser, setQuantityUser] = useState(0)
@@ -30,17 +32,24 @@ function Admin() {
       let allBrands = await getAllBrandsByAdmin();
       setBrands(allBrands.data)
     }
-    getBrands()
-    getCategories()
+    async function getProducts(){
+      let allProducts = await getProductsByAdmin(0)
+      if(allProducts.success){
+        setProducts(allProducts.data.list)
+      }
+    }
+    getProducts()
     getUsers()
+    getCategories()
+    getBrands()
   }, [])
-  if(users.length === 0 || categories.length === 0 || brands.length === 0){
+  if(users.length === 0 || categories.length === 0 || brands.length === 0 || products.length ===0){
     return <Loading/>
   }
   return (
     <div className="w-full">
       <TableUser users={users} totalPage={totalPageUser} totalQuantity={quantityUser} />
-      <Text id="product" hidden>Quản lý Product</Text>
+      <TableProduct products={products}/>
       <TableCategories categories={categories} />
       <TableBrand brands={brands}/>
       <Text id="order" hidden>Quản lý Order</Text>

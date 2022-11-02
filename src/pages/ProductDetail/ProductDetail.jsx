@@ -42,15 +42,14 @@ function ProductDetail() {
             }
         }
         async function getReviews() {
-            let reviews = await getReviewsByProduct(id, page-1)
+            let reviews = await getReviewsByProduct(id, page - 1)
             if (reviews.success) {
                 setReviews(reviews.data)
             }
-            console.log(reviews)
         }
         getData()
         getReviews()
-    }, [id,page])
+    }, [id, page])
     let curUser = getUserFromLocalStorage()
     const [colorList, setColorList] = useState([])
     const [color, setColor] = useState('')
@@ -113,23 +112,17 @@ function ProductDetail() {
                         "--swiper-pagination-color": "#f5a524",
                     }}
                 >
-                    {product?.images?.map((image) =>
-                        // option.variants.map((variant) =>
-                        //     variant.images.map((image) => 
-                            {
-                                return <SwiperSlide>
-                                    <Image
-                                        key={`${image.imageId}`}
-                                        height={500}
-                                        src={`${image.url}`}
-                                        alt="...Loading"
-                                        objectFit="contain"
-                                    />
-                                </SwiperSlide>
-                            })
-                        // )
-                    // )
-                    }
+                    {product?.images?.map((image) => (
+                        <SwiperSlide>
+                            <Image
+                                key={`${image.imageId}`}
+                                height={500}
+                                src={`${image.url}`}
+                                alt="...Loading"
+                                objectFit="contain"
+                            />
+                        </SwiperSlide>
+                    ))}
                 </Swiper>
                 <Swiper
                     onSwiper={setThumbsSwiper}
@@ -140,22 +133,18 @@ function ProductDetail() {
                     watchSlidesProgress={true}
                     modules={[FreeMode, Navigation, Thumbs]}
                 >
-                    {product?.options?.map((option) =>
-                        option.variants.map((variant) =>
-                            variant.images.map((image) => {
-                                return <SwiperSlide>
-                                    <Image
-                                        key={`${image.id}`}
-                                        height={150}
-                                        css={{ cursor: 'pointer' }}
-                                        src={`${image.url}`}
-                                        alt="...Loading"
-                                        objectFit="contain"
-                                    />
-                                </SwiperSlide>
-                            })
-                        )
-                    )}
+                    {product?.images?.map((image) => (
+                        <SwiperSlide>
+                            <Image
+                                key={`${image.imageId}`}
+                                height={150}
+                                src={`${image.url}`}
+                                css={{cursor:'pointer'}}
+                                alt="...Loading"
+                                objectFit="contain"
+                            />
+                        </SwiperSlide>
+                    ))}
                 </Swiper>
             </Grid2>
             <Grid2 xs={5} padding={3}>
@@ -285,7 +274,7 @@ function ProductDetail() {
                     </Col>
                 </Row>
 
-                {reviews?.list?.length !== 0 ? 
+                {reviews?.list?.length !== 0 ?
                     reviews?.list?.map((review) => (
                         <Row key={review.id} css={{ marginLeft: '$20' }}>
                             <Col>
@@ -294,13 +283,13 @@ function ProductDetail() {
                                 <Text>{review.content}</Text>
                             </Col>
                         </Row>
-                )):
+                    )) :
                     <Text>Sản phẩm chưa có đánh giá</Text>
                 }
                 <Row hidden={reviews?.list?.length === 0 ? true : false} justify="center">
                     <Pagination2 color='warning' loop onChange={(page) => { setPage(page - 1) }} total={reviews.totalPage} />
                 </Row>
-                <Divider/>
+                <Divider />
             </Grid2>
             <ToastContainer />
         </Grid2>

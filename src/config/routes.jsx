@@ -17,6 +17,8 @@ const routes = {
     orderDetail:'/orderDetail/:id',
     oauth2:'/oauth2/redirect',
     admin :'/admin',
+    addProduct: '/admin/addProduct',
+    updateProduct:'admin/updateProduct/:id'
 };
 
 export default routes;

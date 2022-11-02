@@ -1,18 +1,27 @@
+import { encryptStorage } from "./storage";
 export const addUserToLocalStorage = (id,email,name,avatar,gender,role) => {
-    const curId = window.localStorage.getItem('id');
-    const curEmail = window.localStorage.getItem('email');
-    const curName = window.localStorage.getItem('name');
-    const curAvatar = window.localStorage.getItem('avatar');
-    const curGender = window.localStorage.getItem('gender');
-    const curRole = window.localStorage.getItem('role');
+    const curId = encryptStorage.getItem('id');
+    const curEmail = encryptStorage.getItem('email');
+    const curName = encryptStorage.getItem('name');
+    const curAvatar = encryptStorage.getItem('avatar');
+    const curGender = encryptStorage.getItem('gender');
+    const curRole = encryptStorage.getItem('role');
     if ((curId !== id && id)&&(curEmail !== email && email)&&(curName !==name && name)&&(curAvatar !==avatar && avatar)&&(curGender !==gender && gender)&&(curRole !==role && role)) {
         // store user in local storage
-        window.localStorage.setItem('id', JSON.stringify(id));
-        window.localStorage.setItem('email', JSON.stringify(email));
-        window.localStorage.setItem('name', JSON.stringify(name));
-        window.localStorage.setItem('avatar', JSON.stringify(avatar));
-        window.localStorage.setItem('gender', JSON.stringify(gender));
-        window.localStorage.setItem('role', JSON.stringify(role));
+        // window.localStorage.setItem('id', JSON.stringify(id));
+        // window.localStorage.setItem('email', JSON.stringify(email));
+        // window.localStorage.setItem('name', JSON.stringify(name));
+        // window.localStorage.setItem('avatar', JSON.stringify(avatar));
+        // window.localStorage.setItem('gender', JSON.stringify(gender));
+        // window.localStorage.setItem('role', JSON.stringify(role));
+        encryptStorage.setMultipleItems([
+            ['id', JSON.stringify(id)],
+            ['email', JSON.stringify(email)],
+            ['name', JSON.stringify(name)],
+            ['avatar', JSON.stringify(avatar)],
+            ['gender', JSON.stringify(gender)],
+            ['role', JSON.stringify(role)],
+          ]);
     } else {
         console.log("Add user failed")
         return null;
@@ -20,6 +29,7 @@ export const addUserToLocalStorage = (id,email,name,avatar,gender,role) => {
 }
 
 export const getUserFromLocalStorage = () => {
+
     let user = {
         id:"",
         email:"",
@@ -28,26 +38,20 @@ export const getUserFromLocalStorage = () => {
         gender:"",
         role:""
     }
-    const curId = window.localStorage.getItem('id');
-    const curEmail = window.localStorage.getItem('email');
-    const curName = window.localStorage.getItem('name');
-    const curAvatar = window.localStorage.getItem('avatar');
-    const curGender = window.localStorage.getItem('gender');
-    const curRole = window.localStorage.getItem('role');
-    let id = '';
-    let email='';
-    let name ='';
-    let avatar = '';
-    let gender = '';
-    let role = '';
+    const curId = encryptStorage.getItem('id');
+    const curEmail = encryptStorage.getItem('email');
+    const curName = encryptStorage.getItem('name');
+    const curAvatar = encryptStorage.getItem('avatar');
+    const curGender = encryptStorage.getItem('gender');
+    const curRole = encryptStorage.getItem('role');
     if (curId && curEmail && curName && curAvatar && curGender && curRole) {
-        id = JSON.parse(curId);
-        email = JSON.parse(curEmail)
-        name = JSON.parse(curName)
-        avatar = JSON.parse(curAvatar)
-        gender = JSON.parse(curGender)
-        role = JSON.parse(curRole)
-        user= {id:id,email:email,name:name,avatar:avatar,gender:gender,role:role}
+        // id = JSON.parse(curId);
+        // email = JSON.parse(curEmail)
+        // name = JSON.parse(curName)
+        // avatar = JSON.parse(curAvatar)
+        // gender = JSON.parse(curGender)
+        // role = JSON.parse(curRole)
+        user= {id:curId,email:curEmail,name:curName,avatar:curAvatar,gender:curGender,role:curRole}
         return user
     } 
     else {
@@ -72,6 +76,6 @@ export const clearUserFromLocalStorage = () => {
         window.localStorage.removeItem('role');
     } else {
         console.log("Clear user failed")
-        return null
+        // return null
     }
 }

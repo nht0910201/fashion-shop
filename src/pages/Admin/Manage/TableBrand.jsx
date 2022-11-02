@@ -42,7 +42,7 @@ export function AddModal() {
     return (
         <div>
             <Button auto ghost onClick={handler} color={'warning'}>
-                Thêm nhản hàng
+                Thêm nhãn hàng
             </Button>
             <Modal
                 closeButton
