@@ -63,8 +63,8 @@ export default function Header() {
       <Navbar shouldHideOnScroll maxWidth={'fluid'} isBordered variant={"sticky"}>
         <Navbar.Toggle showIn={'sm'} />
         <Navbar.Brand>
-          <Text b color="inherit" hideIn="sm" css={{ marginRight: '$10' }}>
-            <Link color={'warning'} href='/'><Logo /></Link>
+          <Text b color="inherit" hideIn="sm">
+            <Link style={{marginLeft:-35}} color={'warning'} href='/'><Logo /></Link>
           </Text>
           <Navbar.Content
             enableCursorHighlight
@@ -72,18 +72,18 @@ export default function Header() {
             hideIn="sm"
             variant="default"
           >
-            <Navbar.Link isActive href="#">Trang chủ</Navbar.Link>
+            <Navbar.Link isActive href="#">TRANG CHỦ</Navbar.Link>
             <Tooltip
-              content={<Categories categories={categories} />}
+              content={<Categories categories={categories}/>}
               css={{ left: '$0', transform: 'none' }}
               placement='bottom'
               hideArrow >
               <Navbar.Link href="#">
-                Sản phẩm
+                SẢN PHẨM
               </Navbar.Link>
             </Tooltip>
-            <Navbar.Link href="#">Giới thiệu</Navbar.Link>
-            <Navbar.Link href="#">Liên hệ</Navbar.Link>
+            <Navbar.Link href="#">GIỚI THIỆU</Navbar.Link>
+            <Navbar.Link href="#">LIÊN HỆ</Navbar.Link>
           </Navbar.Content>
         </Navbar.Brand>
         {/* Search  */}
@@ -178,7 +178,7 @@ export default function Header() {
             :
             <>
               <ModalLogin />
-              <Button auto ghost as={Link} href="/register">
+              <Button auto css={{marginLeft:-15}} ghost as={Link} color='warning' href="/register">
                 Đăng ký
               </Button>
             </>

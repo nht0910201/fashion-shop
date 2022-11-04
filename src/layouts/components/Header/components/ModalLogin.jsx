@@ -57,7 +57,7 @@ export default function ModalLogin() {
 
     return (
         <div>
-            <Button auto light color={'primary'} onClick={handler} css={{ display: "flex", justifyContent: "flex-start", padding: "$0" }}>
+            <Button auto color='warning' onClick={handler} css={{ display: "flex", justifyContent: "flex-start" }}>
                 Đăng nhập
             </Button>
             <Modal
@@ -68,8 +68,8 @@ export default function ModalLogin() {
             >
                 <Modal.Header>
                     <Text id="modal-title" size={18}>
-                        <Text b size={24} css={{ color: 'Blue' }}>
-                            SIGN IN
+                        <Text b size={24} color={'warning'}>
+                            ĐĂNG NHẬP
                         </Text>
                     </Text>
                 </Modal.Header>
@@ -78,7 +78,7 @@ export default function ModalLogin() {
                         clearable
                         bordered
                         fullWidth
-                        color="primary"
+                        color="warning"
                         size="lg"
                         placeholder="Email"
                         value={username}
@@ -89,7 +89,7 @@ export default function ModalLogin() {
                         clearable
                         bordered
                         fullWidth
-                        color="primary"
+                        color="warning"
                         size="lg"
                         placeholder="Password"
                         value={password}
@@ -99,7 +99,7 @@ export default function ModalLogin() {
                     />
                     <Row justify="end" css={{ borderBottom: "$black", width: 'auto' }}>
                         <Link href="/forgotPassword">
-                            <Text size={14} css={{color:'Red'}}>Forgot password?</Text>
+                            <Text size={14} color='error'>Quên mật khẩu?</Text>
                         </Link>
                     </Row>
                 </Modal.Body>
@@ -107,8 +107,8 @@ export default function ModalLogin() {
                     {/* <Button auto flat color="error" onClick={closeHandler}>
                         Close
                     </Button> */}
-                    <Button ghost color={"primary"} onClick={handleLogin}>
-                        Sign in
+                    <Button ghost color="warning" onClick={handleLogin}>
+                        Đăng nhập
                     </Button>
                     <Row justify="center">
                         <Link css={{ marginRight: '$5' }} href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/google"><Google /></Link>

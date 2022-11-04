@@ -47,12 +47,12 @@ const navigation = {
 function Footer() {
   return (
     <>
-      <footer className="bg-lime-50">
+      <footer className="bg-gray-900">
         <div className="max-w-7xl mx-auto py-1 px-2 overflow-hidden sm:px-3 lg:px-4">
           <nav className="-mx-5 -my-2 flex flex-wrap justify-center" aria-label="Footer">
             {navigation.main.map((item) => (
               <div key={item.name} className="px-5 py-2">
-                <a href={item.href} className="text-base text-gray-500 hover:text-gray-900">
+                <a href={item.href} className="text-base text-neutral-300 hover:text-yellow-600">
                   {item.name}
                 </a>
               </div>
@@ -60,7 +60,7 @@ function Footer() {
           </nav>
           <div className="mt-8 flex justify-center space-x-6">
             {navigation.social.map((item) => (
-              <a key={item.name} href={item.href} className="text-gray-400 hover:text-gray-500">
+              <a key={item.name} href={item.href} className="text-neutral-300 hover:text-yellow-600">
                 <span className="sr-only">{item.name}</span>
                 <item.icon className="h-6 w-6" aria-hidden="true" />
               </a>
