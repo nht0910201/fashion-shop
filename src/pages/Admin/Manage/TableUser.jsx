@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../../components/Alert/UpdateError';
+import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -33,7 +34,7 @@ export function AddModal() {
         const wait = toast.loading("Vui lòng chờ ...")
         let res = await addUserByAdmin({name,email,password,phone,province,district,ward,address,gender,role})
         if(res.data.success){
-            UpdateSuccessReload(wait,'Thêm tài khoản thành công',true)
+            UpdateSuccessNavigate(wait,'Thêm tài khoản thành công','/admin?page=user')
         }else{
             UpdateError(wait,'Thêm tài khoản thất bại')
         }
@@ -102,7 +103,7 @@ export function EditModal({ user }) {
         const w = toast.loading("Vui lòng chờ ...")
         let res = await updateUserByAdmin(data,id)
         if(res.success){
-            UpdateSuccessReload(w,'Cập nhật tài khoản thành công',true);
+            UpdateSuccessNavigate(w,'Cập nhật tài khoản thành công','/admin?page=user');
         }else{
             UpdateError(w,'Cập nhật tài khoản thất bại')
         }
@@ -146,9 +147,9 @@ export function EditModal({ user }) {
     );
 }
 
-function TableUser({ users, totalQuantity, totalPage }) {
+function TableUser({ users, totalQuantity, totalPage, show }) {
     return (
-        <div id='user'>
+        <div id='user' hidden={show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>TÀI KHOẢN</Text>
                 <AddModal />

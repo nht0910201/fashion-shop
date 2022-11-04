@@ -26,6 +26,15 @@ export const getAllBrandsByAdmin = async () =>{
     } catch (error) { console.log(error); };
 
 }
+
+export const getBrandByAdmin = async (id)=>{
+    try{
+        const response = await get(`/brands/${id}`);
+        return response
+    }catch(error){
+        return error.response
+    }
+}
 export const getProductsByAdmin = async (page) =>{
     try {
         const response = await get(`/manage/products?size=20&page=${page}`);
@@ -35,13 +44,23 @@ export const getProductsByAdmin = async (page) =>{
     };
 
 }
-export const getBrandByAdmin = async (id)=>{
-    try{
-        const response = await get(`/brands/${id}`);
+export const getOrdersByAdmin = async (page) =>{
+    try {
+        const response = await get(`/admin/manage/orders?size=5&page=${page}`);
         return response
-    }catch(error){
-        return error.response
-    }
+    } catch (error) { 
+        return error.response.data 
+    };
+
+}
+export const getOrderByIDByAdmin = async (id) =>{
+    try {
+        const response = await get(`/admin/manage/orders/${id}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
+
 }
 
 export const addUserByAdmin = async (data={}) =>{

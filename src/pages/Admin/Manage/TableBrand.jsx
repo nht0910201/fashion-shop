@@ -7,6 +7,7 @@ import { addBrandByAdmin,updateBrandByAdmin } from '../../../services/AdminServi
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../components/Alert/UpdateError';
+import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -31,7 +32,7 @@ export function AddModal() {
         const w = toast.loading("Vui lòng chờ ...")
         let res = await addBrandByAdmin(data)
         if (res.data.success) {
-            UpdateSuccessReload(w,'Thêm nhãn hàng thành công',true)
+            UpdateSuccessNavigate(w,'Thêm nhãn hàng thành công','/admin?page=brand')
         } else {
             UpdateError(w,'Thêm nhãn hàng thất bại thất bại')
         }
@@ -120,7 +121,7 @@ export function EditModal({ brand }) {
         data.append('state',brandNew.state)
         let res = await updateBrandByAdmin(data,brandNew.id)
         if(res.data.success){
-            UpdateSuccessReload(wait,'Cập nhật nhãn hàng thành công',true);
+            UpdateSuccessNavigate(wait,'Cập nhật nhãn hàng thành công','/admin?page=brand');
         }else{
             UpdateError(wait,'Cập nhật nhãn hàng thất bại')
         }
@@ -184,9 +185,9 @@ export function EditModal({ brand }) {
         </div>
     );
 }
-function TableBrand({ brands }) {
+function TableBrand({ brands,show }) {
     return (
-        <div hidden id='brand'>
+        <div hidden = {show} id='brand'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>THƯƠNG HIỆU</Text>
                 <AddModal />

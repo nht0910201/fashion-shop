@@ -1,9 +1,11 @@
 import { Text } from "@nextui-org/react";
 import { useEffect, useState } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import Loading from "../../../components/Loading/Loading";
-import { getCatgoriesByAdmin, getUsersByAdmin,getAllBrandsByAdmin, getProductsByAdmin } from "../../../services/AdminService";
+import { getCatgoriesByAdmin, getUsersByAdmin,getAllBrandsByAdmin, getProductsByAdmin, getOrdersByAdmin } from "../../../services/AdminService";
 import TableBrand from "./TableBrand";
 import TableCategories from "./TableCategories";
+import TableOrder from "./TableOrder";
 import TableProduct from "./TableProduct";
 import TableUser from "./TableUser";
 
@@ -12,6 +14,7 @@ function Admin() {
   const [categories, setCategories] = useState([])
   const [brands,setBrands] = useState([])
   const [products,setProducts] = useState([])
+  const [orders,setOrders] = useState([])
   let [pageUSer, setPageUser] = useState(0);
   const [totalPageUser, setTotallPageUser] = useState(0)
   const [quantityUser, setQuantityUser] = useState(0)
@@ -32,6 +35,12 @@ function Admin() {
       let allBrands = await getAllBrandsByAdmin();
       setBrands(allBrands.data)
     }
+    async function getOrders(){
+      let allOrders = await getOrdersByAdmin(0)
+      if(allOrders.success){
+        setOrders(allOrders.data)
+      }
+    }
     async function getProducts(){
       let allProducts = await getProductsByAdmin(0)
       if(allProducts.success){
@@ -39,20 +48,24 @@ function Admin() {
       }
     }
     getProducts()
+    getOrders()
     getUsers()
     getCategories()
     getBrands()
   }, [])
-  if(users.length === 0 || categories.length === 0 || brands.length === 0 || products.length ===0){
+  let locate = useLocation()
+  let params = new URLSearchParams(locate.search);
+  let url = params.get('page')
+  if(users.length === 0 || categories.length === 0 || brands.length === 0 || products.length ===0 || orders.length === 0){
     return <Loading/>
   }
   return (
     <div className="w-full">
-      <TableUser users={users} totalPage={totalPageUser} totalQuantity={quantityUser} />
-      <TableProduct products={products}/>
-      <TableCategories categories={categories} />
-      <TableBrand brands={brands}/>
-      <Text id="order" hidden>Quản lý Order</Text>
+      <TableUser users={users} totalPage={totalPageUser} totalQuantity={quantityUser} show={url === 'user' || url ===null ? false : true}/>
+      <TableProduct products={products} show={url === 'product'  ? false : true}/>
+      <TableCategories categories={categories} show={url === 'category' ? false : true}/>
+      <TableBrand brands={brands} show={url === 'brand' ? false : true}/>
+      <TableOrder orders={orders} show={url === 'order' ? false : true}/>
     </div>
   );
 }

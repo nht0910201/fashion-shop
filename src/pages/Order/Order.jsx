@@ -209,7 +209,6 @@ function Order() {
                                     {districtItem.DistrictName}
                                 </MenuItem>
                             ))}
-                            <MenuItem>abc</MenuItem>
                         </Select>
                     </FormControl>
                 </Row>

@@ -5,7 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, Grid, InputLabel, MenuItem, Select, Skeleton } from '@mui/material';
 import { getUserByID, updateUserByID } from '../../services/UserService';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -22,21 +22,18 @@ import { getDistrict, getProvince, getWard } from '../../services/AuthService';
 export default function ProfileInfo() {
     const { id } = useParams();
     const [user, setUser] = useState({})
+    const [loading, setLoad] = useState(false)
     const [provinces, setProvinces] = useState([])
-    // const [province, setProvince] = useState()
     const [districts, setDistricts] = useState([])
-    // const [district, setDistrict] = useState()
     const [wards, setWards] = useState([])
-    // const [ward, setWard] = useState()
     useEffect(() => {
         async function getData() {
+            setLoad(true)
             let res = await getUserByID(id)
             if (res.success) {
                 res.data.gender = res.data.gender.toLowerCase()
                 setUser(res.data)
-                // setProvince(res.data.province)
-                // setDistrict(res.data.district)
-                // setWard(res.data.ward)
+                setLoad(false)
             }
         }
         getData()
@@ -108,7 +105,7 @@ export default function ProfileInfo() {
             } else {
                 UpdateError(wait, 'Cập nhật không thành công')
             }
-        }else{
+        } else {
             UpdateError(wait, 'Vui lòng kiểm tra lại thông tin')
         }
 
@@ -116,163 +113,179 @@ export default function ProfileInfo() {
     const handleSaveInfo = () => {
         updateInfo(user, id)
     }
-    if (user.id === undefined) {
-        return (
-            <Loading />
-        )
-    }
+    // if (user.id === undefined) {
+    //     return (
+    //         <Loading />
+    //     )
+    // }
     return (
         <Container sx={{ boxShadow: 3, borderRadius: 1 }} component="main" maxWidth="sm" >
             <CssBaseline />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <Badge
-                    content={<ModalChangeAvatar user={user} />}
-
-                    disableOutline
-                    placement="bottom-right"
-                    css={{ p: 0 }}
-                    shape="circle"
-                    size="xs">
-                    <Avatar
-                        src={user.avatar}
-                        css={{ size: "$20", marginTop: '$10' }}
-                    />
-                </Badge>
-
-                <Box noValidate sx={{ mt: 1 }}>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="name"
-                        InputLabelProps={{ shrink: true }}
-                        label="Name"
-                        type="text"
-                        name="name"
-                        value={user.name}
-                        onChange={handleChangeName}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="phone"
-                        InputLabelProps={{ shrink: true }}
-                        label="Phone"
-                        type="text"
-                        id="phone"
-                        value={user.phone}
-                        onChange={handleChangePhone}
-                    />
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth margin='normal'>
-                                <InputLabel id="province-label">Tỉnh/Thành phố</InputLabel>
-                                <Select
-                                    labelId="province-label"
-                                    label="Tỉnh/Thành phố"
-                                    id="province"
-                                    value={user.province}
-                                    onChange={handleChangeProvince}
-                                >
-                                    {provinces.map((provinceItem) => (
-                                        <MenuItem key={provinceItem.ProvinceID} value={provinceItem.ProvinceID}>
-                                            {provinceItem.ProvinceName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth margin='normal'>
-                                <InputLabel id="district-label">Quận/Huyện</InputLabel>
-                                <Select
-                                    labelId="district-label"
-                                    label="Quận/Huyện"
-                                    id="district"
-                                    value={user.district}
-                                    onChange={handleChangeDistrict}
-                                >
-                                    {districts.map((districtItem) => (
-                                        <MenuItem key={districtItem.DistrictID} value={districtItem.DistrictID}>
-                                            {districtItem.DistrictName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl fullWidth margin='normal'>
-                                <InputLabel id="ward-label">Phường/Xã</InputLabel>
-                                <Select
-                                    labelId="ward-label"
-                                    label="Phường/Xã"
-                                    id="ward"
-                                    value={user.ward}
-                                    onChange={handleChangeWard}
-                                >
-                                    {wards.map((wardItem) => (
-                                        <MenuItem key={wardItem.WardCode} value={wardItem.WardCode}>
-                                            {wardItem.WardName}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="address"
-                                InputLabelProps={{ shrink: true }}
-                                label="Address"
-                                type="text"
-                                id="address"
-                                value={user.address}
-                                onChange={handleChangeAddress}
-                            />
-                        </Grid>
-                    </Grid>
-
-                    <FormControl fullWidth margin='normal'>
-                        <InputLabel shrink id="gender-label">Gender</InputLabel>
-                        <Select
-                            labelId="gender-label"
-
-                            label="Gender"
-                            id="gender"
-                            value={user.gender}
-                            onChange={handleChangeGender}
-                        >
-                            <MenuItem value='male'>Male</MenuItem>
-                            <MenuItem value='female'>Female</MenuItem>
-                            <MenuItem value='other'>Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <Row justify="space-around" align='center'>
-                        <ModalChangePass />
-                        <Button
-                            type="button"
-                            variant="contained"
-                            onClick={handleSaveInfo}
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Lưu
-                        </Button>
-                    </Row>
-
+            {loading ?
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Skeleton variant="rectangular" height={400} />
+                    <Skeleton />
+                    <Skeleton width="75%" />
                 </Box>
-            </Box>
+                :
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Badge
+                        content={<ModalChangeAvatar user={user} />}
+
+                        disableOutline
+                        placement="bottom-right"
+                        css={{ p: 0 }}
+                        shape="circle"
+                        size="xs">
+                        <Avatar
+                            src={user.avatar}
+                            css={{ size: "$20", marginTop: '$10' }}
+                        />
+                    </Badge>
+
+                    <Box noValidate sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            InputLabelProps={{ shrink: true }}
+                            label="Name"
+                            type="text"
+                            name="name"
+                            value={user.name}
+                            onChange={handleChangeName}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="phone"
+                            InputLabelProps={{ shrink: true }}
+                            label="Phone"
+                            type="text"
+                            id="phone"
+                            value={user.phone}
+                            onChange={handleChangePhone}
+                        />
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth margin='normal'>
+                                    <InputLabel id="province-label">Tỉnh/Thành phố</InputLabel>
+                                    <Select
+                                        labelId="province-label"
+                                        label="Tỉnh/Thành phố"
+                                        id="province"
+                                        value={user.province}
+                                        onChange={handleChangeProvince}
+                                    >
+                                        {provinces.map((provinceItem) => (
+                                            <MenuItem key={provinceItem.ProvinceID} value={provinceItem.ProvinceID}>
+                                                {provinceItem.ProvinceName}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth margin='normal'>
+                                    <InputLabel id="district-label">Quận/Huyện</InputLabel>
+                                    <Select
+                                        labelId="district-label"
+                                        label="Quận/Huyện"
+                                        id="district"
+                                        value={user.district}
+                                        onChange={handleChangeDistrict}
+                                    >
+                                        {districts.map((districtItem) => (
+                                            <MenuItem key={districtItem.DistrictID} value={districtItem.DistrictID}>
+                                                {districtItem.DistrictName}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth margin='normal'>
+                                    <InputLabel id="ward-label">Phường/Xã</InputLabel>
+                                    <Select
+                                        labelId="ward-label"
+                                        label="Phường/Xã"
+                                        id="ward"
+                                        value={user.ward}
+                                        onChange={handleChangeWard}
+                                    >
+                                        {wards.map((wardItem) => (
+                                            <MenuItem key={wardItem.WardCode} value={wardItem.WardCode}>
+                                                {wardItem.WardName}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    name="address"
+                                    InputLabelProps={{ shrink: true }}
+                                    label="Address"
+                                    type="text"
+                                    id="address"
+                                    value={user.address}
+                                    onChange={handleChangeAddress}
+                                />
+                            </Grid>
+                        </Grid>
+
+                        <FormControl fullWidth margin='normal'>
+                            <InputLabel shrink id="gender-label">Gender</InputLabel>
+                            <Select
+                                labelId="gender-label"
+
+                                label="Gender"
+                                id="gender"
+                                value={user.gender}
+                                onChange={handleChangeGender}
+                            >
+                                <MenuItem value='male'>Male</MenuItem>
+                                <MenuItem value='female'>Female</MenuItem>
+                                <MenuItem value='other'>Other</MenuItem>
+                            </Select>
+                        </FormControl>
+                        <Row justify="space-around" align='center'>
+                            <ModalChangePass />
+                            <Button
+                                type="button"
+                                variant="contained"
+                                onClick={handleSaveInfo}
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Lưu
+                            </Button>
+                        </Row>
+
+                    </Box>
+                </Box>
+            }
+
             <ToastContainer />
         </Container>
     );
