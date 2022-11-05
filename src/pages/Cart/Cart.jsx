@@ -75,9 +75,9 @@ function Cart() {
     //         <Text b size={20} > Không có sản phẩm trong giỏ hàng</Text>
     //     </Grid2>
     // }
-    if (cart === undefined) {
-        return <Loading />;
-    }
+    // if (cart === undefined) {
+    //     return <Loading />;
+    // }
     let vat = 23000;
     return (
         <Grid2 container spacing={3}>

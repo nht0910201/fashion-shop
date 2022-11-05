@@ -18,6 +18,7 @@ import MyOrder from '../pages/MyOrder';
 import OrderSuccess from '../pages/OrderSuccess/OrderSuccess';
 import AddProduct from '../pages/Admin/Product/AddProduct';
 import UpdateProduct from '../pages/Admin/Product/UpdateProduct';
+import View404 from '../pages/404/View404';
 
 const publicRoutes = [
     { path: config.routes.productList, component: ProductList, layout: DefaultLayout },
@@ -34,6 +35,7 @@ const publicRoutes = [
     { path: config.routes.orderSuccess, component:OrderSuccess },
     { path: config.routes.orderDetail, component:OrderDetail, layout: DefaultLayout },
     { path: config.routes.oauth2 ,component:Oauth2},
+    { path: config.routes.notFound ,component:View404},
 ];
 
 const privateRoutes = [

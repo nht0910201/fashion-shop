@@ -1,10 +1,9 @@
 import { Edit } from '@mui/icons-material';
-import { Button, Row, Table, User, Modal, Text, Radio, Input } from '@nextui-org/react'
+import { Button, Row, Table, User, Modal, Text, Radio, Input, useAsyncList, useCollator } from '@nextui-org/react'
 import { useState } from 'react';
 import { addUserByAdmin, updateUserByAdmin } from '../../../services/AdminService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 
@@ -147,7 +146,25 @@ export function EditModal({ user }) {
     );
 }
 
-function TableUser({ users, totalQuantity, totalPage, show }) {
+function TableUser({ users, show }) {
+    const collator = useCollator({ numeric: true });
+    async function load() {
+        return { items: users.list }
+    }
+    async function sort({ items, sortDescriptor }) {
+        return {
+            items: items.sort((a, b) => {
+                let first = a[sortDescriptor.column];
+                let second = b[sortDescriptor.column];
+                let cmp = collator.compare(first, second);
+                if (sortDescriptor.direction === "descending") {
+                    cmp *= -1;
+                }
+                return cmp;
+            }),
+        };
+    }
+    const list = useAsyncList({ load, sort });
     return (
         <div id='user' hidden={show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
@@ -156,47 +173,53 @@ function TableUser({ users, totalQuantity, totalPage, show }) {
             </Row>
             <Table
                 bordered
-                striped
+                shadow={false}
+                color="primary"
+                aria-label="Users table"
                 css={{
-                    height: "auto",
+                    height: "calc($space$14 * 10)",
+                  minWidth: "100%",
                 }}
-                selectionMode={'single'}
+                selectionMode="single"
+                sortDescriptor={list.sortDescriptor}
+                onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column allowsSorting>TÀI KHOẢN</Table.Column>
-                    <Table.Column allowsSorting>EMAIL</Table.Column>
-                    <Table.Column allowsSorting>SỐ ĐIỆN THOẠI</Table.Column>
-                    <Table.Column allowsSorting>ROLE</Table.Column>
-                    <Table.Column allowsSorting>STATE</Table.Column>
+                    <Table.Column align='center' key={'name'} allowsSorting>TÀI KHOẢN*</Table.Column>
+                    <Table.Column>EMAIL</Table.Column>
+                    <Table.Column >SỐ ĐIỆN THOẠI</Table.Column>
+                    <Table.Column align='center' key={'role'} allowsSorting>ROLE*</Table.Column>
+                    <Table.Column align='center' key={'state'} allowsSorting>STATE*</Table.Column>
                     <Table.Column>CHỈNH SỬA / XOÁ</Table.Column>
                 </Table.Header>
 
-                <Table.Body>
-                    {users.map((user) => (
-                        <Table.Row key={user.id}>
+                <Table.Body items={list.items} loadingState={list.loadingState}>
+                    {(item) => (
+                        <Table.Row key={item.id}>
                             <Table.Cell>
                                 <User
-                                    src={user.avatar}
-                                    name={user.name}
+                                    src={item.avatar}
+                                    name={item.name}
                                 />
                             </Table.Cell>
-                            <Table.Cell>{user.email}</Table.Cell>
-                            <Table.Cell >{user.phone}</Table.Cell>
-                            <Table.Cell>{user.role}</Table.Cell>
-                            <Table.Cell>{user.state}</Table.Cell>
+                            <Table.Cell>{item.email}</Table.Cell>
+                            <Table.Cell>{item.phone}</Table.Cell>
+                            <Table.Cell>{item.role}</Table.Cell>
+                            <Table.Cell>{item.state}</Table.Cell>
                             <Table.Cell>
-                                <EditModal user={user} />
+                                <EditModal user={item} />
                             </Table.Cell>
                         </Table.Row>
-                    ))}
+                    )}
                 </Table.Body>
                 <Table.Pagination
+                    total={(users.totalQuantity/5).toFixed(0)}
+                    loop
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
                     rowsPerPage={5}
-                    onPageChange={(page) => console.log({ page })}
                 />
             </Table>
         </div>

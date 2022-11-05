@@ -1,5 +1,5 @@
 import { Edit } from '@mui/icons-material';
-import { Button, Row, Table, Text, Radio, Modal, Input, Dropdown } from '@nextui-org/react'
+import { Button, Row, Table, Text, Radio, Modal, Input, Dropdown, useAsyncList, useCollator } from '@nextui-org/react'
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -154,6 +154,24 @@ export function EditModal({ category }) {
     );
 }
 function TableCategories({ categories,show }) {
+    const collator = useCollator({ numeric: true });
+    async function load() {
+        return { items: categories }
+    }
+    async function sort({ items, sortDescriptor }) {
+        return {
+            items: items.sort((a, b) => {
+                let first = a[sortDescriptor.column];
+                let second = b[sortDescriptor.column];
+                let cmp = collator.compare(first, second);
+                if (sortDescriptor.direction === "descending") {
+                    cmp *= -1;
+                }
+                return cmp;
+            }),
+        };
+    }
+    const list = useAsyncList({ load, sort });
     return (
         <div id='category' hidden = {show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
@@ -162,38 +180,45 @@ function TableCategories({ categories,show }) {
                 <AddModal categories={categories}/>
             </Row>
             <Table
-                aria-label='Table Category'
+                bordered
+                shadow={false}
+                color="primary"
+                aria-label="Categories table"
                 css={{
-                    height: "auto",
-                    minWidth: "100%",
+                    height: "calc($space$14 * 10)",
+                  minWidth: "100%",
                 }}
-                selectionMode='single'
+                selectionMode="single"
+                sortDescriptor={list.sortDescriptor}
+                onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column>NAME</Table.Column>
-                    <Table.Column>ROOT</Table.Column>
-                    <Table.Column>STATE</Table.Column>
+                    <Table.Column align='center' key={'name'} allowsSorting>TÊN</Table.Column>
+                    <Table.Column  >ROOT</Table.Column>
+                    <Table.Column align='center'  key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
                     <Table.Column>Chỉnh sửa / Xoá</Table.Column>
                 </Table.Header>
-                <Table.Body>
-                    {categories.map((category) => (
-                        <Table.Row key={category.id}>
-                            <Table.Cell>{category.name}</Table.Cell>
-                            <Table.Cell >{category.root ? 'true' : 'false'}</Table.Cell>
-                            <Table.Cell >{category.state}</Table.Cell>
+                <Table.Body items={list.items} loadingState={list.loadingState}>
+                    {(item) => (
+                        <Table.Row key={item.id}>
+                            <Table.Cell>{item.name}</Table.Cell>
+                            <Table.Cell >{item.root ? 'true' : 'false'}</Table.Cell>
+                            <Table.Cell >{item.state}</Table.Cell>
                             <Table.Cell css={{ display: 'flex' }}>
-                                <EditModal category={category}/>
+                                <EditModal category={item}/>
                             </Table.Cell>
                         </Table.Row>
-                    ))}
+                    )}
                 </Table.Body>
                 <Table.Pagination
+                    total={(categories.length/4).toFixed(0)}
+                    loop
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
-                    rowsPerPage={5}
-                    onPageChange={(page) => console.log({ page })}
+                    rowsPerPage={4}
+                    // onPageChange={(page) => console.log({ page })}
                 />
             </Table>
         </div>

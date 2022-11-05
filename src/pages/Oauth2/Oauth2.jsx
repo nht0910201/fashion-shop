@@ -1,32 +1,34 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { addToLocalStorage } from "../../utils/tokenHandle";
 import { decodeToken } from "react-jwt";
 import { getUserByID } from "../../services/UserService";
 import { addUserToLocalStorage } from "../../utils/userHanle";
 import { toast, ToastContainer } from "react-toastify";
+import { Home } from "@mui/icons-material";
+import { Box, Button, Typography } from "@mui/material";
 function Oauth2() {
-    let locate = useLocation()
+    const [searchParams, setSearchParams] = useSearchParams();
     let navigate = useNavigate()
-    let params = new URLSearchParams(locate.search);
-    if (params.get('success')===true) {
-        let oauth2 = decodeToken(params.get('token'))
+    if (searchParams.get('success') === 'true') {
+        let oauth2 = decodeToken(searchParams.get('token'))
         let userId = oauth2.sub.split(',')[0]
-        addToLocalStorage(params.get('token'))
-        let user = async () =>{
+        addToLocalStorage(searchParams.get('token'))
+        window.history.replaceState(null, null, window.location.pathname);
+        let user = async () => {
             let res = await getUserByID(userId)
             return res
         }
-        user().then((res)=>{
-            if(res.success)
-            {
+        user().then((res) => {
+            if (res.success) {
                 let curUser = res.data
-                addUserToLocalStorage(curUser.id,curUser.email,curUser.name,curUser.avatar,curUser.gender,curUser.role);
+                addUserToLocalStorage(curUser.id, curUser.email, curUser.name, curUser.avatar, curUser.gender, curUser.role);
                 navigate('/')
             }
         })
     }
     else {
-        toast.error('Tài khoản đã tồn tại', {
+        window.history.replaceState(null, null, window.location.pathname);
+        toast.error('Vui lòng đăng nhập bằng tài khoản đã đăng ký trên hệ thống', {
             position: "top-center",
             autoClose: 3000,
             hideProgressBar: false,
@@ -34,13 +36,29 @@ function Oauth2() {
             pauseOnHover: false,
             draggable: true,
             progress: undefined,
-            onClose:()=> navigate('/')
-            })
+        })
     }
     return (
-        <>
-            <ToastContainer/>
-        </>
+        <div hidden={searchParams.get('success') === 'true' ? true : false}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    minHeight: '100vh',
+                }}
+            >
+                <Typography variant="h4" color={'red'}>
+                    ĐĂNG NHẬP KHÔNG THÀNH CÔNG
+                </Typography>
+                <Typography variant="h6" color={'black'}>
+                    Vui lòng đăng nhập với tài khoản đã có trong hệ thống
+                </Typography>
+                <Button variant="contained" onClick={() => navigate('/')}><Home /></Button>
+            </Box>
+            <ToastContainer />
+        </div>
     );
 }
 

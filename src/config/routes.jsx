@@ -18,7 +18,8 @@ const routes = {
     oauth2:'/oauth2/redirect',
     admin :'/admin',
     addProduct: '/admin/addProduct',
-    updateProduct:'admin/updateProduct/:id'
+    updateProduct:'admin/updateProduct/:id',
+    notFound:'*'
 };
 
 export default routes;

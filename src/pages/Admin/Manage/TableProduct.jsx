@@ -1,5 +1,5 @@
 import { DeleteForever, Edit } from "@mui/icons-material";
-import { Button, Modal, Pagination, Radio, Row, Table, Text } from "@nextui-org/react";
+import { Button, Modal, Pagination, Radio, Row, Table, Text, useAsyncList, useCollator } from "@nextui-org/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -69,8 +69,25 @@ export function RemoveModal({ product }) {
     );
 }
 function TableProduct({ products,show }) {
+    const collator = useCollator({ numeric: true });
+    async function load() {
+        return { items: products.list }
+    }
+    async function sort({ items, sortDescriptor }) {
+        return {
+            items: items.sort((a, b) => {
+                let first = a[sortDescriptor.column];
+                let second = b[sortDescriptor.column];
+                let cmp = collator.compare(first, second);
+                if (sortDescriptor.direction === "descending") {
+                    cmp *= -1;
+                }
+                return cmp;
+            }),
+        };
+    }
+    const list = useAsyncList({ load, sort });
     let navigate = useNavigate()
-    let [page,setPage] = useState(0)
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -85,25 +102,30 @@ function TableProduct({ products,show }) {
             </Row>
             <Table
                 bordered
-                striped
+                shadow={false}
+                color="primary"
+                aria-label="Orders table"
                 css={{
-                    height: "auto",
+                    height: "calc($space$14 * 10)",
+                  minWidth: "100%",
                 }}
-                selectionMode={'single'}
+                selectionMode="single"
+                sortDescriptor={list.sortDescriptor}
+                onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column allowsSorting>MÃ SẢN PHẨM</Table.Column>
-                    <Table.Column allowsSorting>TÊN SẢN PHẨM</Table.Column>
-                    <Table.Column allowsSorting>GIÁ</Table.Column>
-                    <Table.Column allowsSorting>GIẢM GIÁ</Table.Column>
-                    <Table.Column allowsSorting>DANH MỤC</Table.Column>
-                    <Table.Column allowsSorting>NHÃN HIỆU</Table.Column>
-                    <Table.Column allowsSorting>TRẠNG THÁI</Table.Column>
+                    <Table.Column >MÃ SẢN PHẨM</Table.Column>
+                    <Table.Column align="center" key={'name'} allowsSorting>TÊN SẢN PHẨM</Table.Column>
+                    <Table.Column align="center" key={'price'} allowsSorting>GIÁ</Table.Column>
+                    <Table.Column align="center" key={'discount'} allowsSorting>GIẢM GIÁ</Table.Column>
+                    <Table.Column align="center" key={'categoryName'} allowsSorting>DANH MỤC</Table.Column>
+                    <Table.Column align="center" key={'brandName'} allowsSorting>NHÃN HIỆU</Table.Column>
+                    <Table.Column align="center" key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
                     <Table.Column>CHỈNH SỬA / XOÁ</Table.Column>
                 </Table.Header>
 
-                <Table.Body>
-                    {products.map((product) => (
+                <Table.Body items={list.items} loadingState={list.loadingState}>
+                    {(product) => (
                         <Table.Row key={product.id}>
                             <Table.Cell>{product.id}</Table.Cell>
                             <Table.Cell>{product.name}</Table.Cell>
@@ -137,15 +159,16 @@ function TableProduct({ products,show }) {
 
                             </Table.Cell>
                         </Table.Row>
-                    ))}
+                    )}
                 </Table.Body>
                 <Table.Pagination
+                    total={(products.totalQuantity/5).toFixed(0)}
+                    loop
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
                     rowsPerPage={5}
-                    onPageChange={(page) => console.log({ page })}
                 />
                 
             </Table>

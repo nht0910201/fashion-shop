@@ -13,8 +13,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { getProductByCategory, searchProduct } from "../../services/ProductService";
-import { Rating, Tooltip, Slider, Button, Popover, Skeleton } from "@mui/material";
-import { filter } from 'smart-array-filter'
+import { Rating, Tooltip, Skeleton } from "@mui/material";
 
 export default function ProductList() {
     const [loading, setLoad] = useState(false)
@@ -45,7 +44,7 @@ export default function ProductList() {
         }
     }
     useEffect(() => {
-        getData('createdDate,desc')
+        getData()
     }, [keySearch, id, page])
     const sortArr = [
         { name: 'new', val: 'Mới nhất' },
@@ -129,6 +128,9 @@ export default function ProductList() {
                             <Card.Body css={{ p: 0 }}>
                                 <Card.Image
                                     src={product.images[0]?.url}
+                                    onMouseOver={e => (e.currentTarget.src = product.images[1]?.url ?
+                                        product.images[1]?.url : product.images[0]?.url)}
+                                    onMouseOut={e => (e.currentTarget.src = product.images[0]?.url)}
                                     objectFit="cover"
                                     width="100%"
                                     height="100%"

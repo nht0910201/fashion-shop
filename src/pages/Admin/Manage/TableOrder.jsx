@@ -1,5 +1,5 @@
 import { Visibility } from "@mui/icons-material";
-import { Button, Col, Divider, Grid, Image, Modal, Row, Spacer, Table, Text } from "@nextui-org/react";
+import { Button, Col, Divider, Grid, Image, Loading, Modal, Row, Spacer, Table, Text, useAsyncList, useCollator } from "@nextui-org/react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from "react";
@@ -88,161 +88,202 @@ export function OrderModal({ orderId }) {
         cancelOrder()
     }
     return (
-        <div>
-            <Button light auto onClick={handler}>
-                <Visibility />
-            </Button>
-            <Modal
-                width="60%"
-                scroll
-                closeButton
-                aria-labelledby="modal-title"
-                open={visible}
-                onClose={closeHandler}
-            >
-                <Modal.Header>
-                    <Text id="modal-title" size={18}>
-                        Đơn hàng:  <Text b>{order.id}</Text>
-                    </Text>
-                </Modal.Header>
-                <Modal.Body>
-                    <Grid.Container wrap="wrap" gap={1} justify={'center'}>
-                        <Grid xs={12} lg={8} direction='column' justify="center">
-                            <Divider />
-                            {order.items?.map((item) => (
-                                <Row key={item.id} justify='space-between'>
-                                    <Grid>
-                                        <Image autoResize objectFit='contain' width={100} height={100} src={item.image} alt="...Loading" />
-                                    </Grid>
+        <>
+            {!order.id ?
+                <div>
+                    <Button light auto onClick={handler}>
+                        <Visibility />
+                    </Button>
+                    <Modal
+                        width="50%"
+                        aria-labelledby="modal-title"
+                        open={visible}
+                        onClose={closeHandler}
+                    >
+                        <Modal.Body>
+                            <Grid.Container wrap="wrap" justify="center" gap={2} >
+                                <Grid xs={12} css={{ w: '100vw', h: '50vh' }} alignItems='center' justify="center">
+                                    <Loading size='xl' type='gradient' color={'warning'} />
+                                </Grid>
+                            </Grid.Container>
+                        </Modal.Body>
+                    </Modal>
+                </div>
+                : <div>
+                    <Button light auto onClick={handler}>
+                        <Visibility />
+                    </Button>
+                    <Modal
+                        width="60%"
+                        scroll
+                        closeButton
+                        aria-labelledby="modal-title"
+                        open={visible}
+                        onClose={closeHandler}
+                    >
+                        <Modal.Header>
+                            <Text id="modal-title" size={18}>
+                                Đơn hàng:  <Text b>{order.id}</Text>
+                            </Text>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Grid.Container wrap="wrap" gap={1} justify={'center'}>
+                                <Grid xs={12} lg={8} direction='column' justify="center">
+                                    <Divider />
+                                    {order.items?.map((item) => (
+                                        <Row key={item.id} justify='space-between'>
+                                            <Grid>
+                                                <Image autoResize objectFit='contain' width={100} height={100} src={item.image} alt="...Loading" />
+                                            </Grid>
 
-                                    <Col>
-                                        <Row css={{ marginTop: '$5' }}>
-                                            {item.name}
+                                            <Col>
+                                                <Row css={{ marginTop: '$5' }}>
+                                                    {item.name}
+                                                </Row>
+                                                <Row align='center'>
+                                                    <Text size={18}>SL: {item.quantity} /</Text>
+                                                    <Text size={18} css={{ marginLeft: '$2', marginRight: '$2' }}>Size: {item.size}/ Màu:</Text>
+                                                    <span className={classNames(
+                                                        'z-10 h-5 w-5 border border-black border-opacity-10 rounded-full'
+                                                    )} style={{ backgroundColor: item.color }}></span>
+                                                </Row>
+                                                <Row>
+                                                    <Text css={{ marginRight: '$10' }} size={20} >{formatPrice(item.subPrice)}</Text>
+                                                </Row>
+                                            </Col>
                                         </Row>
-                                        <Row align='center'>
-                                            <Text size={18}>SL: {item.quantity} /</Text>
-                                            <Text size={18} css={{ marginLeft: '$2', marginRight: '$2' }}>Size: {item.size}/ Màu:</Text>
-                                            <span className={classNames(
-                                                'z-10 h-5 w-5 border border-black border-opacity-10 rounded-full'
-                                            )} style={{ backgroundColor: item.color }}></span>
-                                        </Row>
-                                        <Row>
-                                            <Text css={{ marginRight: '$10' }} size={20} >{formatPrice(item.subPrice)}</Text>
-                                        </Row>
-                                    </Col>
-                                </Row>
-                            ))}
-                            <Divider />
-                            <Row gap={2}>
-                                <Col>
-                                    <Text size={'$2xl'}>
-                                        Tạm tính:
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <Text size={'$2xl'}>
-                                        {formatPrice(order?.totalPrice)}
-                                    </Text>
-                                </Col>
+                                    ))}
+                                    <Divider />
+                                    <Row gap={2}>
+                                        <Col>
+                                            <Text size={'$2xl'}>
+                                                Tạm tính:
+                                            </Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$2xl'}>
+                                                {formatPrice(order?.totalPrice)}
+                                            </Text>
+                                        </Col>
 
-                            </Row>
-                            <Row gap={2} justify='center'>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        Hình thức thanh toán:
-                                    </Text>
-                                </Col>
-                                <Col >
-                                    <Text size={'$xl'}>
-                                        {order?.paymentType}
-                                    </Text>
-                                </Col>
-                            </Row>
-                            <Row gap={2} justify='center'>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        Người nhận:
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        {order.deliveryDetail?.receiveName}
-                                    </Text>
-                                </Col>
-                            </Row>
-                            <Row gap={2} justify='center'>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        Số điện thoại:
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        {order.deliveryDetail?.receivePhone}
-                                    </Text>
-                                </Col>
-                            </Row>
-                            <Row gap={2} justify='center'>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        Địa chỉ:
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        {order.deliveryDetail?.receiveAddress}/
-                                        {wards.map((ward) => (ward.WardCode === order.deliveryDetail?.receiveWard ? ward.WardName : ""))}/
-                                        {districts.map((district) => (district.DistrictID === +order.deliveryDetail?.receiveDistrict ? district.DistrictName : ""))}/
-                                        {provinces.map((province) => (province.ProvinceID === +order.deliveryDetail?.receiveProvince ? province.ProvinceName : ""))}
-                                    </Text>
-                                </Col>
-                            </Row>
-                            <Row gap={2} justify='center'>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        Phí vận chuyển:
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <Text size={'$xl'}>
-                                        Miễn phí
-                                    </Text>
-                                </Col>
-                            </Row>
-                            <Divider />
-                            <Row gap={2}>
-                                <Col>
-                                    <Text size={'$3xl'}>
-                                        Tổng cộng:
-                                    </Text>
-                                </Col>
-                                <Col>
-                                    <Text size={'$3xl'}>
-                                        {formatPrice(order.totalPrice)}
-                                    </Text>
-                                </Col>
-                            </Row>
-                        </Grid>
-                    </Grid.Container>
-                </Modal.Body>
-                <Modal.Footer justify="center">
-                    {order?.state === 'pending' ?
-                        <>
-                            <Button auto flat color="error" onClick={handleCancel}>
-                                Huỷ đơn hàng
-                            </Button>
-                            <Button auto onClick={handleConfirm}>
-                                Xác nhân đơn hàng
-                            </Button>
-                        </> : <></>}
+                                    </Row>
+                                    <Row gap={2} justify='center'>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                Hình thức thanh toán:
+                                            </Text>
+                                        </Col>
+                                        <Col >
+                                            <Text size={'$xl'}>
+                                                {order?.paymentType}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                    <Row gap={2} justify='center'>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                Người nhận:
+                                            </Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                {order.deliveryDetail?.receiveName}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                    <Row gap={2} justify='center'>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                Số điện thoại:
+                                            </Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                {order.deliveryDetail?.receivePhone}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                    <Row gap={2} justify='center'>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                Địa chỉ:
+                                            </Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                {order.deliveryDetail?.receiveAddress}/
+                                                {wards.map((ward) => (ward.WardCode === order.deliveryDetail?.receiveWard ? ward.WardName : ""))}/
+                                                {districts.map((district) => (district.DistrictID === +order.deliveryDetail?.receiveDistrict ? district.DistrictName : ""))}/
+                                                {provinces.map((province) => (province.ProvinceID === +order.deliveryDetail?.receiveProvince ? province.ProvinceName : ""))}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                    <Row gap={2} justify='center'>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                Phí vận chuyển:
+                                            </Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$xl'}>
+                                                Miễn phí
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                    <Divider />
+                                    <Row gap={2}>
+                                        <Col>
+                                            <Text size={'$3xl'}>
+                                                Tổng cộng:
+                                            </Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$3xl'}>
+                                                {formatPrice(order.totalPrice)}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                </Grid>
+                            </Grid.Container>
+                        </Modal.Body>
+                        <Modal.Footer justify="center">
+                            {order?.state === 'pending' ?
+                                <>
+                                    <Button auto flat color="error" onClick={handleCancel}>
+                                        Huỷ đơn hàng
+                                    </Button>
+                                    <Button auto onClick={handleConfirm}>
+                                        Xác nhân đơn hàng
+                                    </Button>
+                                </> : <></>}
 
-                </Modal.Footer>
-                <ToastContainer />
-            </Modal>
-        </div>
+                        </Modal.Footer>
+                        <ToastContainer />
+                    </Modal>
+                </div>
+            }
+        </>
     );
 }
 function TableOrder({ orders, show }) {
+    const collator = useCollator({ numeric: true });
+    async function load() {
+        return { items: orders.list }
+    }
+    async function sort({ items, sortDescriptor }) {
+        return {
+            items: items.sort((a, b) => {
+                let first = a[sortDescriptor.column];
+                let second = b[sortDescriptor.column];
+                let cmp = collator.compare(first, second);
+                if (sortDescriptor.direction === "descending") {
+                    cmp *= -1;
+                }
+                return cmp;
+            }),
+        };
+    }
+    const list = useAsyncList({ load, sort });
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -256,24 +297,28 @@ function TableOrder({ orders, show }) {
             </Row>
             <Table
                 bordered
-                striped
                 shadow={false}
+                color="primary"
+                aria-label="Orders table"
                 css={{
-                    height: "auto",
+                    height: "calc($space$14 * 10)",
+                    minWidth: "100%",
                 }}
-                selectionMode={'single'}
+                selectionMode="single"
+                sortDescriptor={list.sortDescriptor}
+                onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column allowsSorting>MÃ ĐƠN HÀNG</Table.Column>
-                    <Table.Column allowsSorting>NGƯỜI ĐẶT </Table.Column>
-                    <Table.Column allowsSorting>SỐ LƯỢNG SẢN PHẨM</Table.Column>
-                    <Table.Column allowsSorting>TỔNG SỐ TIỀN</Table.Column>
-                    <Table.Column allowsSorting>TRẠNG THÁI</Table.Column>
+                    <Table.Column >MÃ ĐƠN HÀNG</Table.Column>
+                    <Table.Column align="center" key={'userName'} allowsSorting>NGƯỜI ĐẶT*</Table.Column>
+                    <Table.Column align="center" key={'totalProduct'} allowsSorting>SỐ LƯỢNG SẢN PHẨM*</Table.Column>
+                    <Table.Column align="center" key={'totalPrice'} allowsSorting>TỔNG SỐ TIỀN*</Table.Column>
+                    <Table.Column align="center" key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
                     <Table.Column></Table.Column>
                 </Table.Header>
 
-                <Table.Body>
-                    {orders.list.map((order) => (
+                <Table.Body items={list.items} loadingState={list.loadingState}>
+                    {(order) => (
                         <Table.Row key={order.id}>
                             <Table.Cell>{order.id}</Table.Cell>
                             <Table.Cell>{order.userName}</Table.Cell>
@@ -284,15 +329,15 @@ function TableOrder({ orders, show }) {
                                 <OrderModal orderId={order.id} />
                             </Table.Cell>
                         </Table.Row>
-                    ))}
+                    )}
                 </Table.Body>
                 <Table.Pagination
+                    total={(orders.totalQuantity / 3).toFixed(0)}
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
-                    rowsPerPage={5}
-                    onPageChange={(page) => console.log({ page })}
+                    rowsPerPage={3}
                 />
             </Table>
         </span>

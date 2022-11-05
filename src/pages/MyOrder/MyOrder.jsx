@@ -1,9 +1,8 @@
 import { RemoveRedEyeOutlined } from '@mui/icons-material';
-import { Divider, Text } from '@nextui-org/react';
+import { Divider, Grid, Loading, Text } from '@nextui-org/react';
 import { Table } from "@nextui-org/react";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Loading from '../../components/Loading/Loading';
 import { getOrders } from '../../services/UserService';
 import { StyledBadge } from './StyledBadge'
 
@@ -29,105 +28,112 @@ export default function MyOrder() {
         getData()
     }, [])
 
-    if (now.length === 0 && last.length === 0) {
-        return <Loading />
-    }
     return (
         <>
-            <Text size={30} css={{ textAlign: 'center' }}>
-                Đơn hàng hiện tại
-            </Text>
-            <Table
-                aria-label="Example table with dynamic content"
-                css={{
-                    height: "auto",
-                    minWidth: "100%",
-                }}
-            >
-                <Table.Header>
-                    <Table.Column>MÃ ĐƠN HÀNG</Table.Column>
-                    <Table.Column>NGƯỜI ĐẶT</Table.Column>
-                    <Table.Column>TỔNG SỐ TIỀN</Table.Column>
-                    <Table.Column>SỐ LƯỢNG SẢN PHẨM</Table.Column>
-                    <Table.Column>TRẠNG THÁI</Table.Column>
-                    <Table.Column></Table.Column>
-                </Table.Header>
+            {now.length === 0 && last.length === 0 ?
+                <Grid.Container wrap="wrap" justify="center" gap={2} >
+                    <Grid xs={12} css={{ w: '100vw', h: '100vh' }} alignItems='center' justify="center">
+                        <Loading size='xl' type='gradient' color={'warning'} />
+                    </Grid>
+                </Grid.Container>
+                :
+                <>
+                    <Text size={30} css={{ textAlign: 'center' }}>
+                        Đơn hàng hiện tại
+                    </Text>
+                    <Table
+                        aria-label="Example table with dynamic content"
+                        css={{
+                            height: "auto",
+                            minWidth: "100%",
+                        }}
+                    >
+                        <Table.Header>
+                            <Table.Column>MÃ ĐƠN HÀNG</Table.Column>
+                            <Table.Column>NGƯỜI ĐẶT</Table.Column>
+                            <Table.Column>TỔNG SỐ TIỀN</Table.Column>
+                            <Table.Column>SỐ LƯỢNG SẢN PHẨM</Table.Column>
+                            <Table.Column>TRẠNG THÁI</Table.Column>
+                            <Table.Column></Table.Column>
+                        </Table.Header>
 
-                <Table.Body>
-                    {now.map((row) => (
-                        <Table.Row key={row.id}>
-                            <Table.Cell>{row.id}</Table.Cell>
-                            <Table.Cell >{row.userName}</Table.Cell>
-                            <Table.Cell >{formatPrice(row.totalPrice)}</Table.Cell>
-                            <Table.Cell >{row.totalProduct}</Table.Cell>
-                            <Table.Cell>
-                                <StyledBadge type={row.state}>{row.state}</StyledBadge>
-                            </Table.Cell>
-                            <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
-                                <button onClick={()=>navigate(`/orderDetail/${row.id}`)}>
-                                    <RemoveRedEyeOutlined />
-                                </button>
-                            </Table.Cell>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-                <Table.Pagination
-                    shadow
-                    noMargin
-                    align="center"
-                    color={'warning'}
-                    rowsPerPage={3}
-                    onPageChange={(page) => console.log({ page })}
-                />
-            </Table>
-            <Divider />
-            <Text size={30} css={{ textAlign: 'center' }}>
-                Đơn hàng hoàn tất
-            </Text>
-            <Table
-                aria-label="Example table with dynamic content"
-                css={{
-                    height: "auto",
-                    minWidth: "100%",
-                }}
-            >
-                <Table.Header>
-                    <Table.Column>MÃ ĐƠN HÀNG</Table.Column>
-                    <Table.Column>NGƯỜI ĐẶT</Table.Column>
-                    <Table.Column>TỔNG SỐ TIỀN</Table.Column>
-                    <Table.Column>SỐ LƯỢNG SẢN PHẨM</Table.Column>
-                    <Table.Column>TRẠNG THÁI</Table.Column>
-                    <Table.Column></Table.Column>
-                </Table.Header>
+                        <Table.Body>
+                            {now.map((row) => (
+                                <Table.Row key={row.id}>
+                                    <Table.Cell>{row.id}</Table.Cell>
+                                    <Table.Cell >{row.userName}</Table.Cell>
+                                    <Table.Cell >{formatPrice(row.totalPrice)}</Table.Cell>
+                                    <Table.Cell >{row.totalProduct}</Table.Cell>
+                                    <Table.Cell>
+                                        <StyledBadge type={row.state}>{row.state}</StyledBadge>
+                                    </Table.Cell>
+                                    <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
+                                        <button onClick={() => navigate(`/orderDetail/${row.id}`)}>
+                                            <RemoveRedEyeOutlined />
+                                        </button>
+                                    </Table.Cell>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                        <Table.Pagination
+                            shadow
+                            noMargin
+                            align="center"
+                            color={'warning'}
+                            rowsPerPage={3}
+                            onPageChange={(page) => console.log({ page })}
+                        />
+                    </Table>
+                    <Divider />
+                    <Text size={30} css={{ textAlign: 'center' }}>
+                        Đơn hàng hoàn tất
+                    </Text>
+                    <Table
+                        aria-label="Example table with dynamic content"
+                        css={{
+                            height: "auto",
+                            minWidth: "100%",
+                        }}
+                    >
+                        <Table.Header>
+                            <Table.Column>MÃ ĐƠN HÀNG</Table.Column>
+                            <Table.Column>NGƯỜI ĐẶT</Table.Column>
+                            <Table.Column>TỔNG SỐ TIỀN</Table.Column>
+                            <Table.Column>SỐ LƯỢNG SẢN PHẨM</Table.Column>
+                            <Table.Column>TRẠNG THÁI</Table.Column>
+                            <Table.Column></Table.Column>
+                        </Table.Header>
 
-                <Table.Body>
-                    {last.map((row) => (
-                        <Table.Row key={row.id}>
-                            <Table.Cell >{row.id}</Table.Cell>
-                            <Table.Cell >{row.userName}</Table.Cell>
-                            <Table.Cell >{formatPrice(row.totalPrice)}</Table.Cell>
-                            <Table.Cell >{row.totalProduct}</Table.Cell>
-                            <Table.Cell>
-                                <StyledBadge type={row.state}>{row.state}</StyledBadge>
-                            </Table.Cell>
-                            <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
-                                <button onClick={()=>navigate(`/orderDetail/${row.id}`)}>
-                                    <RemoveRedEyeOutlined />
-                                </button>
-                            </Table.Cell>
-                        </Table.Row>
-                    ))}
+                        <Table.Body>
+                            {last.map((row) => (
+                                <Table.Row key={row.id}>
+                                    <Table.Cell >{row.id}</Table.Cell>
+                                    <Table.Cell >{row.userName}</Table.Cell>
+                                    <Table.Cell >{formatPrice(row.totalPrice)}</Table.Cell>
+                                    <Table.Cell >{row.totalProduct}</Table.Cell>
+                                    <Table.Cell>
+                                        <StyledBadge type={row.state}>{row.state}</StyledBadge>
+                                    </Table.Cell>
+                                    <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
+                                        <button onClick={() => navigate(`/orderDetail/${row.id}`)}>
+                                            <RemoveRedEyeOutlined />
+                                        </button>
+                                    </Table.Cell>
+                                </Table.Row>
+                            ))}
 
-                </Table.Body>
-                <Table.Pagination
-                    shadow
-                    noMargin
-                    align="center"
-                    color={'warning'}
-                    rowsPerPage={3}
-                    onPageChange={(page) => console.log({ page })}
-                />
-            </Table>
+                        </Table.Body>
+                        <Table.Pagination
+                            shadow
+                            noMargin
+                            align="center"
+                            color={'warning'}
+                            rowsPerPage={3}
+                            onPageChange={(page) => console.log({ page })}
+                        />
+                    </Table>
+                </>
+            }
         </>
     );
 }

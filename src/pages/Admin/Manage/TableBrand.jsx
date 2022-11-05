@@ -1,9 +1,9 @@
 import { Edit, FileUpload } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
-import { Button, Image, Row, Table, Text, Radio, Modal, Input } from '@nextui-org/react'
+import { Button, Image, Row, Table, Text, Radio, Modal, Input, useAsyncList, useCollator } from '@nextui-org/react'
 import { useState } from 'react';
-import {  UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
-import { addBrandByAdmin,updateBrandByAdmin } from '../../../services/AdminService';
+import { UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
+import { addBrandByAdmin, updateBrandByAdmin } from '../../../services/AdminService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../components/Alert/UpdateError';
@@ -25,19 +25,19 @@ export function AddModal() {
         setFile(e.target.files[0])
         setPreview(URL.createObjectURL(e.target.files[0]))
     }
-    const addBrand = async () =>{
+    const addBrand = async () => {
         const data = new FormData();
         data.append('file', file)
-        data.append('name',name)
+        data.append('name', name)
         const w = toast.loading("Vui lòng chờ ...")
         let res = await addBrandByAdmin(data)
         if (res.data.success) {
-            UpdateSuccessNavigate(w,'Thêm nhãn hàng thành công','/admin?page=brand')
+            UpdateSuccessNavigate(w, 'Thêm nhãn hàng thành công', '/admin?page=brand')
         } else {
-            UpdateError(w,'Thêm nhãn hàng thất bại thất bại')
+            UpdateError(w, 'Thêm nhãn hàng thất bại thất bại')
         }
     }
-    const handleAddBrand = () =>{
+    const handleAddBrand = () => {
         addBrand()
     }
     return (
@@ -60,7 +60,7 @@ export function AddModal() {
                     <Input size='lg' placeholder="Tên nhãn hàng" type={'text'} value={name} onChange={handleChangeName} />
                     <Image
                         alt="...Loading"
-                        css={{borderRadius:'$2xl'}}
+                        css={{ borderRadius: '$2xl' }}
                         hidden={preview === '' ? true : false}
                         src={preview === '' ? '' : preview}
                     />
@@ -87,7 +87,7 @@ export function AddModal() {
                         Lưu
                     </Button>
                 </Modal.Footer>
-                <ToastContainer/>
+                <ToastContainer />
             </Modal>
         </div>
     );
@@ -98,7 +98,7 @@ export function EditModal({ brand }) {
     const [file, setFile] = useState(null)
     const [preview, setPreview] = useState('')
     const handler = () => {
-            setVisible(true)
+        setVisible(true)
     };
     const handleChangeName = (e) => {
         setBrandNew({ ...brandNew, name: e.target.value })
@@ -117,18 +117,19 @@ export function EditModal({ brand }) {
         const wait = toast.loading('Vui lòng chờ ...!')
         const data = new FormData();
         data.append('file', file)
-        data.append('name',brandNew.name)
-        data.append('state',brandNew.state)
-        let res = await updateBrandByAdmin(data,brandNew.id)
-        if(res.data.success){
-            UpdateSuccessNavigate(wait,'Cập nhật nhãn hàng thành công','/admin?page=brand');
-        }else{
-            UpdateError(wait,'Cập nhật nhãn hàng thất bại')
+        data.append('name', brandNew.name)
+        data.append('state', brandNew.state)
+        let res = await updateBrandByAdmin(data, brandNew.id)
+        if (res.data.success) {
+            UpdateSuccessNavigate(wait, 'Cập nhật nhãn hàng thành công', '/admin?page=brand');
+        } else {
+            UpdateError(wait, 'Cập nhật nhãn hàng thất bại')
         }
     }
-    const handleUpdateBrand = () =>{
+    const handleUpdateBrand = () => {
         updateBrand()
     }
+
     return (
         <div>
             <Button auto light onClick={handler}>
@@ -153,8 +154,8 @@ export function EditModal({ brand }) {
                     </Radio.Group>
                     <Image
                         alt="...Loading"
-                        css={{borderRadius:'$2xl'}}
-                        hidden={brandNew.image === null ? true : false }
+                        css={{ borderRadius: '$2xl' }}
+                        hidden={brandNew.image === null ? true : false}
                         src={preview === '' ? brandNew.image : preview}
                     />
                     <IconButton
@@ -180,54 +181,79 @@ export function EditModal({ brand }) {
                         Lưu
                     </Button>
                 </Modal.Footer>
-                <ToastContainer/>
+                <ToastContainer />
             </Modal>
         </div>
     );
 }
-function TableBrand({ brands,show }) {
+function TableBrand({ brands, show }) {
+    console.log(brands.length)
+    const collator = useCollator({ numeric: true });
+    async function load() {
+        return { items: brands }
+    }
+    async function sort({ items, sortDescriptor }) {
+        return {
+            items: items.sort((a, b) => {
+                let first = a[sortDescriptor.column];
+                let second = b[sortDescriptor.column];
+                let cmp = collator.compare(first, second);
+                if (sortDescriptor.direction === "descending") {
+                    cmp *= -1;
+                }
+                return cmp;
+            }),
+        };
+    }
+    const list = useAsyncList({ load, sort });
     return (
-        <div hidden = {show} id='brand'>
+        <div hidden={show} id='brand'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>THƯƠNG HIỆU</Text>
                 <AddModal />
             </Row>
             <Table
-                bordered
-                striped
+                aria-label='Table Brand'
+                // bordered
+                // striped
                 css={{
                     height: "auto",
+                    minWidth: "100%",
                 }}
                 selectionMode={'single'}
+                sortDescriptor={list.sortDescriptor}
+                onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column></Table.Column>
-                    <Table.Column>TÊN THƯƠNG HIỆU</Table.Column>
-                    <Table.Column>TRẠNG THÁI</Table.Column>
-                    <Table.Column>Chỉnh sửa / Xoá</Table.Column>
+                    <Table.Column align='center'></Table.Column>
+                    <Table.Column align='center' key={'name'} allowsSorting>TÊN THƯƠNG HIỆU</Table.Column>
+                    <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
+                    <Table.Column align='center'>Chỉnh sửa / Xoá</Table.Column>
                 </Table.Header>
 
-                <Table.Body>
-                    {brands.map((brand) => (
-                        <Table.Row key={brand.id}>
+                <Table.Body items={list.items} loadingState={list.loadingState}>
+                    {(item) => (
+                        <Table.Row key={item.id}>
                             <Table.Cell>
-                                <Image src={brand.image} width={80} />
+                                <Image src={item.image} width={80} />
                             </Table.Cell>
-                            <Table.Cell>{brand.name}</Table.Cell>
-                            <Table.Cell >{brand.state}</Table.Cell>
+                            <Table.Cell>{item.name}</Table.Cell>
+                            <Table.Cell>{item.state}</Table.Cell>
                             <Table.Cell css={{ display: 'flex', height: 80 }}>
-                                <EditModal brand={brand} />
+                                <EditModal brand={item} />
                             </Table.Cell>
                         </Table.Row>
-                    ))}
+                    )}
                 </Table.Body>
                 <Table.Pagination
+                    total={(brands.length/3).toFixed(0)}
+                    loop
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
-                    rowsPerPage={5}
-                    onPageChange={(page) => console.log({ page })}
+                    rowsPerPage={3}
+                    // onPageChange={(page) => console.log({ page })}
                 />
             </Table>
         </div>

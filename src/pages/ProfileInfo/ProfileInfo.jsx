@@ -14,7 +14,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ModalChangePass from './ModalChangePass';
 import ModalChangeAvatar from './ModalChangeAvatar';
-import Loading from '../../components/Loading/Loading';
 import { UpdateSuccessReload } from './../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../components/Alert';
 import { getDistrict, getProvince, getWard } from '../../services/AuthService';
@@ -113,11 +112,7 @@ export default function ProfileInfo() {
     const handleSaveInfo = () => {
         updateInfo(user, id)
     }
-    // if (user.id === undefined) {
-    //     return (
-    //         <Loading />
-    //     )
-    // }
+
     return (
         <Container sx={{ boxShadow: 3, borderRadius: 1 }} component="main" maxWidth="sm" >
             <CssBaseline />
@@ -130,9 +125,11 @@ export default function ProfileInfo() {
                         alignItems: 'center',
                     }}
                 >
-                    <Skeleton variant="rectangular" height={400} />
-                    <Skeleton />
-                    <Skeleton width="75%" />
+                    <Skeleton variant="circular" width={80} height={80} sx={{marginBottom:3}}/>
+                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
+                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
+                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
+                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
                 </Box>
                 :
                 <Box
