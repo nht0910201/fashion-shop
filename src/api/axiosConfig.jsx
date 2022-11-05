@@ -6,7 +6,7 @@ const axiosConfig = axios.create({
     // baseURL:'http://localhost:8080/api'
 });
 const axiosCountry = axios.create({
-    baseURL:'https://dev-online-gateway.ghn.vn/shiip/public-api/master-data',
+    baseURL:'https://dev-online-gateway.ghn.vn/shiip/public-api',
 })
 axiosConfig.interceptors.request.use(
     function (req) {
@@ -21,7 +21,7 @@ axiosConfig.interceptors.request.use(
 );
 
 export const getCountryPost = async (path,params={}) => {
-    const response = await axiosCountry.post(path,params,{headers:{"token":"e035a837-4333-11ed-9ad7-269dd9db11fd"}});
+    const response = await axiosCountry.post(path,params,{headers:{"token":"e035a837-4333-11ed-9ad7-269dd9db11fd","ShopId":"119571"}});
     return response.data;
 };
 export const get = async (path, params = {}) => {

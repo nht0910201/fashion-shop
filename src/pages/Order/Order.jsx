@@ -1,9 +1,9 @@
 import {  FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { Button, Col, Divider, Grid, Image, Input, Radio, Row, Spacer, Text } from '@nextui-org/react';
+import { Button, Col, Divider, Grid, Image, Input, Loading, Radio, Row, Spacer, Text } from '@nextui-org/react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getDistrict, getProvince, getWard } from '../../services/AuthService';
+import { calShipingFee, getDistrict, getProvince, getWard } from '../../services/AuthService';
 import { getCart } from '../../services/CartService';
 import { makeAnOrder } from '../../services/Payment';
 import { getUserByID } from '../../services/UserService';
@@ -40,6 +40,7 @@ function Order() {
     const [province, setProvince] = useState()
     const [district, setDistrict] = useState()
     const [ward, setWard] = useState()
+    const [shippingFee, setShippingFee] = useState(0)
 
     useEffect(() => {
         async function getData() {
@@ -83,6 +84,25 @@ function Order() {
             getWardAPI(district)
         }
     }, [province,district])
+
+    useEffect(() => {
+        async function calShippingFeeAPI() {
+            if (district && ward && cart.totalProduct) {
+                let fee = await calShipingFee({
+                        "service_type_id":2,
+                        "to_district_id":district,
+                        "to_ward_code":ward,
+                        "weight":10*cart.totalProduct
+                    })
+                if (fee.code === 200) {
+                    setShippingFee(fee.data.total)
+                }
+            } else setShippingFee(0)
+        }
+        calShippingFeeAPI()
+    }, [district, cart.totalProduct,ward])
+
+    
     const handleChangeWard = (e) => {
         setUser({...user,ward:e.target.value});
         setWard(e.target.value)
@@ -266,6 +286,11 @@ function Order() {
                     </Button>
                 </Row>
             </Grid>
+            {!cart.id ? 
+            <Grid xs={12} sm={5} css={{ backgroundColor: '#fafafa', h:'100vh'}} alignItems='center' justify="center">
+                <Loading size='xl' type='gradient' color={'warning'}/>
+            </Grid>
+            :
             <Grid xs={12} sm={5} direction='column' css={{ backgroundColor: '#fafafa' }}>
                 <Row justify='flex-end'>
                     <Button onClick={backCart} size={'lg'} light color={'primary'}>
@@ -320,7 +345,7 @@ function Order() {
                     </Col>
                     <Col offset={5}>
                         <Text size={'$xl'}>
-                            Miễn phí
+                            {formatPrice(shippingFee)}
                         </Text>
                     </Col>
                 </Row>
@@ -337,7 +362,7 @@ function Order() {
                         </Text>
                     </Col>
                 </Row>
-            </Grid>
+            </Grid>}
             <ToastContainer />
         </Grid.Container>
     );

@@ -197,6 +197,9 @@ function Home() {
                                                   objectFit="cover"
                                                   width="100%"
                                                   height="100%"
+                                                  onMouseOver={e => (e.currentTarget.src = product.images[1]?.url? 
+                                                    product.images[1]?.url : product.images[0]?.url)}
+                                                  onMouseOut={e => (e.currentTarget.src = product.images[0]?.url)} 
                                                   alt={product.name}
                                               />
                                           </Card.Body>
@@ -334,6 +337,9 @@ function Home() {
                                           <Card.Body css={{ p: 0 }}>
                                               <Card.Image
                                                   src={product.images[0]?.url}
+                                                  onMouseOver={e => (e.currentTarget.src = product.images[1]?.url? 
+                                                    product.images[1]?.url : product.images[0]?.url)}
+                                                  onMouseOut={e => (e.currentTarget.src = product.images[0]?.url)} 
                                                   objectFit="cover"
                                                   width="100%"
                                                   height="100%"

@@ -37,7 +37,7 @@ export const resetPassword = async (data={}) =>{
 
 export const getProvince = async (data) =>{
     try {
-        const response = await getCountryPost('/province',data);
+        const response = await getCountryPost('/master-data/province',data);
         return response
     } catch (error) {
          return error.response
@@ -46,7 +46,7 @@ export const getProvince = async (data) =>{
 
 export const getDistrict = async (data={}) =>{
     try {
-        const response = await getCountryPost('/district',data);
+        const response = await getCountryPost('/master-data/district',data);
         return response
     } catch (error) {
          return error.response
@@ -54,7 +54,15 @@ export const getDistrict = async (data={}) =>{
 }
 export const getWard = async (data={}) =>{
     try {
-        const response = await getCountryPost('/ward?district_id',data);
+        const response = await getCountryPost('/master-data/ward?district_id',data);
+        return response
+    } catch (error) {
+         return error.response
+    };
+}
+export const calShipingFee = async (data={}) =>{
+    try {
+        const response = await getCountryPost('/v2/shipping-order/fee',data);
         return response
     } catch (error) {
          return error.response

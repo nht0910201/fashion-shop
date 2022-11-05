@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { cancelOrder, getOrder } from "../../services/UserService";
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Col, Divider, Grid, Image, Row, Text } from "@nextui-org/react";
+import { Button, Col, Divider, Grid, Image, Loading, Row, Text } from "@nextui-org/react";
 import { getDistrict, getProvince, getWard } from "../../services/AuthService";
 import { Box, Step, StepLabel, Stepper } from "@mui/material";
 import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavigate";
@@ -80,6 +80,11 @@ function OrderDetail() {
     }
     return (
         <Grid.Container wrap="wrap" justify="center" gap={2} >
+            {!order.id ? 
+                <Grid xs={12} css={{w:'100vw', h:'100vh'}} alignItems='center' justify="center">
+                    <Loading size='xl' type='gradient' color={'warning'}/>
+                </Grid>
+            :
             <Grid xs={12} lg={8} direction='column' justify="center">
                 <Row justify="space-between" align="center">
                     <Text hideIn={'xs'} size={'$2xl'}>Mã đơn hàng: {order.id}</Text>
@@ -236,6 +241,7 @@ function OrderDetail() {
                     </Box>
                 </Row>
             </Grid>
+            }
             <ToastContainer />
         </Grid.Container>
     );

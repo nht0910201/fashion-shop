@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Text, Input, Row, Link } from "@nextui-org/react";
+import { Modal, Button, Text, Input, Row, Link, Loading } from "@nextui-org/react";
 import { Mail } from "./Mail";
 import { Password } from "./Password";
 import * as authAction from '../../../../redux/auth/authSlice'
@@ -19,6 +19,7 @@ export default function ModalLogin() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
     const closeHandler = () => {
         setVisible(false);
     };
@@ -34,6 +35,7 @@ export default function ModalLogin() {
             }
         }
         else {
+            setLoading(false)
             toast.error('Incorrect Username or Password', {
                 position: "top-right",
                 autoClose: 3000,
@@ -52,6 +54,7 @@ export default function ModalLogin() {
         setPassword(e.target.value)
     }
     const handleLogin = () => {
+        setLoading(true)
         login({ username, password })
     }
 
@@ -76,8 +79,10 @@ export default function ModalLogin() {
                 <Modal.Body>
                     <Input
                         clearable
+                        autoFocus
                         bordered
                         fullWidth
+                        tabIndex={1}
                         color="warning"
                         size="lg"
                         placeholder="Email"
@@ -87,6 +92,7 @@ export default function ModalLogin() {
                     />
                     <Input.Password
                         clearable
+                        tabIndex={2}
                         bordered
                         fullWidth
                         color="warning"
@@ -107,8 +113,10 @@ export default function ModalLogin() {
                     {/* <Button auto flat color="error" onClick={closeHandler}>
                         Close
                     </Button> */}
-                    <Button ghost color="warning" onClick={handleLogin}>
-                        Đăng nhập
+                    <Button ghost disabled={loading} color="warning" onClick={handleLogin}>
+                        {loading ? 
+                        <Loading color={'currentColor'} type='points-opacity' />
+                         : "Đăng nhập" }
                     </Button>
                     <Row justify="center">
                         <Link css={{ marginRight: '$5' }} href="http://fashion-store-capstone.herokuapp.com/oauth2/authorization/google"><Google /></Link>
