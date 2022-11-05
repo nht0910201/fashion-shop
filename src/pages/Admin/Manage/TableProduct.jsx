@@ -1,11 +1,12 @@
 import { DeleteForever, Edit } from "@mui/icons-material";
-import { Button, Modal, Radio, Row, Table, Text } from "@nextui-org/react";
+import { Button, Modal, Pagination, Radio, Row, Table, Text } from "@nextui-org/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from "../../../components/Alert/UpdateError";
 import { UpdateSuccessReload } from "../../../components/Alert/UpdateSuccessReload";
+import { UpdateSuccessNavigate } from "../../../components/Alert/UpdateSuccessNavigate";
 import { updateProductByAdmin } from "../../../services/AdminService";
 
 export function RemoveModal({ product }) {
@@ -24,7 +25,7 @@ export function RemoveModal({ product }) {
         const w = toast.loading('Vui lòng chờ ...!')
         let res = await updateProductByAdmin(data, id)
         if (res.success) {
-            UpdateSuccessReload(w, 'Cập nhật trạng thái sản phẩm thành công', true)
+            UpdateSuccessNavigate(w, 'Cập nhật trạng thái sản phẩm thành công', '/admin?page=product')
         } else {
             UpdateError(w, 'Cập nhật trạng thái sản phẩm không thành công')
         }
@@ -67,8 +68,9 @@ export function RemoveModal({ product }) {
         </div>
     );
 }
-function TableProduct({ products }) {
+function TableProduct({ products,show }) {
     let navigate = useNavigate()
+    let [page,setPage] = useState(0)
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -76,7 +78,7 @@ function TableProduct({ products }) {
         }).format(value);
 
     return (
-        <div hidden id='product'>
+        <div hidden={show} id='product'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>SẢN PHẨM</Text>
                 <Button auto ghost color={'warning'} onClick={()=>navigate('/admin/addProduct')}>Thêm sản phẩm</Button>
@@ -142,9 +144,10 @@ function TableProduct({ products }) {
                     noMargin
                     align="center"
                     color={'warning'}
-                    rowsPerPage={7}
+                    rowsPerPage={5}
                     onPageChange={(page) => console.log({ page })}
                 />
+                
             </Table>
             <ToastContainer />
         </div>

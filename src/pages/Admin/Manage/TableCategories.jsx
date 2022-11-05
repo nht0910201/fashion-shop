@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { addCategoryByAdmin, updateCategoryByAdmin } from '../../../services/AdminService';
 import { UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../../components/Alert/UpdateError';
+import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 
 export function AddModal({categories}) {
     const root = categories.filter((category)=>{
@@ -28,7 +29,7 @@ export function AddModal({categories}) {
         const wait = toast.loading('Vui lòng chờ...!')
         let res = await addCategoryByAdmin(data)
         if(res.data.success){
-            UpdateSuccessReload(wait,'Thêm danh mục thành công',true)
+            UpdateSuccessNavigate(wait,'Thêm danh mục thành công','/admin?page=category')
         }else{
             UpdateError(wait,'Thêm danh mục thất bại')
         }
@@ -108,7 +109,7 @@ export function EditModal({ category }) {
         let res = await updateCategoryByAdmin(data,id)
         console.log(res)
         if(res.success){
-            UpdateSuccessReload(w,'Cập nhật danh mục thành công',true)
+            UpdateSuccessNavigate(w,'Cập nhật danh mục thành công','/admin?page=category')
         }else{
             UpdateError(w,'Cập nhật danh mục thất bại')
         }
@@ -152,9 +153,9 @@ export function EditModal({ category }) {
         </div>
     );
 }
-function TableCategories({ categories }) {
+function TableCategories({ categories,show }) {
     return (
-        <div id='category' hidden>
+        <div id='category' hidden = {show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>DANH MỤC</Text>
                 {/* <Button auto ghost color={'warning'} onClick={() => navigate('/admin/addCategory')}>Thêm Danh Mục</Button> */}

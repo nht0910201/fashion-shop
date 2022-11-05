@@ -24,6 +24,7 @@ import { useEffect } from 'react';
 import { getAllCategory } from '../../../../services/CategoryService';
 import { addProductAttrByAdmin, addProductByAdmin, addProductOptionByAdmin, getAllBrandsByAdmin } from '../../../../services/AdminService';
 import { UpdateSuccessReload } from '../../../../components/Alert/UpdateSuccessReload';
+import { UpdateSuccessNavigate } from '../../../../components/Alert/UpdateSuccessNavigate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../../components/Alert/UpdateError';
@@ -138,7 +139,6 @@ function AddProduct() {
         })
         const wait = toast.loading('Vui lòng chờ...!')
         let res = await addProductOptionByAdmin(data, productId)
-        console.log(res)
         if (res.data.success) {
             UpdateSuccessReload(wait, 'Thêm phiên bản thành công', false)
         } else {
@@ -415,7 +415,7 @@ function AddProduct() {
                             <Button
                                 variant="contained"
                                 sx={{ mt: 3, ml: 1,backgroundColor:'red' }}
-                                onClick={() => window.location.href = '/admin'}
+                                onClick={() => window.location.href = '/admin?page=product'}
                             >
                                 <Home/>
                             </Button>

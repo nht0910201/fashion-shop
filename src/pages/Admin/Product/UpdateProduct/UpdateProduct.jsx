@@ -490,7 +490,7 @@ function UpdateProduct() {
             }
         }
         getData()
-    }, [])
+    }, [id])
 
     const handleChangeName = (e) => {
         setProduct({ ...product, name: e.target.value })
@@ -759,8 +759,7 @@ function UpdateProduct() {
                                     src={image.url}
                                     alt={'...Loading'}
                                     loading="lazy"
-                                />
-                                
+                                />                               
                             </ImageListItem>
                         ))}
                     </ImageList>
