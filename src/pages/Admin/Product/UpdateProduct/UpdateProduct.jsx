@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import { IconButton, ImageList, ImageListItem, TextareaAutosize } from '@mui/material';
+import { IconButton, ImageList, ImageListItem } from '@mui/material';
 import { Add, DeleteForever, Edit, FileUpload } from '@mui/icons-material';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -17,13 +17,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ChromePicker } from 'react-color';
 import { getAllCategory } from '../../../../services/CategoryService';
 import { addProductAttrByAdmin, addProductOptionByAdmin, delImagePooductByAdmin, getAllBrandsByAdmin, updateAttrByAdmin, updateProducOptionByAdmin, updateProductByAdmin, uploadImageByAdmin } from '../../../../services/AdminService';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getProductByID } from '../../../../services/ProductService';
 import { Dropdown, Input, Modal, Row, Table, Text } from '@nextui-org/react';
 import { UpdateSuccessReload } from '../../../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../../../components/Alert/UpdateError';
-import { Editor } from '@tinymce/tinymce-react'
-import { useRef } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const theme = createTheme();
 
@@ -469,6 +469,7 @@ export function AddAttrModal({ productId }) {
 }
 
 function UpdateProduct() {
+    let navigate = useNavigate()
     const { id } = useParams();
     const [product, setProduct] = useState({})
     const [productId, setProductId] = useState('')
@@ -493,7 +494,6 @@ function UpdateProduct() {
         }
         getData()
     }, [id])
-    const editorRef = useRef(null);
     const handleChangeName = (e) => {
         setProduct({ ...product, name: e.target.value })
     }
@@ -504,9 +504,7 @@ function UpdateProduct() {
         setProduct({ ...product, discount: e.target.value })
     }
     const handleChangeDes = (e) => {
-        if (editorRef.current) {
-            setProduct({ ...product, description: editorRef.current.getContent() })
-        }
+        setProduct({ ...product, description: e })
     }
     const updateProduct = async (data, id) => {
         const wait = toast.loading('Vui lòng chờ...!')
@@ -531,14 +529,14 @@ function UpdateProduct() {
             UpdateError(w, 'Xoá ảnh không thành công')
         }
     }
-
+    
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Grid container>
                 <Grid item xs={12} sm={6}>
                     <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
-
+                        <Button onClick={()=>navigate('/admin?page=product')}>Về trang quản lý</Button>
                         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
                             <Typography component="h4" variant="h5" align="center">
                                 THÔNG TIN SẢN PHẨM
@@ -632,34 +630,7 @@ function UpdateProduct() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <label style={{ fontSize: 12 }}>Mô tả sản phẩm</label>
-                                        {/* <TextareaAutosize
-                                            aria-label="empty textarea"
-                                            placeholder="Mô tả sản phẩm"
-                                            value={product.description}
-                                            onChange={handleChangeDes}
-                                            style={{ width: '100%', border: '1px solid black', padding: 5 }}
-                                        /> */}
-                                        <Editor
-                                            apiKey='jlgjkipwsouwi1pd47mxpwmaf6hrnacs6f2yht3j4yekrfu5'
-                                            onInit={(evt, editor) => editorRef.current = editor}
-                                            initialValue={product.description}
-                                            // value={description}
-                                            onEditorChange={handleChangeDes}
-                                            init={{
-                                                height: 500,
-                                                menubar: false,
-                                                plugins: [
-                                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                                ],
-                                                toolbar: 'undo redo | blocks | ' +
-                                                    'bold italic forecolor | alignleft aligncenter ' +
-                                                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                                                    'removeformat | help',
-                                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                            }}
-                                        />
+                                        <ReactQuill theme="snow" value={product.description} onChange={handleChangeDes} />
                                     </Grid>
                                 </Grid>
                             </React.Fragment>
@@ -678,7 +649,7 @@ function UpdateProduct() {
                     </Container>
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ marginRight: 0 }}>
-                    <Row justify='space-between' align='center' css={{marginTop:'$15'}}>
+                    <Row justify='space-between' align='center' css={{ marginTop: '$15' }}>
                         <Typography variant="h5" style={{ textAlign: 'center' }} gutterBottom>
                             CÁC PHIÊN BẢN
                         </Typography>

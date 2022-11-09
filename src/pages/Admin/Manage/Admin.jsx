@@ -14,6 +14,7 @@ function Admin() {
   const [brands, setBrands] = useState([])
   const [products, setProducts] = useState([])
   const [orders, setOrders] = useState({})
+
   useEffect(() => {
     async function getData() {
       let [products, orders, users, categories, brands] = await Promise.all([

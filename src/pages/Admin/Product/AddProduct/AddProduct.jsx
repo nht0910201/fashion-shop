@@ -16,8 +16,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { IconButton, ImageList, ImageListItem, Popover, TextareaAutosize } from '@mui/material';
-import { FileUpload, Home } from '@mui/icons-material';
+import { IconButton, ImageList, ImageListItem, Popover } from '@mui/material';
+import { FileUpload} from '@mui/icons-material';
 import { Text } from '@nextui-org/react';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -28,8 +28,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../../components/Alert/UpdateError';
 import { ChromePicker } from 'react-color';
-import { Editor } from '@tinymce/tinymce-react'
-import { useRef } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const steps = ['Thông tin sản phẩm', 'Phiên bản sản phẩm', 'Thông số'];
 
@@ -62,7 +62,6 @@ function AddProduct() {
     const [discount, setDiscount] = useState(0)
     const [category, setCategory] = useState('')
     const [brand, setBrand] = useState('')
-    const editorRef = useRef(null);
     const [description,setDes]= useState('')
     const [size, setSize] = useState('')
     const [stock, setStock] = useState('')
@@ -86,11 +85,9 @@ function AddProduct() {
         setBrand(e.target.value)
     }
     const handleChangeDes = (e) => {
-        if(editorRef.current){
-            setDes(editorRef.current.getContent())
-        }
+        setDes(e)
+
     }
-    // console.log(description)
     const handleChangeSize = (e) => {
         setSize(e.target.value)
     }
@@ -275,35 +272,8 @@ function AddProduct() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    {/* <TextareaAutosize
-                                        aria-label="empty textarea"
-                                        placeholder="Mô tả sản phẩm"
-                                        value={description}
-                                        onChange={handleChangeDes}
-                                        style={{ width: '100%', border: '1px solid black', padding: 5 }}
-                                    /> */}
                                     <label style={{fontSize:13}}>Mô tả sản phẩm</label>
-                                    <Editor
-                                        apiKey='jlgjkipwsouwi1pd47mxpwmaf6hrnacs6f2yht3j4yekrfu5'
-                                        onInit={(evt, editor) => editorRef.current = editor}
-                                        // initialValue="<p>Mô tả sản phẩm</p>"
-                                        // value={description}
-                                        onEditorChange={handleChangeDes}
-                                        init={{
-                                            height: 500,
-                                            menubar: false,
-                                            plugins: [
-                                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
-                                            ],
-                                            toolbar: 'undo redo | blocks | ' +
-                                                'bold italic forecolor | alignleft aligncenter ' +
-                                                'alignright alignjustify | bullist numlist outdent indent | ' +
-                                                'removeformat | help',
-                                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                        }}
-                                    />
+                                    <ReactQuill theme="snow" value={description} onChange={handleChangeDes} />
                                 </Grid>
                             </Grid>
                         </> : <></>}
@@ -443,7 +413,7 @@ function AddProduct() {
                                 sx={{ mt: 3, ml: 1, backgroundColor: 'red' }}
                                 onClick={() => window.location.href = '/admin?page=product'}
                             >
-                                <Home />
+                                Xong
                             </Button>
                             <Button
                                 variant="contained"
