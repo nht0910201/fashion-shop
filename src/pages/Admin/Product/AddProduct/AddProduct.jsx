@@ -24,11 +24,12 @@ import { useEffect } from 'react';
 import { getAllCategory } from '../../../../services/CategoryService';
 import { addProductAttrByAdmin, addProductByAdmin, addProductOptionByAdmin, getAllBrandsByAdmin } from '../../../../services/AdminService';
 import { UpdateSuccessReload } from '../../../../components/Alert/UpdateSuccessReload';
-import { UpdateSuccessNavigate } from '../../../../components/Alert/UpdateSuccessNavigate';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../../components/Alert/UpdateError';
 import { ChromePicker } from 'react-color';
+import { Editor } from '@tinymce/tinymce-react'
+import { useRef } from 'react';
 
 const steps = ['Thông tin sản phẩm', 'Phiên bản sản phẩm', 'Thông số'];
 
@@ -61,7 +62,8 @@ function AddProduct() {
     const [discount, setDiscount] = useState(0)
     const [category, setCategory] = useState('')
     const [brand, setBrand] = useState('')
-    const [description, setDes] = useState('')
+    const editorRef = useRef(null);
+    const [description,setDes]= useState('')
     const [size, setSize] = useState('')
     const [stock, setStock] = useState('')
     const [color, setColor] = useState('#1a237e')
@@ -84,8 +86,11 @@ function AddProduct() {
         setBrand(e.target.value)
     }
     const handleChangeDes = (e) => {
-        setDes(e.target.value)
+        if(editorRef.current){
+            setDes(editorRef.current.getContent())
+        }
     }
+    // console.log(description)
     const handleChangeSize = (e) => {
         setSize(e.target.value)
     }
@@ -112,7 +117,7 @@ function AddProduct() {
         }))
     }
     const handleNext = async (e) => {
-        setActiveStep(activeStep+1)
+        setActiveStep(activeStep + 1)
     };
     const [productId, setProductId] = useState('')
     const addProduct = async ({ name, description, price, discount, category, brand }) => {
@@ -145,15 +150,14 @@ function AddProduct() {
             UpdateError(wait, 'Thêm phiên bản thất bại')
         }
     }
-    const addProductAttr = async ({name,val},id) => {
-        
+    const addProductAttr = async ({ name, val }, id) => {
+
         const wait = toast.loading('Vui lòng chờ...!')
-        let res = await addProductAttrByAdmin({name,val},id)
-        console.log(res)
-        if(res.data.success){
-            UpdateSuccessReload(wait,'Thêm thông số chi tiết thành công',false)
-        }else{
-            UpdateError(wait,'Thêm thông số chi tiết thất bại')
+        let res = await addProductAttrByAdmin({ name, val }, id)
+        if (res.data.success) {
+            UpdateSuccessReload(wait, 'Thêm thông số chi tiết thành công', false)
+        } else {
+            UpdateError(wait, 'Thêm thông số chi tiết thất bại')
         }
     }
     const handleSave = () => {
@@ -161,9 +165,9 @@ function AddProduct() {
             addProduct({ name, description, price, discount, category, brand })
         } else if (activeStep === 1) {
             addProductOption()
-        }else if(activeStep===2){
-            
-            addProductAttr({name,val},productId)
+        } else if (activeStep === 2) {
+
+            addProductAttr({ name, val }, productId)
         }
     }
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -181,7 +185,7 @@ function AddProduct() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+            <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
                 <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
                     <Typography component="h1" variant="h4" align="center">
                         THÊM SẢN PHẨM
@@ -271,12 +275,34 @@ function AddProduct() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <TextareaAutosize
+                                    {/* <TextareaAutosize
                                         aria-label="empty textarea"
                                         placeholder="Mô tả sản phẩm"
                                         value={description}
                                         onChange={handleChangeDes}
                                         style={{ width: '100%', border: '1px solid black', padding: 5 }}
+                                    /> */}
+                                    <label style={{fontSize:13}}>Mô tả sản phẩm</label>
+                                    <Editor
+                                        apiKey='jlgjkipwsouwi1pd47mxpwmaf6hrnacs6f2yht3j4yekrfu5'
+                                        onInit={(evt, editor) => editorRef.current = editor}
+                                        // initialValue="<p>Mô tả sản phẩm</p>"
+                                        // value={description}
+                                        onEditorChange={handleChangeDes}
+                                        init={{
+                                            height: 500,
+                                            menubar: false,
+                                            plugins: [
+                                                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                                'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                            ],
+                                            toolbar: 'undo redo | blocks | ' +
+                                                'bold italic forecolor | alignleft aligncenter ' +
+                                                'alignright alignjustify | bullist numlist outdent indent | ' +
+                                                'removeformat | help',
+                                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -403,7 +429,7 @@ function AddProduct() {
                                         type={'text'}
                                         fullWidth
                                         variant="standard"
-                                        value={val} 
+                                        value={val}
                                         onChange={handleChangeVal}
                                     />
                                 </Grid>
@@ -414,21 +440,21 @@ function AddProduct() {
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <Button
                                 variant="contained"
-                                sx={{ mt: 3, ml: 1,backgroundColor:'red' }}
+                                sx={{ mt: 3, ml: 1, backgroundColor: 'red' }}
                                 onClick={() => window.location.href = '/admin?page=product'}
                             >
-                                <Home/>
+                                <Home />
                             </Button>
                             <Button
-                                    variant="contained"
-                                    sx={{ mt: 3, ml: 1 }}
-                                    onClick={handleSave}
-                                >
-                                    Lưu
-                                </Button>
+                                variant="contained"
+                                sx={{ mt: 3, ml: 1 }}
+                                onClick={handleSave}
+                            >
+                                Lưu
+                            </Button>
                             <Button onClick={handleNext}
                                 sx={{ mt: 3, ml: 1 }}
-                                disabled = {activeStep === 2 || activeStep === 0 ? true : false}
+                                disabled={activeStep === 2 || activeStep === 0 ? true : false}
                             >
                                 <ArrowForwardIcon />
                             </Button>

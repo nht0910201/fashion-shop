@@ -19,9 +19,11 @@ import { getAllCategory } from '../../../../services/CategoryService';
 import { addProductAttrByAdmin, addProductOptionByAdmin, delImagePooductByAdmin, getAllBrandsByAdmin, updateAttrByAdmin, updateProducOptionByAdmin, updateProductByAdmin, uploadImageByAdmin } from '../../../../services/AdminService';
 import { useParams } from 'react-router-dom';
 import { getProductByID } from '../../../../services/ProductService';
-import {  Dropdown, Input, Modal, Row, Table, Text } from '@nextui-org/react';
+import { Dropdown, Input, Modal, Row, Table, Text } from '@nextui-org/react';
 import { UpdateSuccessReload } from '../../../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../../../components/Alert/UpdateError';
+import { Editor } from '@tinymce/tinymce-react'
+import { useRef } from 'react';
 
 const theme = createTheme();
 
@@ -491,7 +493,7 @@ function UpdateProduct() {
         }
         getData()
     }, [id])
-
+    const editorRef = useRef(null);
     const handleChangeName = (e) => {
         setProduct({ ...product, name: e.target.value })
     }
@@ -502,12 +504,13 @@ function UpdateProduct() {
         setProduct({ ...product, discount: e.target.value })
     }
     const handleChangeDes = (e) => {
-        setProduct({ ...product, description: e.target.value })
+        if (editorRef.current) {
+            setProduct({ ...product, description: editorRef.current.getContent() })
+        }
     }
     const updateProduct = async (data, id) => {
         const wait = toast.loading('Vui lòng chờ...!')
         let res = await updateProductByAdmin(data, id);
-        console.log(res)
         if (res.success) {
             setProduct(res.data)
             setProductId(res.data.id)
@@ -519,26 +522,25 @@ function UpdateProduct() {
     const handleSave = () => {
         updateProduct(product, productId)
     }
-    console.log(product)
-    const removeImage = async (data,id) =>{
+    const removeImage = async (data, id) => {
         const w = toast.loading('Vui lòng chờ...!')
-        let res = await delImagePooductByAdmin({data},id)
-        console.log(res)
-        if(res.success){
-            UpdateSuccessReload(w,'Xoá ảnh thành công',true)
-        }else{
-            UpdateError(w,'Xoá ảnh không thành công')
+        let res = await delImagePooductByAdmin({ data }, id)
+        if (res.success) {
+            UpdateSuccessReload(w, 'Xoá ảnh thành công', true)
+        } else {
+            UpdateError(w, 'Xoá ảnh không thành công')
         }
     }
-    
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Grid container>
                 <Grid item xs={12} sm={6}>
-                    <Container component="main" maxWidth="sm" sx={{ mb: 4 }}>
+                    <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
+
                         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-                            <Typography component="h2" variant="h4" align="center">
+                            <Typography component="h4" variant="h5" align="center">
                                 THÔNG TIN SẢN PHẨM
                             </Typography>
                             <React.Fragment>
@@ -630,12 +632,33 @@ function UpdateProduct() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <label style={{ fontSize: 12 }}>Mô tả sản phẩm</label>
-                                        <TextareaAutosize
+                                        {/* <TextareaAutosize
                                             aria-label="empty textarea"
                                             placeholder="Mô tả sản phẩm"
                                             value={product.description}
                                             onChange={handleChangeDes}
                                             style={{ width: '100%', border: '1px solid black', padding: 5 }}
+                                        /> */}
+                                        <Editor
+                                            apiKey='jlgjkipwsouwi1pd47mxpwmaf6hrnacs6f2yht3j4yekrfu5'
+                                            onInit={(evt, editor) => editorRef.current = editor}
+                                            initialValue={product.description}
+                                            // value={description}
+                                            onEditorChange={handleChangeDes}
+                                            init={{
+                                                height: 500,
+                                                menubar: false,
+                                                plugins: [
+                                                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                                                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                                    'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                                                ],
+                                                toolbar: 'undo redo | blocks | ' +
+                                                    'bold italic forecolor | alignleft aligncenter ' +
+                                                    'alignright alignjustify | bullist numlist outdent indent | ' +
+                                                    'removeformat | help',
+                                                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                            }}
                                         />
                                     </Grid>
                                 </Grid>
@@ -655,8 +678,8 @@ function UpdateProduct() {
                     </Container>
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ marginRight: 0 }}>
-                    <Row justify='space-between' align='center'>
-                        <Typography variant="h5" style={{ textAlign: 'center', marginTop: 20 }} gutterBottom>
+                    <Row justify='space-between' align='center' css={{marginTop:'$15'}}>
+                        <Typography variant="h5" style={{ textAlign: 'center' }} gutterBottom>
                             CÁC PHIÊN BẢN
                         </Typography>
                         <AddOptionModal productId={productId} />
@@ -752,14 +775,14 @@ function UpdateProduct() {
                     <ImageList sx={{ width: 'auto', height: 'auto', margin: 5 }} gap={15} cols={4} rowHeight={164} variant='quilted'>
                         {product.images?.map((image) => (
                             <ImageListItem key={image.imageId}>
-                                <button onClick={()=>{removeImage({imageId:image.imageId},productId)}}>
+                                <button onClick={() => { removeImage({ imageId: image.imageId }, productId) }}>
                                     <DeleteForever />
                                 </button>
                                 <img
                                     src={image.url}
                                     alt={'...Loading'}
                                     loading="lazy"
-                                />                               
+                                />
                             </ImageListItem>
                         ))}
                     </ImageList>
@@ -813,7 +836,7 @@ export function UploadImage({ pro }) {
     return (
         <div>
             <Button auto shadow onClick={handler}>
-               Thêm hình ảnh <FileUpload />
+                Thêm hình ảnh <FileUpload />
             </Button>
             <Modal
                 width='50%'
