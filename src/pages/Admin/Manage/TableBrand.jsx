@@ -143,7 +143,7 @@ export function EditModal({ brand }) {
             >
                 <Modal.Header>
                     <Text id="modal-title" size={20} b>
-                        CHÌNH SỬA NHÃN HIỆU
+                        CHÌNH SỬA NHÃN HÀNG
                     </Text>
                 </Modal.Header>
                 <Modal.Body css={{ marginLeft: 'auto', marginRight: 'auto' }}>
@@ -209,7 +209,7 @@ function TableBrand({ brands, show }) {
     return (
         <div hidden={show} id='brand'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
-                <Text b size={20}>THƯƠNG HIỆU</Text>
+                <Text b size={20}>NHÃN HÀNG</Text>
                 <AddModal />
             </Row>
             <Table
@@ -226,7 +226,7 @@ function TableBrand({ brands, show }) {
             >
                 <Table.Header>
                     <Table.Column align='center'></Table.Column>
-                    <Table.Column align='center' key={'name'} allowsSorting>TÊN THƯƠNG HIỆU</Table.Column>
+                    <Table.Column align='center' key={'name'} allowsSorting>TÊN NHÃN HÀNG</Table.Column>
                     <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
                     <Table.Column align='center'>Chỉnh sửa / Xoá</Table.Column>
                 </Table.Header>

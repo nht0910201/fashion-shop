@@ -11,7 +11,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/free-mode";
 import "swiper/css/thumbs";
-import { Badge, Button, Card, Col, Divider, Image, Row, Text, Pagination as Pagination2 } from "@nextui-org/react";
+import { Badge, Button, Card, Col, Divider, Image, Row, Text, Pagination as Pagination2, Loading } from "@nextui-org/react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateSuccessReload } from "../../components/Alert/UpdateSuccessReload";
@@ -22,6 +22,7 @@ import { getReviewsByProduct } from "../../services/ReviewService";
 import { Rating } from "@mui/material";
 
 function ProductDetail() {
+    const [loading, SetLoad] = useState(false)
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
             style: 'currency',
@@ -32,6 +33,7 @@ function ProductDetail() {
     const [reviews, setReviews] = useState({})
     const { id } = useParams();
     useEffect(() => {
+        SetLoad(true)
         async function getData() {
             let res = await getProductByID(id)
             if (res.success) {
@@ -39,6 +41,7 @@ function ProductDetail() {
                 setProductOptionId(res.data.options[0].id)
                 setColorList(res.data.options[0].variants)
                 setColor(res.data.options[0].variants[0].color)
+                SetLoad(false)
             }
         }
         async function getReviews() {
@@ -139,7 +142,7 @@ function ProductDetail() {
                                 key={`${image.imageId}`}
                                 height={150}
                                 src={`${image.url}`}
-                                css={{cursor:'pointer'}}
+                                css={{ cursor: 'pointer' }}
                                 alt="...Loading"
                                 objectFit="contain"
                             />

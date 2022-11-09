@@ -1,6 +1,6 @@
-import { Grid, Loading, Text } from "@nextui-org/react";
+import { Grid, Loading } from "@nextui-org/react";
 import { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { getCatgoriesByAdmin, getUsersByAdmin, getAllBrandsByAdmin, getProductsByAdmin, getOrdersByAdmin } from "../../../services/AdminService";
 import TableBrand from "./TableBrand";
 import TableCategories from "./TableCategories";
