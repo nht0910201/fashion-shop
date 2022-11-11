@@ -332,12 +332,12 @@ function TableOrder({ orders, show }) {
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={(orders.totalQuantity / 3).toFixed(0)}
+                    total={Math.ceil(orders.totalQuantity / 5)}
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
-                    rowsPerPage={3}
+                    rowsPerPage={5}
                 />
             </Table>
         </span>

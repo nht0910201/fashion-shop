@@ -3,7 +3,7 @@ import { get,post,postImage,put,del } from "../api/axiosConfig";
 
 export const getUsersByAdmin = async (page) =>{
     try {
-        const response = await get(`/admin/manage/users?size=10&page=${page}`);
+        const response = await get(`/admin/manage/users?size=20&page=${page}`);
         return response
     } catch (error) { 
         return error.response.data 
@@ -46,7 +46,7 @@ export const getProductsByAdmin = async (page) =>{
 }
 export const getOrdersByAdmin = async (page) =>{
     try {
-        const response = await get(`/admin/manage/orders?size=5&page=${page}`);
+        const response = await get(`/admin/manage/orders?size=20&page=${page}`);
         return response
     } catch (error) { 
         return error.response.data 
@@ -145,9 +145,9 @@ export const updateProductByAdmin = async (data={},id) =>{
         return error.response
     };
 }
-export const updateAttrByAdmin = async (data={},id) =>{
+export const updateAttrByAdmin = async (data={},id,oldName) =>{
     try {
-        const response = await put(`/manage/products/attribute/${id}`,data);
+        const response = await put(`/manage/products/attribute/${id}?name=${oldName}`,data);
         return response
     } catch (error) { 
         return error.response

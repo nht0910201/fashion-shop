@@ -1,11 +1,10 @@
 import { DeleteForever, Edit } from "@mui/icons-material";
-import { Button, Modal, Pagination, Radio, Row, Table, Text, useAsyncList, useCollator } from "@nextui-org/react";
+import { Button, Modal, Radio, Row, Table, Text, useAsyncList, useCollator } from "@nextui-org/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from "../../../components/Alert/UpdateError";
-import { UpdateSuccessReload } from "../../../components/Alert/UpdateSuccessReload";
 import { UpdateSuccessNavigate } from "../../../components/Alert/UpdateSuccessNavigate";
 import { updateProductByAdmin } from "../../../services/AdminService";
 
@@ -162,7 +161,7 @@ function TableProduct({ products,show }) {
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={(products.totalQuantity/5).toFixed(0)}
+                    total={Math.ceil(products.totalQuantity/5)}
                     loop
                     shadow
                     noMargin

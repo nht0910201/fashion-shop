@@ -36,9 +36,9 @@ export default function ModalChangePass() {
         let oldPass = validator.isEmpty(oldPassword)
         let newPass = validator.isEmpty(newPassword)
         let confirm = validator.isEmpty(confirmPass)
-        if (oldPass && newPass && confirm) {
-            if (newPass !== oldPass) {
-                if (newPass === confirmPass) {
+        if (!oldPass && !newPass && !confirm) {
+            if (newPassword !== oldPassword) {
+                if (newPassword === confirmPass) {
                     const wait = toast.loading("Vui lòng chờ ...")
                     let res = await changePassword({ oldPassword, newPassword }, id)
                     if (res.success) {

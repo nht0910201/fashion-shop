@@ -36,6 +36,11 @@ export const StyledBadge = styled('span', {
         bg: '$successLight',
         color: '$successLightContrast'
       }
+      ,
+      delivery: {
+        bg: '$successLight',
+        color: '$successLightContrast'
+      }
     }
   },
   defaultVariants: {

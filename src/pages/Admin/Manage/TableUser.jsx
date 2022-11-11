@@ -213,7 +213,7 @@ function TableUser({ users, show }) {
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={(users.totalQuantity/5).toFixed(0)}
+                    total={Math.ceil(users.totalQuantity/5)}
                     loop
                     shadow
                     noMargin

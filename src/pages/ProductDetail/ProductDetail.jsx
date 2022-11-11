@@ -20,6 +20,8 @@ import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavig
 import Review from "./Review";
 import { getReviewsByProduct } from "../../services/ReviewService";
 import { Rating } from "@mui/material";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 function ProductDetail() {
     // const [loading, SetLoad] = useState(false)
@@ -238,7 +240,7 @@ function ProductDetail() {
                     <Text b>Chi tiết sản phẩm</Text>
                 </Row>
                 <Row>
-                    <Text>{product.description}</Text>
+                <ReactQuill theme={'bubble'} readOnly value={product.description} />
                 </Row>
                 <Row css={{ marginTop: '$10' }}>
                     <Button

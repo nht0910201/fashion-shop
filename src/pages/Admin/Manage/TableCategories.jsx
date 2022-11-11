@@ -211,7 +211,7 @@ function TableCategories({ categories,show }) {
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={(categories.length/4).toFixed(0)}
+                    total={Math.ceil(categories.length/4)}
                     loop
                     shadow
                     noMargin

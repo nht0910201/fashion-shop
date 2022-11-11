@@ -85,8 +85,9 @@ export function EditOptionModal({ option, productId }) {
                     <Dropdown>
                         <Dropdown.Button light color="default" css={{ tt: "capitalize" }}>
                             <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black' }}>
+                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black',marginRight:3 }}>
                                 </span>
+                                <span style={{color:'black'}}>{color}</span>
                             </Button>
                         </Dropdown.Button>
                         <Dropdown.Menu
@@ -101,8 +102,9 @@ export function EditOptionModal({ option, productId }) {
                             {option.variants.map((item) => (
                                 <Dropdown.Item key={item.color}>
                                     <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                        <span style={{ backgroundColor: item.color, padding: 10, border: '1px solid black' }}>
+                                        <span style={{ backgroundColor: item.color, padding: 10, border: '1px solid black',marginRight:3 }}>
                                         </span>
+                                        <span style={{color:'black'}}>{color}</span>
                                     </Button>
                                 </Dropdown.Item>
                             ))}
@@ -310,6 +312,7 @@ export function AddOptionModal({ productId }) {
 }
 export function EditAttrModal({ attr, productId }) {
     const [prop, setProp] = useState(attr)
+    const name = attr.name
     const [visible, setVisible] = useState(false);
     const handler = () => setVisible(true);
 
@@ -322,9 +325,9 @@ export function EditAttrModal({ attr, productId }) {
     const handleChangeVal = (e) => {
         setProp({ ...prop, val: e.target.value })
     }
-    const updateAttr = async (data, id) => {
+    const updateAttr = async (data, id,name) => {
         const wait = toast.loading('Vui lòng chờ...!');
-        let res = await updateAttrByAdmin(data, id)
+        let res = await updateAttrByAdmin(data, id,name)
         if (res.success) {
             UpdateSuccessReload(wait, 'Cập nhật thông số thành công', true);
         } else {
@@ -332,7 +335,7 @@ export function EditAttrModal({ attr, productId }) {
         }
     }
     const handleSave = () => {
-        updateAttr(prop, productId)
+        updateAttr(prop, productId,name)
     }
     return (
         <div>
@@ -494,6 +497,7 @@ function UpdateProduct() {
         }
         getData()
     }, [id])
+    console.log(product)
     const handleChangeName = (e) => {
         setProduct({ ...product, name: e.target.value })
     }
@@ -504,7 +508,7 @@ function UpdateProduct() {
         setProduct({ ...product, discount: e.target.value })
     }
     const handleChangeDes = (e) => {
-        setProduct({ ...product, description: e })
+        setProduct(reverse =>{return {...reverse,description:e}})
     }
     const updateProduct = async (data, id) => {
         const wait = toast.loading('Vui lòng chờ...!')
@@ -590,7 +594,7 @@ function UpdateProduct() {
                                         <Dropdown>
                                             <Dropdown.Button light color="default" css={{ tt: "capitalize" }}>
                                                 {categories.filter((cat) => {
-                                                    return (cat.id === product.category)
+                                                    return (cat.id === product?.category)
                                                 })[0]?.name || ''}
                                             </Dropdown.Button>
                                             <Dropdown.Menu
@@ -601,7 +605,7 @@ function UpdateProduct() {
                                                 selectedKeys={product.category}
                                                 onAction={(key) => setProduct({ ...product, category: key })}
                                             >
-                                                <Dropdown.Item key=''>Không</Dropdown.Item>
+                                                {/* <Dropdown.Item key=''>Không</Dropdown.Item> */}
                                                 {categories.map((item) => (
                                                     <Dropdown.Item key={item.id}>{item.name}</Dropdown.Item>
                                                 ))}
@@ -679,7 +683,7 @@ function UpdateProduct() {
                                         {option.variants.map((color) => (
                                             <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
                                                 <span style={{ backgroundColor: color.color, padding: 10, border: '1px solid black' }}>
-                                                </span>
+                                                </span> 
                                             </Button>
                                         ))}
                                     </Table.Cell>
@@ -825,8 +829,9 @@ export function UploadImage({ pro }) {
                     <Dropdown>
                         <Dropdown.Button light color="default" css={{ tt: "capitalize" }}>
                             <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black' }}>
+                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black',marginRight:3 }}>
                                 </span>
+                                <span style={{color:'black'}}>{color}</span>
                             </Button>
                         </Dropdown.Button>
                         <Dropdown.Menu
@@ -841,8 +846,9 @@ export function UploadImage({ pro }) {
                                 arr.map((color) => (
                                     <Dropdown.Item key={color}>
                                         <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                            <span style={{ backgroundColor: color, padding: 10, border: '1px solid black' }}>
+                                            <span style={{ backgroundColor: color, padding: 10, border: '1px solid black', marginRight:3 }}>
                                             </span>
+                                            <span style={{color:'black'}}>{color}</span>
                                         </Button>
                                     </Dropdown.Item>
                                 ))

@@ -246,7 +246,7 @@ function TableBrand({ brands, show }) {
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={(brands.length/3).toFixed(0)}
+                    total={Math.ceil(brands.length/3)}
                     loop
                     shadow
                     noMargin
