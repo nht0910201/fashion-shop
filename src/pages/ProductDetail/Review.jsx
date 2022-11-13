@@ -24,7 +24,7 @@ export default function Review({ productId, productName }) {
         setRate(e.target.value)
     }
     const sendReview = async ({ content, productId, rate }) => {
-        if (userCur.id === undefined) {
+        if (userCur?.id === undefined) {
             toast.error('Vui lòng đăng nhập', {
                 position: "top-right",
                 autoClose: 3000,
