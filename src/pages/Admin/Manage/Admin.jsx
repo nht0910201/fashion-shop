@@ -18,19 +18,30 @@ function Admin() {
   let userCur = getUserFromLocalStorage()
   useEffect(() => {
     async function getData() {
-      let [products, orders, users, categories, brands] = await Promise.all([
-        getProductsByAdmin(0),
-        getOrdersByAdmin(0),
-        getUsersByAdmin(0),
-        getCatgoriesByAdmin(),
-        getAllBrandsByAdmin()
-      ]);
-      if (products.success && orders.success && users.success && categories.success && brands.success) {
-        setProducts(products.data)
-        setOrders(orders.data)
-        setCategories(categories.data)
-        setBrands(brands.data)
-        setUsers(users.data)
+      if (userCur?.role === 'ROLE_ADMIN') {
+        let [products, orders, users, categories, brands] = await Promise.all([
+          getProductsByAdmin(0),
+          getOrdersByAdmin(0),
+          getUsersByAdmin(0),
+          getCatgoriesByAdmin(),
+          getAllBrandsByAdmin()
+        ]);
+        if (products.success && orders.success && users.success && categories.success && brands.success) {
+          setProducts(products.data)
+          setOrders(orders.data)
+          setCategories(categories.data)
+          setBrands(brands.data)
+          setUsers(users.data)
+        }
+      }else{
+        let [products, orders] = await Promise.all([
+          getProductsByAdmin(0),
+          getOrdersByAdmin(0),
+        ]);
+        if (products.success && orders.success) {
+          setProducts(products.data)
+          setOrders(orders.data)
+        }
       }
     }
     getData()
@@ -40,25 +51,32 @@ function Admin() {
   let url = params.get('page')
   return (
     <div className="w-full">
-      { products.length === 0 || orders.length === 0 ?
-        <Grid.Container wrap="wrap" justify="center" gap={2} >
-          <Grid xs={12} css={{ w: '100vw', h: '100vh' }} alignItems='center' justify="center">
-            <Loading size='xl' type='gradient' color={'warning'} />
-          </Grid>
-        </Grid.Container>
-        : <>
-          {userCur.role === 'ROLE_ADMIN' ? <>
-            <TableUser users={users} show={url === 'user' || url === null ? false : true} />
-            <TableProduct products={products} show={url === 'product' ? false : true} />
-            <TableCategories categories={categories} show={url === 'category' ? false : true} />
-            <TableBrand brands={brands} show={url === 'brand' ? false : true} />
-            <TableOrder orders={orders} show={url === 'order' ? false : true} />
-          </> : <>
-            <TableProduct products={products} show={url === 'product' ? false : true} />
+      {userCur?.role === 'ROLE_STAFF' ? <>
+        {products.length === 0 || orders.length === 0 ?
+          <Grid.Container wrap="wrap" justify="center" gap={2} >
+            <Grid xs={12} css={{ w: '100vw', h: '100vh' }} alignItems='center' justify="center">
+              <Loading size='xl' type='gradient' color={'warning'} />
+            </Grid>
+          </Grid.Container>
+          : <>
+            <TableProduct products={products} show={url === 'product' || url === null ? false : true} />
             <TableOrder orders={orders} show={url === 'order' ? false : true} />
           </>}
-
+      </> : <>
+        {products.length === 0 || orders.length === 0 || brands.length === 0 || users.length === 0 || categories.length === 0 ? <>
+          <Grid.Container wrap="wrap" justify="center" gap={2} >
+            <Grid xs={12} css={{ w: '100vw', h: '100vh' }} alignItems='center' justify="center">
+              <Loading size='xl' type='gradient' color={'warning'} />
+            </Grid>
+          </Grid.Container>
+        </> : <>
+          <TableUser users={users} show={url === 'user' || url === null ? false : true} />
+          <TableProduct products={products} show={url === 'product' ? false : true} />
+          <TableCategories categories={categories} show={url === 'category' ? false : true} />
+          <TableBrand brands={brands} show={url === 'brand' ? false : true} />
+          <TableOrder orders={orders} show={url === 'order' ? false : true} />
         </>}
+      </>}
     </div>
   );
 }

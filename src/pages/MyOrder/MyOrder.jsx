@@ -129,7 +129,7 @@ export default function MyOrder() {
                             align="center"
                             color={'warning'}
                             rowsPerPage={3}
-                            onPageChange={(page) => console.log({ page })}
+                            // onPageChange={(page) => console.log({ page })}
                         />
                     </Table>
                 </>

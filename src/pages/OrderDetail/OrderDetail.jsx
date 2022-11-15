@@ -17,7 +17,7 @@ const status = [
     { key: 1, step: 'process', value: 'Đang xử lý' },
     { key: 2, step: 'pending', value: 'Chờ xác nhận' },
     { key: 3, step: 'delivery', value: 'Đang giao hàng' },
-    { key: 4, step: 'paid', value: 'Hoàn tất' },
+    { key: 4, step: 'done', value: 'Hoàn tất' },
 ]
 function OrderDetail() {
     let navigate = useNavigate()
@@ -99,10 +99,7 @@ function OrderDetail() {
                             :
                             <></>
                     }
-
                     </div>
-
-
                 </Row>
                 <Divider />
                 {order.items?.map((item) => (
