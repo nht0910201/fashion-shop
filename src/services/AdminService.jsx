@@ -46,7 +46,7 @@ export const getProductsByAdmin = async (page) =>{
 }
 export const getOrdersByAdmin = async (page) =>{
     try {
-        const response = await get(`/admin/manage/orders?size=20&page=${page}`);
+        const response = await get(`/manage/orders?size=20&page=${page}`);
         return response
     } catch (error) { 
         return error.response.data 
@@ -55,7 +55,7 @@ export const getOrdersByAdmin = async (page) =>{
 }
 export const getOrderByIDByAdmin = async (id) =>{
     try {
-        const response = await get(`/admin/manage/orders/${id}`);
+        const response = await get(`/manage/orders/${id}`);
         return response
     } catch (error) { 
         return error.response.data 
