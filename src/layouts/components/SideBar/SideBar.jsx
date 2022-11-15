@@ -79,35 +79,56 @@ function SideBar() {
     }
     return (
         <Collapse.Group css={{ width: '100%' }}>
-            <Collapse title={userCur.name} contentLeft={<Avatar
-                size="lg"
-                src={userCur.avatar}
-                color="secondary"
-                bordered
-                squared
-            />}>
-                <Button onClick={()=>navigate(`/profile/${userCur?.id}`)} light auto color={'warning'}>Thông tin cá nhân</Button>
-                <Button onClick={handleLogout} light auto color={'warning'}>Đăng xuất</Button>
-            </Collapse>
-            <Collapse title="Tài khoản">
-                <Button onClick={handleUserManage} light auto color={'warning'}>Quản lý tài khoản </Button>
-            </Collapse>
-            <Collapse title="Sản phẩm">
-                {/* <Button css={{ marginBottom: '$2' }} onClick={()=>navigate('/admin/addProduct')} light auto color={'warning'}>Thêm sản phẩm </Button> */}
-                <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
-            </Collapse>
-            <Collapse title="Danh mục">
-                {/* <Button css={{ marginBottom: '$2' }} light auto color={'warning'} onClick={()=>navigate('/admin/addCategory')}>Thêm danh mục </Button> */}
-                <Button onClick={handleCategoryManage} light auto color={'warning'}>Quản lý danh mục </Button>
-            </Collapse>
-            <Collapse title="Nhãn hàng">
-                {/* <Button css={{ marginBottom: '$2' }} light auto color={'warning'} onClick={()=>navigate('/admin/addBrand')}>Thêm nhãn hàng </Button> */}
-                <Button onClick={handleBrandManage} light auto color={'warning'}>Quản lý nhãn hàng </Button>
-            </Collapse>
-            <Collapse title="Đơn hàng">
-                <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
-            </Collapse>
-            
+            {userCur.role === 'ROLE_ADMIN' ?
+                <>
+                    <Collapse title={userCur.name} contentLeft={<Avatar
+                        size="lg"
+                        src={userCur.avatar}
+                        color="secondary"
+                        bordered
+                        squared
+                    />}>
+                        <Button onClick={() => navigate(`/profile/${userCur?.id}`)} light auto color={'warning'}>Thông tin cá nhân</Button>
+                        <Button onClick={handleLogout} light auto color={'warning'}>Đăng xuất</Button>
+                    </Collapse>
+                    <Collapse title="Tài khoản">
+                        <Button onClick={handleUserManage} light auto color={'warning'}>Quản lý tài khoản </Button>
+                    </Collapse>
+                    <Collapse title="Sản phẩm">
+                        {/* <Button css={{ marginBottom: '$2' }} onClick={()=>navigate('/admin/addProduct')} light auto color={'warning'}>Thêm sản phẩm </Button> */}
+                        <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
+                    </Collapse>
+                    <Collapse title="Danh mục">
+                        {/* <Button css={{ marginBottom: '$2' }} light auto color={'warning'} onClick={()=>navigate('/admin/addCategory')}>Thêm danh mục </Button> */}
+                        <Button onClick={handleCategoryManage} light auto color={'warning'}>Quản lý danh mục </Button>
+                    </Collapse>
+                    <Collapse title="Nhãn hàng">
+                        {/* <Button css={{ marginBottom: '$2' }} light auto color={'warning'} onClick={()=>navigate('/admin/addBrand')}>Thêm nhãn hàng </Button> */}
+                        <Button onClick={handleBrandManage} light auto color={'warning'}>Quản lý nhãn hàng </Button>
+                    </Collapse>
+                    <Collapse title="Đơn hàng">
+                        <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
+                    </Collapse>
+                </> :
+                <>
+                    <Collapse title={userCur.name} contentLeft={<Avatar
+                        size="lg"
+                        src={userCur.avatar}
+                        bordered
+                        
+                    />}>
+                        <Button onClick={() => navigate(`/profile/${userCur?.id}`)} light auto color={'warning'}>Thông tin cá nhân</Button>
+                        <Button onClick={handleLogout} light auto color={'warning'}>Đăng xuất</Button>
+                    </Collapse>
+                    <Collapse title="Sản phẩm">
+                        {/* <Button css={{ marginBottom: '$2' }} onClick={()=>navigate('/admin/addProduct')} light auto color={'warning'}>Thêm sản phẩm </Button> */}
+                        <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
+                    </Collapse>
+                    <Collapse title="Đơn hàng">
+                        <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
+                    </Collapse>
+                </>
+            }
         </Collapse.Group>
     );
 }

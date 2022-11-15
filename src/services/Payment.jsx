@@ -19,7 +19,7 @@ export const confirmOrderByAdmin = async (id) =>{
 }
 export const cancelOrderByAdmin = async (id) =>{
     try {
-        const response = await put(`/orders/cancel/${id}`);
+        const response = await get(`/checkout/cod/cancel?paymentId=${id}`);
         return response
     } catch (error) { 
         return error.response

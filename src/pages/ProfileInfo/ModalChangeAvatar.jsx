@@ -7,6 +7,7 @@ import { PhotoCamera } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { UpdateSuccessReload } from '../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from "../../components/Alert/UpdateError";
+import { encryptStorage } from "../../utils/storage";
 
 
 export default function ModalChangeAvatar({ user }) {
@@ -23,7 +24,7 @@ export default function ModalChangeAvatar({ user }) {
         const w = toast.loading("Vui lòng chờ ...")
         let res = await updateAvatarUserByID(data, user.id)
         if (res.data.success) {
-            window.localStorage.setItem('avatar', JSON.stringify(res.data.data.avatar));
+            encryptStorage.setItem('avatar', JSON.stringify(res.data.data.avatar));
             UpdateSuccessReload(w,'Đổi ảnh đại diện thành công',true)
             setVisible(false)
         } else {
