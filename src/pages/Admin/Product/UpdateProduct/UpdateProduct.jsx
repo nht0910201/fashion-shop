@@ -777,7 +777,7 @@ export function UploadImage({ pro }) {
         option.variants?.map((color) =>
             arr.push(color.color)
         ))
-    arr = [... new Set(arr)]
+    arr = [...new Set(arr)]
     const [preview, setPreview] = useState([])
     const [files, setFiles] = useState([])
     const closeHandler = () => {

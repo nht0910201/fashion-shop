@@ -1,4 +1,4 @@
-import { post,get, put} from '../api/axiosConfig'
+import { post,get} from '../api/axiosConfig'
 
 export const makeAnOrder = async (type,id,data={}) =>{
     try {

@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
+import { StyledBadge } from '../../MyOrder/StyledBadge';
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -165,6 +166,11 @@ function TableUser({ users, show }) {
         };
     }
     const list = useAsyncList({ load, sort });
+    const state = {
+        activated: 'Hiển thị',
+        deactivated: 'Vô hiệu hóa',
+        unverify: 'Chưa xác nhận',
+    };
     return (
         <div id='user' hidden={show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
@@ -205,7 +211,9 @@ function TableUser({ users, show }) {
                             <Table.Cell>{item.email}</Table.Cell>
                             <Table.Cell>{item.phone}</Table.Cell>
                             <Table.Cell>{item.role}</Table.Cell>
-                            <Table.Cell>{item.state}</Table.Cell>
+                            <Table.Cell>
+                                <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
+                            </Table.Cell>
                             <Table.Cell>
                                 <EditModal user={item} />
                             </Table.Cell>

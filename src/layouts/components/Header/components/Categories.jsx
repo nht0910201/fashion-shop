@@ -15,7 +15,7 @@ export default function Categories({ categories }) {
                     </Box>
                 ) : (
                     categories.map((category) => (
-                        <Col>
+                        <Col key={category.id}>
                             <Link href={`/productList/${category.id}`}>
                                 <Text
                                     weight={'semibold'}

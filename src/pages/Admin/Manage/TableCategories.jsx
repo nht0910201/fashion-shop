@@ -1,12 +1,12 @@
-import { Edit } from '@mui/icons-material';
+import { CheckOutlined, Edit } from '@mui/icons-material';
 import { Button, Row, Table, Text, Radio, Modal, Input, Dropdown, useAsyncList, useCollator } from '@nextui-org/react'
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { addCategoryByAdmin, updateCategoryByAdmin } from '../../../services/AdminService';
-import { UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
+import { StyledBadge } from '../../MyOrder/StyledBadge';
 
 export function AddModal({categories}) {
     const root = categories.filter((category)=>{
@@ -172,6 +172,10 @@ function TableCategories({ categories,show }) {
         };
     }
     const list = useAsyncList({ load, sort });
+    const state = {
+        enable: 'Hiển thị',
+        disable: 'Vô hiệu hóa',
+    };
     return (
         <div id='category' hidden = {show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
@@ -194,18 +198,20 @@ function TableCategories({ categories,show }) {
             >
                 <Table.Header>
                     <Table.Column align='center' key={'name'} allowsSorting>TÊN</Table.Column>
-                    <Table.Column  >ROOT</Table.Column>
+                    <Table.Column>DANH MỤC GỐC</Table.Column>
                     <Table.Column align='center'  key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
                     <Table.Column>Chỉnh sửa / Xoá</Table.Column>
                 </Table.Header>
                 <Table.Body items={list.items} loadingState={list.loadingState}>
                     {(item) => (
                         <Table.Row key={item.id}>
-                            <Table.Cell>{item.name}</Table.Cell>
-                            <Table.Cell >{item.root ? 'true' : 'false'}</Table.Cell>
-                            <Table.Cell >{item.state}</Table.Cell>
-                            <Table.Cell css={{ display: 'flex' }}>
-                                <EditModal category={item}/>
+                            <Table.Cell css={{d: 'flex', justifyContent:'center', h: '100%', alignItems:'center'}}>{item.name}</Table.Cell>
+                            <Table.Cell >{item.root ? <CheckOutlined sx={{verticalAlign: 'unset'}}/> : ''}</Table.Cell>
+                            <Table.Cell css={{d: 'flex', justifyContent:'center' , h: '100%', alignItems:'center'}} >
+                                <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <EditModal sx={{verticalAlign: 'unset'}} category={item}/>
                             </Table.Cell>
                         </Table.Row>
                     )}

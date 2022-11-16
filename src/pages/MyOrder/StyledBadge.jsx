@@ -17,12 +17,24 @@ export const StyledBadge = styled('span', {
   variants: {
     type: {
       enable: {
-        bg: '$successLight',
-        color: '$successLightContrast'
+        bg: '$primaryLight',
+        color: '$primaryLightContrast'
       },
       cancel: {
         bg: '$errorLight',
         color: '$errorLightContrast'
+      },
+      deactivated: {
+        bg: '$neutralLight',
+        color: '$neutralLightContrast'
+      },
+      disable: {
+        bg: '$errorLight',
+        color: '$errorLightContrast'
+      },
+      unverify: {
+        bg: '$neutralLight',
+        color: '$neutralLightContrast'
       },
       process: {
         bg: '$warningLight',
@@ -35,11 +47,14 @@ export const StyledBadge = styled('span', {
       done: {
         bg: '$successLight',
         color: '$successLightContrast'
-      }
-      ,
-      delivery: {
+      },
+      activated: {
         bg: '$successLight',
         color: '$successLightContrast'
+      },
+      delivery: {
+        bg: '$secondaryLight',
+        color: '$secondaryLightContrast'
       }
     }
   },

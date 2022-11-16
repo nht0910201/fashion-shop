@@ -2,12 +2,12 @@ import { Edit, FileUpload } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { Button, Image, Row, Table, Text, Radio, Modal, Input, useAsyncList, useCollator } from '@nextui-org/react'
 import { useState } from 'react';
-import { UpdateSuccessReload } from '../../../components/Alert/UpdateSuccessReload';
 import { addBrandByAdmin, updateBrandByAdmin } from '../../../services/AdminService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
+import { StyledBadge } from '../../MyOrder/StyledBadge';
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -205,6 +205,10 @@ function TableBrand({ brands, show }) {
             }),
         };
     }
+    const state = {
+        enable: 'Hiển thị',
+        disable: 'Vô hiệu hóa',
+    };
     const list = useAsyncList({ load, sort });
     return (
         <div hidden={show} id='brand'>
@@ -238,7 +242,9 @@ function TableBrand({ brands, show }) {
                                 <Image src={item.image} width={80} />
                             </Table.Cell>
                             <Table.Cell>{item.name}</Table.Cell>
-                            <Table.Cell>{item.state}</Table.Cell>
+                            <Table.Cell>
+                                <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
+                            </Table.Cell>
                             <Table.Cell css={{ display: 'flex', height: 80 }}>
                                 <EditModal brand={item} />
                             </Table.Cell>

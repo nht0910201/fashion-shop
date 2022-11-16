@@ -1,0 +1,8 @@
+.mySwiper .swiper-slide {
+  opacity: 0.4;
+}
+.mySwiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border: 1px solid #F5A524;
+    border-radius: 5%;
+}

@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from "../../../components/Alert/UpdateError";
 import { UpdateSuccessNavigate } from "../../../components/Alert/UpdateSuccessNavigate";
 import { updateProductByAdmin } from "../../../services/AdminService";
+import { StyledBadge } from "../../MyOrder/StyledBadge";
 
 export function RemoveModal({ product }) {
     const [visible, setVisible] = useState(false);
@@ -92,7 +93,10 @@ function TableProduct({ products,show }) {
             style: 'currency',
             currency: 'VND'
         }).format(value);
-
+    const state = {
+        enable: 'Hiển thị',
+        disable: 'Vô hiệu hóa',
+    };
     return (
         <div hidden={show} id='product'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
@@ -132,7 +136,9 @@ function TableProduct({ products,show }) {
                             <Table.Cell>{product.discount}%</Table.Cell>
                             <Table.Cell>{product.categoryName}</Table.Cell>
                             <Table.Cell>{product.brandName}</Table.Cell>
-                            <Table.Cell>{product.state}</Table.Cell>
+                            <Table.Cell>
+                                <StyledBadge type={product.state}>{state[product.state]}</StyledBadge>
+                            </Table.Cell>
                             <Table.Cell>
                                 <Row align="center">
                                     <button onClick={() => {

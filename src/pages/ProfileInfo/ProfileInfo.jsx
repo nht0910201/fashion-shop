@@ -20,103 +20,108 @@ import { getDistrict, getProvince, getWard } from '../../services/AuthService';
 
 export default function ProfileInfo() {
     const { id } = useParams();
-    const [user, setUser] = useState({})
-    const [loading, setLoad] = useState(false)
-    const [provinces, setProvinces] = useState([])
-    const [districts, setDistricts] = useState([])
-    const [wards, setWards] = useState([])
+    const [user, setUser] = useState({});
+    const [loading, setLoad] = useState(false);
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
     useEffect(() => {
         async function getData() {
-            setLoad(true)
-            let res = await getUserByID(id)
+            setLoad(true);
+            let res = await getUserByID(id);
             if (res.success) {
-                res.data.gender = res.data.gender.toLowerCase()
-                setUser(res.data)
-                setLoad(false)
+                res.data.gender = res.data.gender.toLowerCase();
+                setUser(res.data);
+                setLoad(false);
             }
         }
-        getData()
-    }, [id])
+        getData();
+    }, [id]);
     useEffect(() => {
         async function getProvinceAPI(data) {
-            let provinces = await getProvince({ data })
+            let provinces = await getProvince({ data });
             if (provinces.message === 'Success') {
-                setProvinces(provinces.data)
+                setProvinces(provinces.data);
             }
         }
-        getProvinceAPI({})
-    }, [])
+        getProvinceAPI({});
+    }, []);
     useEffect(() => {
         async function getDistrictAPI(province_id) {
-            let districts = await getDistrict({ province_id })
+            let districts = await getDistrict({ province_id });
             if (districts.message === 'Success') {
-                setDistricts(districts.data)
+                setDistricts(districts.data);
             }
         }
         if (user.province !== undefined) {
-            getDistrictAPI(user.province)
+            getDistrictAPI(user.province);
         }
-    }, [user.province])
+    }, [user.province]);
     useEffect(() => {
         async function getWardAPI(district_id) {
-            let wards = await getWard({ district_id })
+            let wards = await getWard({ district_id });
             if (wards.message === 'Success') {
-                setWards(wards.data)
+                setWards(wards.data);
             }
         }
         if (user.district !== undefined) {
-            getWardAPI(user.district)
+            getWardAPI(user.district);
         }
-    }, [user.district, user.province])
+    }, [user.district, user.province]);
     const handleChangeWard = (e) => {
-        setUser({ ...user, ward: e.target.value })
-    }
+        setUser({ ...user, ward: e.target.value });
+    };
     const handleChangeDistrict = (e) => {
-        setUser({ ...user, district: e.target.value, ward: undefined })
-    }
+        setUser({ ...user, district: e.target.value, ward: undefined });
+    };
     const handleChangeProvince = (e) => {
-        setUser({ ...user, province: e.target.value, district: undefined, ward: undefined })
-    }
+        setUser({ ...user, province: e.target.value, district: undefined, ward: undefined });
+    };
     const handleChangeName = (e) => {
-        setUser({ ...user, name: e.target.value })
-    }
+        setUser({ ...user, name: e.target.value });
+    };
     const handleChangePhone = (e) => {
-        setUser({ ...user, phone: e.target.value })
-    }
+        setUser({ ...user, phone: e.target.value });
+    };
     const handleChangeAddress = (e) => {
-        setUser({ ...user, address: e.target.value })
-    }
+        setUser({ ...user, address: e.target.value });
+    };
     const handleChangeGender = (e) => {
-        setUser({ ...user, gender: e.target.value.toLowerCase() })
-    }
+        setUser({ ...user, gender: e.target.value.toLowerCase() });
+    };
     const updateInfo = async (data, id) => {
-        const wait = toast.loading("Vui lòng chờ ...")
-        let checkName = user.name
-        let checkPhone = user.phone
-        let checkProvince = user.province
-        let checkDistrict = user.district
-        let checkWard = user.ward
-        if (checkName !== '' && checkPhone !== '' && checkProvince !== undefined && checkDistrict !== undefined && checkWard !== undefined) {
-            let res = await updateUserByID(data, id)
+        const wait = toast.loading('Vui lòng chờ ...');
+        let checkName = user.name;
+        let checkPhone = user.phone;
+        let checkProvince = user.province;
+        let checkDistrict = user.district;
+        let checkWard = user.ward;
+        if (
+            checkName !== '' &&
+            checkPhone !== '' &&
+            checkProvince !== undefined &&
+            checkDistrict !== undefined &&
+            checkWard !== undefined
+        ) {
+            let res = await updateUserByID(data, id);
             if (res.success) {
-                UpdateSuccessReload(wait, 'Cập nhật thông tin thành công', false)
-                setUser({ ...res.data, gender: res.data.gender.toLowerCase() })
+                UpdateSuccessReload(wait, 'Cập nhật thông tin thành công', false);
+                setUser({ ...res.data, gender: res.data.gender.toLowerCase() });
             } else {
-                UpdateError(wait, 'Cập nhật không thành công')
+                UpdateError(wait, 'Cập nhật không thành công');
             }
         } else {
-            UpdateError(wait, 'Vui lòng kiểm tra lại thông tin')
+            UpdateError(wait, 'Vui lòng kiểm tra lại thông tin');
         }
-
-    }
+    };
     const handleSaveInfo = () => {
-        updateInfo(user, id)
-    }
+        updateInfo(user, id);
+    };
 
     return (
-        <Container sx={{ boxShadow: 3, borderRadius: 1 }} component="main" maxWidth="sm" >
+        <Container sx={{ boxShadow: 3, borderRadius: 1 }} component="main" maxWidth="sm">
             <CssBaseline />
-            {loading ?
+            {loading ? (
                 <Box
                     sx={{
                         marginTop: 8,
@@ -125,13 +130,13 @@ export default function ProfileInfo() {
                         alignItems: 'center',
                     }}
                 >
-                    <Skeleton variant="circular" width={80} height={80} sx={{marginBottom:3}}/>
-                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
-                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
-                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
-                    <Skeleton variant="rectangular" width={480} height={60}  sx={{marginBottom:3}}/>
+                    <Skeleton variant="circular" width={80} height={80} sx={{ marginBottom: 3 }} />
+                    <Skeleton variant="rectangular" width={480} height={60} sx={{ marginBottom: 3 }} />
+                    <Skeleton variant="rectangular" width={480} height={60} sx={{ marginBottom: 3 }} />
+                    <Skeleton variant="rectangular" width={480} height={60} sx={{ marginBottom: 3 }} />
+                    <Skeleton variant="rectangular" width={480} height={60} sx={{ marginBottom: 3 }} />
                 </Box>
-                :
+            ) : (
                 <Box
                     sx={{
                         marginTop: 8,
@@ -142,16 +147,13 @@ export default function ProfileInfo() {
                 >
                     <Badge
                         content={<ModalChangeAvatar user={user} />}
-
                         disableOutline
                         placement="bottom-right"
                         css={{ p: 0 }}
                         shape="circle"
-                        size="xs">
-                        <Avatar
-                            src={user.avatar}
-                            css={{ size: "$20", marginTop: '$10' }}
-                        />
+                        size="xs"
+                    >
+                        <Avatar src={user.avatar} css={{ size: '$20', marginTop: '$10' }} />
                     </Badge>
 
                     <Box noValidate sx={{ mt: 1 }}>
@@ -161,7 +163,7 @@ export default function ProfileInfo() {
                             fullWidth
                             id="name"
                             InputLabelProps={{ shrink: true }}
-                            label="Name"
+                            label="Tên"
                             type="text"
                             name="name"
                             value={user.name}
@@ -173,15 +175,15 @@ export default function ProfileInfo() {
                             fullWidth
                             name="phone"
                             InputLabelProps={{ shrink: true }}
-                            label="Phone"
-                            type="text"
+                            label="Số điện thoại"
+                            type="number"
                             id="phone"
                             value={user.phone}
                             onChange={handleChangePhone}
                         />
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth margin='normal'>
+                                <FormControl fullWidth margin="normal">
                                     <InputLabel id="province-label">Tỉnh/Thành phố</InputLabel>
                                     <Select
                                         labelId="province-label"
@@ -199,7 +201,7 @@ export default function ProfileInfo() {
                                 </FormControl>
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth margin='normal'>
+                                <FormControl fullWidth margin="normal">
                                     <InputLabel id="district-label">Quận/Huyện</InputLabel>
                                     <Select
                                         labelId="district-label"
@@ -219,7 +221,7 @@ export default function ProfileInfo() {
                         </Grid>
                         <Grid container spacing={2}>
                             <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth margin='normal'>
+                                <FormControl fullWidth margin="normal">
                                     <InputLabel id="ward-label">Phường/Xã</InputLabel>
                                     <Select
                                         labelId="ward-label"
@@ -243,7 +245,7 @@ export default function ProfileInfo() {
                                     fullWidth
                                     name="address"
                                     InputLabelProps={{ shrink: true }}
-                                    label="Address"
+                                    label="Địa chỉ"
                                     type="text"
                                     id="address"
                                     value={user.address}
@@ -252,36 +254,31 @@ export default function ProfileInfo() {
                             </Grid>
                         </Grid>
 
-                        <FormControl fullWidth margin='normal'>
-                            <InputLabel shrink id="gender-label">Gender</InputLabel>
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel shrink id="gender-label">
+                                Giới tính
+                            </InputLabel>
                             <Select
                                 labelId="gender-label"
-
                                 label="Gender"
                                 id="gender"
                                 value={user.gender}
                                 onChange={handleChangeGender}
                             >
-                                <MenuItem value='male'>Male</MenuItem>
-                                <MenuItem value='female'>Female</MenuItem>
-                                <MenuItem value='other'>Other</MenuItem>
+                                <MenuItem value="male">Nam</MenuItem>
+                                <MenuItem value="female">Nữ</MenuItem>
+                                <MenuItem value="other">Khác</MenuItem>
                             </Select>
                         </FormControl>
-                        <Row justify="space-around" align='center'>
+                        <Row justify="space-around" align="center">
                             <ModalChangePass />
-                            <Button
-                                type="button"
-                                variant="contained"
-                                onClick={handleSaveInfo}
-                                sx={{ mt: 3, mb: 2 }}
-                            >
+                            <Button type="button" variant="contained" onClick={handleSaveInfo} sx={{ mt: 3, mb: 2 }}>
                                 Lưu
                             </Button>
                         </Row>
-
                     </Box>
                 </Box>
-            }
+            )}
 
             <ToastContainer />
         </Container>
