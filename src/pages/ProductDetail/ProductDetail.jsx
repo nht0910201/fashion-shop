@@ -104,7 +104,8 @@ function ProductDetail() {
     }
     return (
         <>
-            {loading ? <Grid2 container spacing={{ xs: 1, md: 1.5 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+            {loading ?
+            <Grid2 container spacing={{ xs: 1, md: 1.5 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                 <Grid2 xs={7} padding={3}>
                     <Skeleton variant="rounded" width={845} height={500} sx={{ marginBottom: 2 }} />
                     <Swiper
@@ -129,7 +130,8 @@ function ProductDetail() {
                 <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
                 <Skeleton variant="rounded" width={1530} height={100} />
                 </Grid2>
-            </Grid2> :
+            </Grid2> 
+            :
                 <Grid2 container spacing={{ xs: 1, md: 1.5 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                     <Grid2 xs={7} padding={3}>
                         <Swiper

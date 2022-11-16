@@ -11,7 +11,6 @@ import { UpdateError } from '../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../components/Alert/UpdateSuccessNavigate';
 import { getUserFromLocalStorage } from '../../utils/userHanle';
 import { DeleteForeverOutlined } from '@mui/icons-material';
-// import Loading from '../../components/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@mui/material';
 
@@ -31,7 +30,13 @@ function Cart() {
             let res = await getCart();
             console.log(res)
             if (res.success) {
-                setCart(res.data);
+                if(res.data.totalProduct === 0)
+                {
+                    setCart('404')
+                }else{
+                    setCart(res.data);
+                }
+                
             }
             else {
                 setCart('404')
@@ -68,7 +73,7 @@ function Cart() {
         const w = toast.loading('Vui lòng chờ ...');
         let res = await removeItemFromCart(id);
         if (res.success) {
-            UpdateSuccessReload(w, 'Xoá sản phẩm khỏi giỏ hàng thành công', true);
+            UpdateSuccessReload(w, 'Xoá sản phẩm khỏi giỏ hàng thành công', false);
         } else {
             UpdateError(w, 'Xoá sản phẩm khỏi giỏ hàng thất bại');
         }
@@ -76,15 +81,6 @@ function Cart() {
     const handleClickOrder = () => {
         navigate('/order');
     };
-    // if (Object.values(cart).length === 0) {
-    //     return <Grid2 xs={12} sx={{ textAlign: 'center' }}>
-    //         <Text b size={20} > Không có sản phẩm trong giỏ hàng</Text>
-    //     </Grid2>
-    // }
-    // if (cart === undefined) {
-    //     return <Loading />;
-    // }
-    let vat = 23000;
     return (
         <Grid2 container spacing={3}>
             <Grid2 xs={6} md={8}>
@@ -206,14 +202,14 @@ function Cart() {
                                     Tổng số tiền:{' '}
                                     <Text b size={20}>
                                         {' '}
-                                        {formatPrice(cart?.totalPrice || 0)}
+                                        {formatPrice(cart?.items.reduce((prev,cur)=>(prev.price * prev.quantity)+(cur.price * cur.quantity))) || 0}
                                     </Text>
                                 </Row>
                                 <Row justify="space-between" css={{ marginTop: '$10' }}>
                                     Giảm giá:{' '}
                                     <Text b size={20}>
                                         {' '}
-                                        {formatPrice(vat || 0)}
+                                        {formatPrice(cart?.items.reduce((prev,cur)=>(prev.price * prev.quantity)+(cur.price * cur.quantity)) - cart?.totalPrice) || 0 }
                                     </Text>
                                 </Row>
                                 <Row justify="space-between" css={{ marginTop: '$10' }}>
@@ -224,7 +220,7 @@ function Cart() {
                                     </Text>
                                 </Row>
                                 <Row css={{ marginTop: '$10' }}>
-                                    <Button onClick={handleClickOrder} css={{ width: '100%' }} color={'default'}>
+                                    <Button disabled={cart === '404'} onClick={handleClickOrder} css={{ width: '100%' }} color={'default'}>
                                         ĐẶT HÀNG
                                     </Button>
                                 </Row>

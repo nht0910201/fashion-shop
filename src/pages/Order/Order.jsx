@@ -143,12 +143,9 @@ function Order() {
     const [paymentType, setPaymentType] = useState('cod')
 
     const makeOrder = async (paymentType, orderId, user) => {
-        if (province !== undefined && district !== undefined && ward !== undefined && user.name !== '' && user.phone !== '' && user.email !== '') {
-            console.log(user)
+        if (province !== undefined && district !== undefined && ward !== undefined && user.name !== '' && user.phone !== '' && user.email !== '' && user.address !== '') {
             const wait = toast.loading("Vui lòng chờ ...")
-            console.log(1)
             let res = await makeAnOrder(paymentType, orderId, user)
-            console.log(res)
             if (res.data.success) {
                 if(paymentType === 'cod')
                 {
@@ -188,10 +185,10 @@ function Order() {
                     <Input bordered size='xl' width='90%' label="Tên" placeholder="Nguyễn Văn A" value={user.name} onChange={handleChangeName} />
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Email" placeholder="abc@gmail.com" value={user.email} onChange={handleChangeEmail} />
+                    <Input bordered size='xl' width='90%' type={'email'} label="Email" placeholder="abc@gmail.com" value={user.email} onChange={handleChangeEmail} />
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Số điện thoại" placeholder="Số điện thoại" value={user.phone} onChange={handleChangePhone} />
+                    <Input bordered size='xl' width='90%' type={'tel'} label="Số điện thoại" placeholder="Số điện thoại" value={user.phone} onChange={handleChangePhone} />
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
                     <FormControl id="province" sx={{ width: '90%' }} margin='normal'>
@@ -253,7 +250,7 @@ function Order() {
                     </FormControl>
                 </Row>
                 <Row gap={1} css={{ marginTop: '$5' }}>
-                    <Input bordered size='xl' width='90%' label="Địa chỉ" placeholder="Địa chỉ" value={user.address} onChange={handleChangeAddress} />
+                    <Input bordered size='xl' width='90%' required label="Địa chỉ" placeholder="Địa chỉ" value={user.address} onChange={handleChangeAddress} />
                 </Row>
                 <Spacer y={1} />
                 <Row gap={1}>
