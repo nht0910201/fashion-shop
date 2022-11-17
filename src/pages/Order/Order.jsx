@@ -11,7 +11,8 @@ import { getUserFromLocalStorage } from '../../utils/userHanle';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../components/Alert/UpdateError';
-import { UpdateSuccessNavigate } from '../../components/Alert';
+import { UpdateSuccessNavigate } from '../../components/Alert/UpdateSuccessNavigate';
+import validator from 'validator';
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
@@ -147,14 +148,16 @@ function Order() {
             ward !== undefined &&
             user.name !== '' &&
             user.phone !== '' &&
-            user.email !== '' &&
-            user.address !== ''
+            validator.isMobilePhone(user.phone,"vi-VN") &&
+            user.address !== '' &&
+            validator.isEmail(user.email)
         ) {
             const wait = toast.loading('Vui lòng chờ ...');
             let res = await makeAnOrder(paymentType, orderId, { ...user, shippingFee: shippingFee });
             if (res.data.success) {
                 if (paymentType === 'cod') {
                     UpdateSuccessNavigate(wait, 'Đặt hàng thành công', '/redirect/payment?success=true&cancel=false');
+
                 } else {
                     window.location.href = res.data.data;
                 }

@@ -73,7 +73,7 @@ export default function SignUp() {
         let checkName = !validator.isEmpty(name)
         let checkEmail = validator.isEmail(email)
         let checkAddress = !validator.isEmpty(address)
-        let checkPhone = !validator.isEmpty(phone)
+        let checkPhone = validator.isMobilePhone(phone,'vi-VN')
         let checkPassword = !validator.isEmpty(password) && password.length >= 8
         let checkConfirmPass = !validator.isEmpty(confirmPassword) && (password === confirmPassword)
         if (checkName && checkEmail && checkAddress && checkPhone && checkPassword && checkConfirmPass && province !== undefined && district !== undefined && ward !== undefined) {
@@ -301,7 +301,7 @@ export default function SignUp() {
                                         name="phone"
                                         label="Số điện thoại"
                                         fullWidth
-                                        type={'text'}
+                                        type={'number'}
                                         variant="standard"
                                         value={phone}
                                         onChange={handleChangePhone}

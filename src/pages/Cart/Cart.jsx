@@ -202,14 +202,14 @@ function Cart() {
                                     Tổng số tiền:{' '}
                                     <Text b size={20}>
                                         {' '}
-                                        {formatPrice(cart?.items.reduce((prev,cur)=>(prev.price * prev.quantity)+(cur.price * cur.quantity))) || 0}
+                                        {formatPrice(cart?.items.reduce((total,cur)=>total+(cur.price * cur.quantity),0)) || 0}
                                     </Text>
                                 </Row>
                                 <Row justify="space-between" css={{ marginTop: '$10' }}>
                                     Giảm giá:{' '}
                                     <Text b size={20}>
                                         {' '}
-                                        {formatPrice(cart?.items.reduce((prev,cur)=>(prev.price * prev.quantity)+(cur.price * cur.quantity)) - cart?.totalPrice) || 0 }
+                                        {formatPrice(cart?.items.reduce((total,cur)=>total+(cur.price * cur.quantity),0) - cart?.totalPrice) || 0 }
                                     </Text>
                                 </Row>
                                 <Row justify="space-between" css={{ marginTop: '$10' }}>

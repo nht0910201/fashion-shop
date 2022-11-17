@@ -11,7 +11,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/free-mode';
 import 'swiper/css/thumbs'
-import { Badge, Button, Card, Col, Divider, Image, Row, Text, Pagination as Pagination2 } from '@nextui-org/react';
+import { Badge, Button, Card, Col, Divider, Image, Row, Text, Pagination as Pagination2, Tooltip } from '@nextui-org/react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateSuccessReload } from '../../components/Alert/UpdateSuccessReload';
@@ -39,6 +39,7 @@ function ProductDetail() {
         async function getData() {
             SetLoad(true);
             let res = await getProductByID(id);
+            console.log(res)
             if (res.success) {
                 setProduct(res.data);
                 setProductOptionId(res.data.options[0].id);
@@ -109,7 +110,7 @@ function ProductDetail() {
                 <Grid2 xs={7} padding={3}>
                     <Swiper
                         cssMode={true}
-                        navigation = {true}
+                        navigation={true}
                         autoplay={{
                             delay: 5000,
                             disableOnInteraction: true,
@@ -119,8 +120,8 @@ function ProductDetail() {
                         pagination={{ clickable: true }}
                         modules={[Autoplay, Navigation, Pagination, FreeMode, Thumbs]}
                         thumbs={{ swiper: thumbsSwiper }}
-                        loop = {true}
-                        grabCursor = {true}
+                        loop={true}
+                        grabCursor={true}
                         style={{
                             marginBottom: 10,
                             '--swiper-navigation-color': '#f5a524',
@@ -140,7 +141,7 @@ function ProductDetail() {
                         )}
                     </Swiper>
                     <Swiper
-                    cssMode={true}
+                        cssMode={true}
                         onSwiper={setThumbsSwiper}
                         loop={true}
                         spaceBetween={10}
@@ -152,35 +153,35 @@ function ProductDetail() {
                     >
                         {loading
                             ? Array.from(new Array(3)).map((index) => (
-                                  <SwiperSlide key={index}>
-                                      <Skeleton
-                                          variant="rounded"
-                                          width={'100%'}
-                                          height={'15vh'}
-                                          sx={{ marginBottom: 2 }}
-                                      />
-                                  </SwiperSlide>
-                              ))
+                                <SwiperSlide key={index}>
+                                    <Skeleton
+                                        variant="rounded"
+                                        width={'100%'}
+                                        height={'15vh'}
+                                        sx={{ marginBottom: 2 }}
+                                    />
+                                </SwiperSlide>
+                            ))
                             : product?.images?.map((image) => (
-                                  <SwiperSlide key={`${image.imageId}`}
-                                  >
-                                      <Image
-                                          height={150}
-                                          src={`${image.url}`}
-                                          css={{ cursor: 'pointer' }}
-                                          alt="...Loading"
-                                          objectFit="contain"
-                                      />
-                                  </SwiperSlide>
-                              ))}
+                                <SwiperSlide key={`${image.imageId}`}
+                                >
+                                    <Image
+                                        height={150}
+                                        src={`${image.url}`}
+                                        css={{ cursor: 'pointer' }}
+                                        alt="...Loading"
+                                        objectFit="contain"
+                                    />
+                                </SwiperSlide>
+                            ))}
                     </Swiper>
                 </Grid2>
                 {loading ? (
                     <>
                         <Grid2 xs={5} padding={3}>
-                        {Array.from(new Array(5)).map((index) => (
-                            <Skeleton key={index} variant="rounded" sx={{marginBottom: '3rem'}} width={'100%'} height={'3rem'} />
-                        ))}
+                            {Array.from(new Array(5)).map((index) => (
+                                <Skeleton key={index} variant="rounded" sx={{ marginBottom: '3rem' }} width={'100%'} height={'3rem'} />
+                            ))}
                         </Grid2>
                         <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
                             <Skeleton variant="rounded" width={'100%'} height={'5rem'} />
@@ -221,26 +222,28 @@ function ProductDetail() {
                                     <Text b>Chọn size</Text>
                                     <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
                                         {product?.options?.map((option) => (
-                                            <RadioGroup.Option
-                                                key={option.id}
-                                                value={option.id}
-                                                onClick={setProductOptionId}
-                                                className={({ active, checked }) =>
-                                                    classNames(
-                                                        option.inStock > 0
-                                                            ? 'cursor-pointer focus:outline-none'
-                                                            : 'opacity-25 cursor-not-allowed',
-                                                        // active ? 'ring-2 ring-offset-2 ring-indigo-500' : '',
-                                                        checked
-                                                            ? 'bg-black border-transparent text-white '
-                                                            : 'bg-white border-gray-200 text-gray-900 hover:bg-gray-50',
-                                                        'border rounded-md py-3 px-5 flex items-center justify-center text-sm font-medium uppercase sm:flex-1',
-                                                    )
-                                                }
-                                                disabled={option.inStock <= 0}
-                                            >
-                                                <RadioGroup.Label as="p">{option.name}</RadioGroup.Label>
-                                            </RadioGroup.Option>
+                                            <Tooltip content={`Phí cộng thêm: ${formatPrice(option.extraFee)}`}>
+                                                <RadioGroup.Option
+                                                    key={option.id}
+                                                    value={option.id}
+                                                    onClick={setProductOptionId}
+                                                    className={({ active, checked }) =>
+                                                        classNames(
+                                                            option.inStock > 0
+                                                                ? 'cursor-pointer focus:outline-none'
+                                                                : 'opacity-25 cursor-not-allowed',
+                                                            // active ? 'ring-2 ring-offset-2 ring-indigo-500' : '',
+                                                            checked
+                                                                ? 'bg-black border-transparent text-white '
+                                                                : 'bg-white border-gray-200 text-gray-900 hover:bg-gray-50',
+                                                            'border rounded-md py-3 px-5 flex items-center justify-center text-sm font-medium uppercase sm:flex-1',
+                                                        )
+                                                    }
+                                                    disabled={option.inStock <= 0}
+                                                >
+                                                    <RadioGroup.Label as="p">{option.name}</RadioGroup.Label>
+                                                </RadioGroup.Option>
+                                            </Tooltip>
                                         ))}
                                     </div>
                                 </RadioGroup>

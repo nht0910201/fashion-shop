@@ -13,8 +13,10 @@ export default function Review({ productId, productName }) {
     const [visible, setVisible] = useState(false);
     const handler = () => setVisible(true);
     const [content, setContent] = useState('')
-    const [rate, setRate] = useState(0.0)
+    const [rate, setRate] = useState(5.0)
     const closeHandler = () => {
+        setContent('')
+        setRate(5.0)
         setVisible(false);
     };
     const handleChangeContent = (e) => {
@@ -35,13 +37,25 @@ export default function Review({ productId, productName }) {
                 progress: undefined,
             });
         } else {
-            const wait = toast.loading("Vui lòng chờ ...")
-            let res = await review({ content, productId, rate })
-            if (res.data.success) {
-                UpdateSuccessReload(wait, 'Gửi nhận xét đánh giá thành công', true);
-            } else {
-                UpdateError(wait, 'Bạn đã đánh giá sản phẩm này')
-            }
+            if(content === ''){
+                toast.error('Vui lòng nhập nhận xét', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }else{
+                const wait = toast.loading("Vui lòng chờ ...")
+                let res = await review({ content, productId, rate })
+                if (res.data.success) {
+                    UpdateSuccessReload(wait, 'Gửi nhận xét đánh giá thành công', true);
+                } else {
+                    UpdateError(wait, 'Bạn đã đánh giá sản phẩm này')
+                }
+            }   
         }
     }
     const handleClickSend = () => {
@@ -69,7 +83,7 @@ export default function Review({ productId, productName }) {
                 </Modal.Header>
                 <Modal.Body>
                     <Text css={{ textAlign: 'center' }} size={25}>{productName}</Text>
-                    <Rating sx={{ marginLeft: 'auto', marginRight: 'auto' }} value={rate} onChange={handleChangeRate} defaultValue={0} precision={0.5} max={5} />
+                    <Rating sx={{ marginLeft: 'auto', marginRight: 'auto' }} value={rate} onChange={handleChangeRate} precision={0.5} max={5} />
                     <Textarea
                         label="Nhận xét"
                         placeholder="Vui lòng nhập ý kiến của bạn"
