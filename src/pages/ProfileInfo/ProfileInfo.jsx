@@ -17,6 +17,7 @@ import ModalChangeAvatar from './ModalChangeAvatar';
 import { UpdateSuccessReload } from './../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from '../../components/Alert';
 import { getDistrict, getProvince, getWard } from '../../services/AuthService';
+import validator from 'validator';
 
 export default function ProfileInfo() {
     const { id } = useParams();
@@ -90,19 +91,81 @@ export default function ProfileInfo() {
         setUser({ ...user, gender: e.target.value.toLowerCase() });
     };
     const updateInfo = async (data, id) => {
-        const wait = toast.loading('Vui lòng chờ ...');
-        let checkName = user.name;
-        let checkPhone = user.phone;
+        
+        let checkName = validator.isEmpty(user.name);
+        let checkPhone = validator.isMobilePhone(user.phone, 'vi-VN');
         let checkProvince = user.province;
         let checkDistrict = user.district;
         let checkWard = user.ward;
-        if (
-            checkName !== '' &&
-            checkPhone !== '' &&
-            checkProvince !== undefined &&
-            checkDistrict !== undefined &&
-            checkWard !== undefined
-        ) {
+        let checkAddress = validator.isEmpty(user.address)
+        if (checkName) {
+            toast.error('Vui lòng nhập tên', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (!checkPhone) {
+            toast.error('Số điện thoại không hợp lệ. Vui lòng nhập lại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (checkProvince === undefined) {
+            toast.error('Vui lòng chọn tỉnh thành', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (checkDistrict === undefined) {
+            toast.error('Vui lòng chọn quận huyện', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (checkWard === undefined) {
+            toast.error('Vui lòng chọn xã phường', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (checkAddress) {
+            toast.error('Vui lòng nhập địa chỉ của bạn', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const wait = toast.loading('Vui lòng chờ ...');
             let res = await updateUserByID(data, id);
             if (res.success) {
                 UpdateSuccessReload(wait, 'Cập nhật thông tin thành công', false);
@@ -110,8 +173,6 @@ export default function ProfileInfo() {
             } else {
                 UpdateError(wait, 'Cập nhật không thành công');
             }
-        } else {
-            UpdateError(wait, 'Vui lòng kiểm tra lại thông tin');
         }
     };
     const handleSaveInfo = () => {

@@ -7,6 +7,7 @@ import { addCategoryByAdmin, updateCategoryByAdmin } from '../../../services/Adm
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
+import { CSVLink } from "react-csv";
 
 export function AddModal({categories}) {
     const root = categories.filter((category)=>{
@@ -180,8 +181,18 @@ function TableCategories({ categories,show }) {
         <div id='category' hidden = {show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>DANH MỤC</Text>
-                {/* <Button auto ghost color={'warning'} onClick={() => navigate('/admin/addCategory')}>Thêm Danh Mục</Button> */}
-                <AddModal categories={categories}/>
+                <div style={{display:'flex',alignItems:'center'}}>
+                    <CSVLink
+                        data={categories}
+                        filename={"categories.csv"}
+                        className="btn btn-primary"
+                        target="_blank"
+                        style={{marginRight:10}}
+                    >
+                        Export CSV
+                    </CSVLink>
+                    <AddModal categories={categories}/>
+                </div>
             </Row>
             <Table
                 bordered

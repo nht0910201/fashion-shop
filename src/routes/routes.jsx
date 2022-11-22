@@ -5,7 +5,6 @@ import Home from '../pages/Home'
 import {AdminLayout, DefaultLayout,HeaderOnly} from '../layouts'
 import ForgotPassword from '../pages/ForgotPassword';
 import Order from '../pages/Order';
-import OrderHistory from '../pages/OrderHistory/OrderHistory';
 import OrderDetail from '../pages/OrderDetail';
 import SignUp from '../pages/SignUp';
 import Oauth2 from '../pages/Oauth2';
@@ -30,7 +29,6 @@ const publicRoutes = [
     { path: config.routes.register, component: SignUp, layout: HeaderOnly },
     { path: config.routes.forgotPassword, component:ForgotPassword, layout: HeaderOnly },
     { path: config.routes.order, component:Order, layout: DefaultLayout },
-    { path: config.routes.orderHistory, component:OrderHistory, layout: DefaultLayout },
     { path: config.routes.myOrder, component:MyOrder, layout: HeaderOnly },
     { path: config.routes.orderSuccess, component:OrderSuccess },
     { path: config.routes.orderDetail, component:OrderDetail, layout: DefaultLayout },
@@ -48,7 +46,6 @@ const privateRoutes = [
     { path: config.routes.register, component: SignUp, layout: HeaderOnly },
     { path: config.routes.forgotPassword, component:ForgotPassword, layout: HeaderOnly },
     { path: config.routes.order, component:Order, layout: DefaultLayout },
-    { path: config.routes.orderHistory, component:OrderHistory, layout: DefaultLayout },
     { path: config.routes.myOrder, component:MyOrder, layout: HeaderOnly },
     { path: config.routes.orderSuccess, component:OrderSuccess },
     { path: config.routes.orderDetail, component:OrderDetail, layout: DefaultLayout },

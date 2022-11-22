@@ -70,19 +70,14 @@ export default function SignUp() {
     }, [district, province])
     const [activeStep, setActiveStep] = useState(0);
     const handleNext = async (e) => {
-        let checkName = !validator.isEmpty(name)
+        let checkName = validator.isEmpty(name)
         let checkEmail = validator.isEmail(email)
-        let checkAddress = !validator.isEmpty(address)
+        let checkAddress = validator.isEmpty(address)
         let checkPhone = validator.isMobilePhone(phone,'vi-VN')
-        let checkPassword = !validator.isEmpty(password) && password.length >= 8
-        let checkConfirmPass = !validator.isEmpty(confirmPassword) && (password === confirmPassword)
-        if (checkName && checkEmail && checkAddress && checkPhone && checkPassword && checkConfirmPass && province !== undefined && district !== undefined && ward !== undefined) {
-            let check = await register({ name, email, password, phone, province, district, ward, address, gender })
-            if (check.data.success) {
-                setActiveStep(activeStep + 1);
-            }
-        } else {
-            toast.error('Vui lòng kiểm tra lại các thông tin', {
+        let checkPassword = validator.isEmpty(password)
+        let checkConfirmPass = validator.isEmpty(confirmPassword)
+        if(checkName){
+            toast.error('Vui lòng nhập tên', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -91,6 +86,122 @@ export default function SignUp() {
                 draggable: true,
                 progress: undefined,
             });
+        } 
+        else if(!checkEmail){
+            toast.error('Email không hợp lệ. Vui lòng nhập lại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(province === undefined){
+            toast.error('Vui lòng chọn tỉnh thành', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(district === undefined){
+            toast.error('Vui lòng chọn quận huyện', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(ward === undefined){
+            toast.error('Vui lòng chọn xã phường', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(checkAddress){
+            toast.error('Vui lòng nhập địa chỉ của bạn', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (!checkPhone){
+            toast.error('Số điện thoại không hợp lệ. Vui lòng nhập lại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (checkPassword){
+            toast.error('Vui lòng nhập mật khẩu của bạn', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(password.length < 8){
+            toast.error('Vui lòng nhập mật khẩu của bạn có độ dài hơn 8 kí tự', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(checkConfirmPass){
+            toast.error('Vui lòng nhập lại mật khẩu của bạn', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(password !== confirmPassword){
+            toast.error('Vui lòng nhập lại mật khẩu chính xác', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else{
+            let check = await register({ name, email, password, phone, province, district, ward, address, gender })
+            if (check.data.success) {
+                setActiveStep(activeStep + 1);
+            }
         }
     };
     const handleChangeWard = (e) => {
@@ -147,8 +258,7 @@ export default function SignUp() {
         const wait = toast.loading("Vui lòng chờ ...")
         let check = await verifyUser({ otp, email, type });
         if (check.data.success) {
-            let url = '/'
-            UpdateSuccessNavigate(wait, 'Đăng ký thành công', url)
+            UpdateSuccessNavigate(wait, 'Đăng ký thành công', '/')
         } else {
             UpdateError(wait, 'Xác thực thất bại')
         }
@@ -354,12 +464,6 @@ export default function SignUp() {
                             </Grid>
                         </> : <></>}
                         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            {/* <Button onClick={handleBack}
-                                sx={{ mt: 3, ml: 1 }}
-                                disabled={activeStep === 0 ? true : false}
-                            >
-                                <ArrowBackIcon />
-                            </Button> */}
                             <Button
                                 onClick={handleNext}
                                 sx={{ mt: 3, ml: 1 }}

@@ -1,5 +1,5 @@
 import { DeleteForever, Edit } from "@mui/icons-material";
-import { Button, Modal, Radio, Row, Table, Text, useAsyncList, useCollator } from "@nextui-org/react";
+import { Button, Modal, Radio, Row, Table, Text, useAsyncList, useCollator, User } from "@nextui-org/react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,6 +8,7 @@ import { UpdateError } from "../../../components/Alert/UpdateError";
 import { UpdateSuccessNavigate } from "../../../components/Alert/UpdateSuccessNavigate";
 import { updateProductByAdmin } from "../../../services/AdminService";
 import { StyledBadge } from "../../MyOrder/StyledBadge";
+import { CSVLink } from "react-csv";
 
 export function RemoveModal({ product }) {
     const [visible, setVisible] = useState(false);
@@ -101,7 +102,18 @@ function TableProduct({ products,show }) {
         <div hidden={show} id='product'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>SẢN PHẨM</Text>
-                <Button auto ghost color={'warning'} onClick={()=>navigate('/admin/addProduct')}>Thêm sản phẩm</Button>
+                <div style={{display:'flex',alignItems:'center'}}>
+                    <CSVLink
+                        data={products.list}
+                        filename={"products.csv"}
+                        className="btn btn-primary"
+                        target="_blank"
+                        style={{marginRight:10}}
+                    >
+                        Export CSV
+                    </CSVLink>
+                    <Button auto ghost color={'warning'} onClick={()=>navigate('/admin/addProduct')}>Thêm sản phẩm</Button>
+                </div>
             </Row>
             <Table
                 bordered
@@ -117,8 +129,7 @@ function TableProduct({ products,show }) {
                 onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column >MÃ SẢN PHẨM</Table.Column>
-                    <Table.Column align="center" key={'name'} allowsSorting>TÊN SẢN PHẨM</Table.Column>
+                    <Table.Column >TÊN SẢN PHẨM</Table.Column>
                     <Table.Column align="center" key={'price'} allowsSorting>GIÁ</Table.Column>
                     <Table.Column align="center" key={'discount'} allowsSorting>GIẢM GIÁ</Table.Column>
                     <Table.Column align="center" key={'categoryName'} allowsSorting>DANH MỤC</Table.Column>
@@ -130,8 +141,11 @@ function TableProduct({ products,show }) {
                 <Table.Body items={list.items} loadingState={list.loadingState}>
                     {(product) => (
                         <Table.Row key={product.id}>
-                            <Table.Cell>{product.id}</Table.Cell>
-                            <Table.Cell>{product.name}</Table.Cell>
+                            <Table.Cell><User
+                                    squared
+                                    src={product.images[0].url}
+                                    name={product.name}
+                                /></Table.Cell>
                             <Table.Cell>{formatPrice(product.price)}</Table.Cell>
                             <Table.Cell>{product.discount}%</Table.Cell>
                             <Table.Cell>{product.categoryName}</Table.Cell>

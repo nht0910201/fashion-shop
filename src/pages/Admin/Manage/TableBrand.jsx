@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
+import { CSVLink } from "react-csv";
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -187,7 +188,6 @@ export function EditModal({ brand }) {
     );
 }
 function TableBrand({ brands, show }) {
-    console.log(brands.length)
     const collator = useCollator({ numeric: true });
     async function load() {
         return { items: brands }
@@ -214,12 +214,21 @@ function TableBrand({ brands, show }) {
         <div hidden={show} id='brand'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>NHÃN HÀNG</Text>
-                <AddModal />
+                <div style={{display:'flex',alignItems:'center'}}>
+                    <CSVLink
+                        data={brands}
+                        filename={"brands.csv"}
+                        className="btn btn-primary"
+                        target="_blank"
+                        style={{marginRight:10}}
+                    >
+                        Export CSV
+                    </CSVLink>
+                    <AddModal />
+                </div>
             </Row>
             <Table
                 aria-label='Table Brand'
-                // bordered
-                // striped
                 css={{
                     height: "auto",
                     minWidth: "100%",

@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { FormControl, MenuItem, Select } from '@mui/material';
 import { Button, Col, Divider, Grid, Image, Input, Loading, Radio, Row, Spacer, Text } from '@nextui-org/react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -142,16 +142,85 @@ function Order() {
     const [paymentType, setPaymentType] = useState('cod');
 
     const makeOrder = async (paymentType, orderId, user) => {
-        if (
-            province !== undefined &&
-            district !== undefined &&
-            ward !== undefined &&
-            user.name !== '' &&
-            user.phone !== '' &&
-            validator.isMobilePhone(user.phone,"vi-VN") &&
-            user.address !== '' &&
-            validator.isEmail(user.email)
-        ) {
+        if(validator.isEmpty(user.name)){
+            toast.error('Vui lòng nhập tên', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(!validator.isEmail(user.email)){
+            toast.error('Email không hợp lệ. Vui lòng nhập lại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(!validator.isMobilePhone(user.phone,'vi-VN')){
+            toast.error('Số điện thoại không hợp lệ. Vui lòng nhập lại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(province === undefined){
+            toast.error('Vui lòng chọn tỉnh thành', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (district === undefined)
+        {
+            toast.error('Vui lòng chọn quận huyện', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }else if(ward === undefined){
+            toast.error('Vui lòng chọn xã phường', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(validator.isEmpty(user.address)){
+            toast.error('Vui lòng nhập địa chỉ của bạn', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        
+        else {
             const wait = toast.loading('Vui lòng chờ ...');
             let res = await makeAnOrder(paymentType, orderId, { ...user, shippingFee: shippingFee });
             if (res.data.success) {
@@ -164,17 +233,6 @@ function Order() {
             } else {
                 UpdateError(wait, 'Đặt hàng không thành công');
             }
-        } else {
-            toast.error('Vui lòng kiểm tra lại các thông tin', {
-                position: 'top-right',
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: true,
-                progress: undefined,
-                theme: 'light',
-            });
         }
     };
     const handleClickOrder = () => {

@@ -22,6 +22,7 @@ import { cancelOrderByAdmin, confirmOrderByAdmin } from '../../../services/Payme
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
+import { CSVLink } from "react-csv";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
@@ -188,7 +189,7 @@ export function OrderModal({ orderId }) {
                                             <Text size={'$xl'} weight={'semibold'}>Hình thức thanh toán:</Text>
                                         </Col>
                                         <Col>
-                                            <Text size={'$xl'}>{order?.paymentType||'Chưa có'}</Text>
+                                            <Text size={'$xl'}>{order?.paymentType || 'Chưa có'}</Text>
                                         </Col>
                                     </Row>
                                     <Row gap={2} justify="center">
@@ -196,7 +197,7 @@ export function OrderModal({ orderId }) {
                                             <Text size={'$xl'} weight={'semibold'}>Người nhận:</Text>
                                         </Col>
                                         <Col>
-                                            <Text size={'$xl'}>{order.deliveryDetail?.receiveName ||'Chưa có'}</Text>
+                                            <Text size={'$xl'}>{order.deliveryDetail?.receiveName || 'Chưa có'}</Text>
                                         </Col>
                                     </Row>
                                     <Row gap={2} justify="center">
@@ -313,7 +314,14 @@ function TableOrder({ orders, show }) {
                 <Text b size={20}>
                     ĐƠN HÀNG
                 </Text>
-                {/* <AddModal /> */}
+                <CSVLink
+                    data={orders.list}
+                    filename={"orders.csv"}
+                    className="btn btn-primary"
+                    target="_blank"
+                >
+                    Export CSV
+                </CSVLink>
             </Row>
             <Table
                 bordered

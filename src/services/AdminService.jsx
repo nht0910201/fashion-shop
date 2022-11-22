@@ -193,3 +193,12 @@ export const delProductByAdmin = async (id) =>{
         return error.response.data 
     };
 }
+export const getStatsByAdmin = async (from,to,type) =>{
+    try {
+        const response = await get(`/manage/orders/stats?from=${from}&to=${to}&type=${type}`);
+        return response
+    } catch (error) { 
+        return error.response.data 
+    };
+
+}

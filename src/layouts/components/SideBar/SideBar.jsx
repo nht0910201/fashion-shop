@@ -1,8 +1,9 @@
-import { Avatar, Button, Collapse } from "@nextui-org/react";
+import { Avatar, Button, Collapse, Text } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserFromLocalStorage } from "../../../utils/userHanle";
 import * as authAction from '../../../redux/auth/authSlice'
+import { BarChart, BrandingWatermark, Category, CreditCard, Inventory, Person } from "@mui/icons-material";
 
 function SideBar() {
     let userCur = getUserFromLocalStorage()
@@ -27,12 +28,14 @@ function SideBar() {
         let category = document.getElementById('category');
         let brand = document.getElementById('brand');
         let order = document.getElementById('order')
+        let stats = document.getElementById('stats')
 
         user.removeAttribute('hidden')
         product.setAttribute('hidden', true)
         category.setAttribute('hidden', true)
         brand.setAttribute('hidden', true)
         order.setAttribute('hidden', true)
+        stats.setAttribute('hidden',true)
     }
     const handleCategoryManage = () => {
         let user = document.getElementById('user')
@@ -40,16 +43,19 @@ function SideBar() {
         let category = document.getElementById('category');
         let brand = document.getElementById('brand');
         let order = document.getElementById('order')
+        let stats = document.getElementById('stats')
 
         category.removeAttribute('hidden')
         product.setAttribute('hidden', true)
         user.setAttribute('hidden', true)
         brand.setAttribute('hidden', true)
         order.setAttribute('hidden', true)
+        stats.setAttribute('hidden',true)
     }
     const handleBrandManage = () => {
         let user = document.getElementById('user')
         let product = document.getElementById('product')
+        let stats = document.getElementById('stats')
         let category = document.getElementById('category');
         let brand = document.getElementById('brand');
         let order = document.getElementById('order')
@@ -59,16 +65,34 @@ function SideBar() {
         user.setAttribute('hidden', true)
         category.setAttribute('hidden', true)
         order.setAttribute('hidden', true)
+        stats.setAttribute('hidden',true)
     }
     const handleOrderManage = () => {
         let user = document.getElementById('user')
         let product = document.getElementById('product')
+        let stats = document.getElementById('stats')
         let category = document.getElementById('category');
         let brand = document.getElementById('brand');
         let order = document.getElementById('order')
 
         order.removeAttribute('hidden')
         product.setAttribute('hidden', true)
+        stats.setAttribute('hidden',true)
+        user.setAttribute('hidden', true)
+        category.setAttribute('hidden', true)
+        brand.setAttribute('hidden', true)
+    }
+    const handleStatistic = () => {
+        let user = document.getElementById('user')
+        let product = document.getElementById('product')
+        let stats = document.getElementById('stats')
+        let category = document.getElementById('category');
+        let brand = document.getElementById('brand');
+        let order = document.getElementById('order')
+
+        stats.removeAttribute('hidden')
+        product.setAttribute('hidden', true)
+        order.setAttribute('hidden',true)
         user.setAttribute('hidden', true)
         category.setAttribute('hidden', true)
         brand.setAttribute('hidden', true)
@@ -78,37 +102,35 @@ function SideBar() {
         dispatch(authAction.logout())
     }
     return (
-        <Collapse.Group css={{ width: '100%' }}>
+        <Collapse.Group css={{ width: '100%'}}>
             {userCur.role === 'ROLE_ADMIN' ?
                 <>
                     <Collapse title={userCur.name} contentLeft={<Avatar
                         size="lg"
                         src={userCur.avatar}
-                        color="secondary"
                         bordered
-                        squared
                     />}>
-                        <Button onClick={() => navigate(`/profile/${userCur?.id}`)} light auto color={'warning'}>Thông tin cá nhân</Button>
                         <Button onClick={handleLogout} light auto color={'warning'}>Đăng xuất</Button>
                     </Collapse>
-                    <Collapse title="Tài khoản">
+                    <Collapse contentLeft={<BarChart/>} title="Thống kê">
+                        <Button onClick={handleStatistic} light auto color={'warning'}>Xem thống kê</Button>
+                    </Collapse>
+                    <Collapse contentLeft={<Person/>} title="Tài khoản">
                         <Button onClick={handleUserManage} light auto color={'warning'}>Quản lý tài khoản </Button>
                     </Collapse>
-                    <Collapse title="Sản phẩm">
-                        {/* <Button css={{ marginBottom: '$2' }} onClick={()=>navigate('/admin/addProduct')} light auto color={'warning'}>Thêm sản phẩm </Button> */}
+                    <Collapse contentLeft={<Inventory/>} title="Sản phẩm">
                         <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
                     </Collapse>
-                    <Collapse title="Danh mục">
-                        {/* <Button css={{ marginBottom: '$2' }} light auto color={'warning'} onClick={()=>navigate('/admin/addCategory')}>Thêm danh mục </Button> */}
+                    <Collapse contentLeft={<Category/>} title="Danh mục">
                         <Button onClick={handleCategoryManage} light auto color={'warning'}>Quản lý danh mục </Button>
                     </Collapse>
-                    <Collapse title="Nhãn hàng">
-                        {/* <Button css={{ marginBottom: '$2' }} light auto color={'warning'} onClick={()=>navigate('/admin/addBrand')}>Thêm nhãn hàng </Button> */}
+                    <Collapse contentLeft={<BrandingWatermark/>} title="Nhãn hàng">
                         <Button onClick={handleBrandManage} light auto color={'warning'}>Quản lý nhãn hàng </Button>
                     </Collapse>
-                    <Collapse title="Đơn hàng">
+                    <Collapse contentLeft={<CreditCard/>} title="Đơn hàng">
                         <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
                     </Collapse>
+                    
                 </> :
                 <>
                     <Collapse title={userCur.name} contentLeft={<Avatar
@@ -117,14 +139,12 @@ function SideBar() {
                         bordered
                         
                     />}>
-                        <Button onClick={() => navigate(`/profile/${userCur?.id}`)} light auto color={'warning'}>Thông tin cá nhân</Button>
                         <Button onClick={handleLogout} light auto color={'warning'}>Đăng xuất</Button>
                     </Collapse>
-                    <Collapse title="Sản phẩm">
-                        {/* <Button css={{ marginBottom: '$2' }} onClick={()=>navigate('/admin/addProduct')} light auto color={'warning'}>Thêm sản phẩm </Button> */}
+                    <Collapse contentLeft={<Inventory/>} title="Sản phẩm">
                         <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
                     </Collapse>
-                    <Collapse title="Đơn hàng">
+                    <Collapse contentLeft={<CreditCard/>} title="Đơn hàng">
                         <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
                     </Collapse>
                 </>

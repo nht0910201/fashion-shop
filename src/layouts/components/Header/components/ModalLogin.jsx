@@ -21,6 +21,8 @@ export default function ModalLogin() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const closeHandler = () => {
+        setUsername('')
+        setPassword('')
         setVisible(false);
     };
     const login = async ({ username, password }) => {
@@ -87,6 +89,7 @@ export default function ModalLogin() {
                         size="lg"
                         placeholder="Email"
                         value={username}
+                        type='email'
                         onChange={onChangeUsernameHanle}
                         contentLeft={<Mail fill="currentColor" />}
                     />

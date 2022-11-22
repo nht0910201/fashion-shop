@@ -7,12 +7,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
+import { CSVLink } from "react-csv";
 
 export function AddModal() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPass] = useState('')
-    const [role,setRole] = useState('ROLE_STAFF')
+    const [role, setRole] = useState('ROLE_STAFF')
     const [visible, setVisible] = useState(false);
     const handler = () => setVisible(true);
     const closeHandler = () => {
@@ -30,23 +31,23 @@ export function AddModal() {
     const handleChangeRole = (e) => {
         setRole(e)
     }
-    const adduser = async ({name,email,password,phone,province,district,ward,address,gender,role}) => {
+    const adduser = async ({ name, email, password, phone, province, district, ward, address, gender, role }) => {
         const wait = toast.loading("Vui lòng chờ ...")
-        let res = await addUserByAdmin({name,email,password,phone,province,district,ward,address,gender,role})
-        if(res.data.success){
-            UpdateSuccessNavigate(wait,'Thêm tài khoản thành công','/admin?page=user')
-        }else{
-            UpdateError(wait,'Thêm tài khoản thất bại')
+        let res = await addUserByAdmin({ name, email, password, phone, province, district, ward, address, gender, role })
+        if (res.data.success) {
+            UpdateSuccessNavigate(wait, 'Thêm tài khoản thành công', '/admin?page=user')
+        } else {
+            UpdateError(wait, 'Thêm tài khoản thất bại')
         }
     }
     let phone = '0909090909'
     let province = 0
     let district = 0
     let ward = 0
-    let address ='unknown'
+    let address = 'unknown'
     let gender = 'other'
-    const handleClickAddUSer = () =>{
-        adduser({name,email,password,phone,province,district,ward,address,gender,role})
+    const handleClickAddUSer = () => {
+        adduser({ name, email, password, phone, province, district, ward, address, gender, role })
     }
     return (
         <div>
@@ -81,9 +82,9 @@ export function AddModal() {
                         Lưu
                     </Button>
                 </Modal.Footer>
-                <ToastContainer/>
+                <ToastContainer />
             </Modal>
-            
+
         </div>
     );
 }
@@ -99,17 +100,17 @@ export function EditModal({ user }) {
     const closeHandler = () => {
         setVisible(false);
     };
-    const updateUser = async (data,id) =>{
+    const updateUser = async (data, id) => {
         const w = toast.loading("Vui lòng chờ ...")
-        let res = await updateUserByAdmin(data,id)
-        if(res.success){
-            UpdateSuccessNavigate(w,'Cập nhật tài khoản thành công','/admin?page=user');
-        }else{
-            UpdateError(w,'Cập nhật tài khoản thất bại')
+        let res = await updateUserByAdmin(data, id)
+        if (res.success) {
+            UpdateSuccessNavigate(w, 'Cập nhật tài khoản thành công', '/admin?page=user');
+        } else {
+            UpdateError(w, 'Cập nhật tài khoản thất bại')
         }
     }
-    const handleUpdateUser = () =>{
-        updateUser(userNew,userNew.id)
+    const handleUpdateUser = () => {
+        updateUser(userNew, userNew.id)
     }
     return (
         <div>
@@ -141,7 +142,7 @@ export function EditModal({ user }) {
                         Lưu
                     </Button>
                 </Modal.Footer>
-                <ToastContainer/>
+                <ToastContainer />
             </Modal>
         </div>
     );
@@ -175,7 +176,18 @@ function TableUser({ users, show }) {
         <div id='user' hidden={show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>TÀI KHOẢN</Text>
-                <AddModal />
+                <div style={{display:'flex',alignItems:'center'}}>
+                    <CSVLink
+                        data={users.list}
+                        filename={"users.csv"}
+                        className="btn btn-primary"
+                        target="_blank"
+                        style={{marginRight:10}}
+                    >
+                        Export CSV
+                    </CSVLink>
+                    <AddModal/>
+                </div>
             </Row>
             <Table
                 bordered
@@ -184,7 +196,7 @@ function TableUser({ users, show }) {
                 aria-label="Users table"
                 css={{
                     height: "calc($space$14 * 10)",
-                  minWidth: "100%",
+                    minWidth: "100%",
                 }}
                 selectionMode="single"
                 sortDescriptor={list.sortDescriptor}
@@ -221,7 +233,7 @@ function TableUser({ users, show }) {
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={Math.ceil(users.totalQuantity/5)}
+                    total={Math.ceil(users.totalQuantity / 5)}
                     loop
                     shadow
                     noMargin

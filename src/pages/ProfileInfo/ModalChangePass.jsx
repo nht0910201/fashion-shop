@@ -44,7 +44,6 @@ export default function ModalChangePass() {
                     if (res.success) {
                         clearUserFromLocalStorage()
                         clearFromLocalStorage()
-                        console.log('success')
                         let url = '/'
                         UpdateSuccessNavigate(wait, 'Đổi mật khẩu thành công', url)
                     } else {
