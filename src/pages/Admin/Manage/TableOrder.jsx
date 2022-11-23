@@ -357,13 +357,13 @@ function TableOrder({ orders, show }) {
                     {(order) => (
                         <Table.Row key={order.id}>
                             <Table.Cell>{order.id}</Table.Cell>
-                            <Table.Cell>{order.userName}</Table.Cell>
-                            <Table.Cell>{order.totalProduct}</Table.Cell>
-                            <Table.Cell>{formatPrice(order.totalPrice)}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{order.userName}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{order.totalProduct}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{formatPrice(order.totalPrice)}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>
                                 <StyledBadge type={order.state}>{state[order.state]}</StyledBadge>
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{d:'flex',justifyContent:'center',h:'100%',alignItems:'center'}}>
                                 <OrderModal orderId={order.id} />
                             </Table.Cell>
                         </Table.Row>

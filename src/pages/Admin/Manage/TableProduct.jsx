@@ -130,12 +130,12 @@ function TableProduct({ products,show }) {
             >
                 <Table.Header>
                     <Table.Column >TÊN SẢN PHẨM</Table.Column>
-                    <Table.Column align="center" key={'price'} allowsSorting>GIÁ</Table.Column>
-                    <Table.Column align="center" key={'discount'} allowsSorting>GIẢM GIÁ</Table.Column>
-                    <Table.Column align="center" key={'categoryName'} allowsSorting>DANH MỤC</Table.Column>
-                    <Table.Column align="center" key={'brandName'} allowsSorting>NHÃN HIỆU</Table.Column>
-                    <Table.Column align="center" key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
-                    <Table.Column>CHỈNH SỬA / XOÁ</Table.Column>
+                    <Table.Column align="center" key={'price'} allowsSorting>GIÁ*</Table.Column>
+                    <Table.Column align="center" key={'discount'} allowsSorting>GIẢM GIÁ*</Table.Column>
+                    <Table.Column align="center" key={'categoryName'} allowsSorting>DANH MỤC*</Table.Column>
+                    <Table.Column align="center" key={'brandName'} allowsSorting>NHÃN HIỆU*</Table.Column>
+                    <Table.Column align="center" key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
+                    <Table.Column>CHỈNH SỬA</Table.Column>
                 </Table.Header>
 
                 <Table.Body items={list.items} loadingState={list.loadingState}>
@@ -146,14 +146,14 @@ function TableProduct({ products,show }) {
                                     src={product.images[0].url}
                                     name={product.name}
                                 /></Table.Cell>
-                            <Table.Cell>{formatPrice(product.price)}</Table.Cell>
-                            <Table.Cell>{product.discount}%</Table.Cell>
-                            <Table.Cell>{product.categoryName}</Table.Cell>
-                            <Table.Cell>{product.brandName}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{formatPrice(product.price)}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{product.discount}%</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{product.categoryName}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{product.brandName}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>
                                 <StyledBadge type={product.state}>{state[product.state]}</StyledBadge>
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{d:'flex',justifyContent:'center',h:'100%',alignItems:'center'}}>
                                 <Row align="center">
                                     <button onClick={() => {
                                         if(product.state==='enable'){
@@ -175,7 +175,6 @@ function TableProduct({ products,show }) {
                                     </button>
                                     <RemoveModal product={product} />
                                 </Row>
-
                             </Table.Cell>
                         </Table.Row>
                     )}

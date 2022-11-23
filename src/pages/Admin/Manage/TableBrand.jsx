@@ -230,7 +230,7 @@ function TableBrand({ brands, show }) {
             <Table
                 aria-label='Table Brand'
                 css={{
-                    height: "auto",
+                    height: "calc($space$14 * 10)",
                     minWidth: "100%",
                 }}
                 selectionMode={'single'}
@@ -239,9 +239,9 @@ function TableBrand({ brands, show }) {
             >
                 <Table.Header>
                     <Table.Column align='center'></Table.Column>
-                    <Table.Column align='center' key={'name'} allowsSorting>TÊN NHÃN HÀNG</Table.Column>
-                    <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
-                    <Table.Column align='center'>Chỉnh sửa / Xoá</Table.Column>
+                    <Table.Column align='center' key={'name'} allowsSorting>TÊN NHÃN HÀNG*</Table.Column>
+                    <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
+                    <Table.Column align='center'>CHỈNH SỬA</Table.Column>
                 </Table.Header>
 
                 <Table.Body items={list.items} loadingState={list.loadingState}>
@@ -250,11 +250,11 @@ function TableBrand({ brands, show }) {
                             <Table.Cell>
                                 <Image src={item.image} width={80} />
                             </Table.Cell>
-                            <Table.Cell>{item.name}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{item.name}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>
                                 <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
                             </Table.Cell>
-                            <Table.Cell css={{ display: 'flex', height: 80 }}>
+                            <Table.Cell css={{d:'flex',justifyContent:'center',h:'100%',alignItems:'center'}}>
                                 <EditModal brand={item} />
                             </Table.Cell>
                         </Table.Row>
@@ -268,7 +268,6 @@ function TableBrand({ brands, show }) {
                     align="center"
                     color={'warning'}
                     rowsPerPage={3}
-                    // onPageChange={(page) => console.log({ page })}
                 />
             </Table>
         </div>

@@ -113,9 +113,6 @@ export default function ModalLogin() {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer justify="center">
-                    {/* <Button auto flat color="error" onClick={closeHandler}>
-                        Close
-                    </Button> */}
                     <Button ghost disabled={loading} color="warning" onClick={handleLogin}>
                         {loading ? 
                         <Loading color={'currentColor'} type='points-opacity' />

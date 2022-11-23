@@ -203,12 +203,12 @@ function TableUser({ users, show }) {
                 onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column align='center' key={'name'} allowsSorting>TÀI KHOẢN*</Table.Column>
-                    <Table.Column>EMAIL</Table.Column>
-                    <Table.Column >SỐ ĐIỆN THOẠI</Table.Column>
-                    <Table.Column align='center' key={'role'} allowsSorting>ROLE*</Table.Column>
-                    <Table.Column align='center' key={'state'} allowsSorting>STATE*</Table.Column>
-                    <Table.Column>CHỈNH SỬA / XOÁ</Table.Column>
+                    <Table.Column key={'name'} allowsSorting>TÀI KHOẢN*</Table.Column>
+                    <Table.Column align='center'>EMAIL</Table.Column>
+                    <Table.Column align='center'>SỐ ĐIỆN THOẠI</Table.Column>
+                    <Table.Column align='center' key={'role'} allowsSorting>PHÂN QUYỀN*</Table.Column>
+                    <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
+                    <Table.Column>CHỈNH SỬA</Table.Column>
                 </Table.Header>
 
                 <Table.Body items={list.items} loadingState={list.loadingState}>
@@ -220,13 +220,13 @@ function TableUser({ users, show }) {
                                     name={item.name}
                                 />
                             </Table.Cell>
-                            <Table.Cell>{item.email}</Table.Cell>
-                            <Table.Cell>{item.phone}</Table.Cell>
-                            <Table.Cell>{item.role}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{item.email}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{item.phone}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{item.role}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>
                                 <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
                             </Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell css={{d:'flex',justifyContent:'center',h:'100%',alignItems:'center'}}>
                                 <EditModal user={item} />
                             </Table.Cell>
                         </Table.Row>

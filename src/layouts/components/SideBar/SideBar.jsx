@@ -1,9 +1,9 @@
-import { Avatar, Button, Collapse, Text } from "@nextui-org/react";
+import { Avatar, Button, Collapse } from "@nextui-org/react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUserFromLocalStorage } from "../../../utils/userHanle";
 import * as authAction from '../../../redux/auth/authSlice'
-import { BarChart, BrandingWatermark, Category, CreditCard, Inventory, Person } from "@mui/icons-material";
+import { BarChart, BrandingWatermark, Category, Inventory, Person, ReceiptLong } from "@mui/icons-material";
 
 function SideBar() {
     let userCur = getUserFromLocalStorage()
@@ -127,7 +127,7 @@ function SideBar() {
                     <Collapse contentLeft={<BrandingWatermark/>} title="Nhãn hàng">
                         <Button onClick={handleBrandManage} light auto color={'warning'}>Quản lý nhãn hàng </Button>
                     </Collapse>
-                    <Collapse contentLeft={<CreditCard/>} title="Đơn hàng">
+                    <Collapse contentLeft={<ReceiptLong/>} title="Đơn hàng">
                         <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
                     </Collapse>
                     
@@ -144,7 +144,7 @@ function SideBar() {
                     <Collapse contentLeft={<Inventory/>} title="Sản phẩm">
                         <Button onClick={handleProductManage} light auto color={'warning'}>Quản lý sản phẩm </Button>
                     </Collapse>
-                    <Collapse contentLeft={<CreditCard/>} title="Đơn hàng">
+                    <Collapse contentLeft={<ReceiptLong/>} title="Đơn hàng">
                         <Button onClick={handleOrderManage} light auto color={'warning'}>Quản lý đơn hàng</Button>
                     </Collapse>
                 </>

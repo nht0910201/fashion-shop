@@ -201,17 +201,17 @@ function TableCategories({ categories,show }) {
                 aria-label="Categories table"
                 css={{
                     height: "calc($space$14 * 10)",
-                  minWidth: "100%",
+                    minWidth: "100%",
                 }}
                 selectionMode="single"
                 sortDescriptor={list.sortDescriptor}
                 onSortChange={list.sort}
             >
                 <Table.Header>
-                    <Table.Column align='center' key={'name'} allowsSorting>TÊN</Table.Column>
+                    <Table.Column align='center' key={'name'} allowsSorting>TÊN DANH MỤC*</Table.Column>
                     <Table.Column>DANH MỤC GỐC</Table.Column>
-                    <Table.Column align='center'  key={'state'} allowsSorting>TRẠNG THÁI</Table.Column>
-                    <Table.Column>Chỉnh sửa / Xoá</Table.Column>
+                    <Table.Column align='center'  key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
+                    <Table.Column>CHỈNH SỬA</Table.Column>
                 </Table.Header>
                 <Table.Body items={list.items} loadingState={list.loadingState}>
                     {(item) => (
