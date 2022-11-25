@@ -15,12 +15,14 @@ function SideBar() {
         let user = document.getElementById('user')
         let category = document.getElementById('category');
         let brand = document.getElementById('brand');
+        let stats = document.getElementById('stats')
         
         product.removeAttribute('hidden')
         order.setAttribute('hidden', true)
         user.setAttribute('hidden', true)
         category.setAttribute('hidden', true)
         brand.setAttribute('hidden', true)
+        stats.setAttribute('hidden',true)
     }
     const handleUserManage = () => {
         let user = document.getElementById('user')

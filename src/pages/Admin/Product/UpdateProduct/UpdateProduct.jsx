@@ -497,7 +497,6 @@ function UpdateProduct() {
         }
         getData()
     }, [id])
-    console.log(product)
     const handleChangeName = (e) => {
         setProduct({ ...product, name: e.target.value })
     }

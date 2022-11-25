@@ -1,7 +1,7 @@
 import { Grid, Loading } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getCatgoriesByAdmin, getUsersByAdmin, getAllBrandsByAdmin, getProductsByAdmin, getOrdersByAdmin } from "../../../services/AdminService";
+import { getCatgoriesByAdmin, getUsersByAdmin, getAllBrandsByAdmin, getProductsByAdmin, getOrdersByAdmin, getStatsByAdmin } from "../../../services/AdminService";
 import { getUserFromLocalStorage } from "../../../utils/userHanle";
 import Statistic from "./Statistic";
 import TableBrand from "./TableBrand";
@@ -11,6 +11,7 @@ import TableProduct from "./TableProduct";
 import TableUser from "./TableUser";
 
 function Admin() {
+  const [stats,setStats] = useState({})
   const [users, setUsers] = useState([])
   const [categories, setCategories] = useState([])
   const [brands, setBrands] = useState([])
@@ -20,14 +21,16 @@ function Admin() {
   useEffect(() => {
     async function getData() {
       if (userCur?.role === 'ROLE_ADMIN') {
-        let [products, orders, users, categories, brands] = await Promise.all([
+        let [stats,products, orders, users, categories, brands] = await Promise.all([
+          getStatsByAdmin(),
           getProductsByAdmin(0),
           getOrdersByAdmin(0),
           getUsersByAdmin(0),
           getCatgoriesByAdmin(),
           getAllBrandsByAdmin()
         ]);
-        if (products.success && orders.success && users.success && categories.success && brands.success) {
+        if (stats.success && products.success && orders.success && users.success && categories.success && brands.success) {
+          setStats(stats.data)
           setProducts(products.data)
           setOrders(orders.data)
           setCategories(categories.data)
@@ -76,7 +79,7 @@ function Admin() {
           <TableCategories categories={categories} show={url === 'category' ? false : true} />
           <TableBrand brands={brands} show={url === 'brand' ? false : true} />
           <TableOrder orders={orders} show={url === 'order' ? false : true} />
-          <Statistic show={url === 'stats' || url === null ? false : true}/>
+          <Statistic stats={stats} show={url === 'stats' || url === null ? false : true}/>
         </>}
       </>}
     </div>
