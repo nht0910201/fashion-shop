@@ -10,8 +10,7 @@ import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './components/ModalLogin';
 import { Logo } from './components/Logo';
 import 'react-toastify/dist/ReactToastify.css';
-import { Search, ShoppingBagOutlined } from '@mui/icons-material';
-// import Loading from '../../../components/Loading/Loading';
+import { ArrowDropDown, Search, ShoppingBagOutlined } from '@mui/icons-material';
 import Categories from './components/Categories';
 
 export default function Header() {
@@ -51,12 +50,6 @@ export default function Header() {
   const handleClickCart = () => {
     navigate('/cart')
   }
-  // if (categories.length === 0) {
-  //   return (
-  //     // <Loading />
-  //     <Skeleton variant="rectangular" width={'auto'} height={76} />
-  //   )
-  // }
 
   return (
     <Layout>
@@ -72,14 +65,14 @@ export default function Header() {
             hideIn="sm"
             variant="default"
           >
-            <Navbar.Link isActive href="#">TRANG CHỦ</Navbar.Link>
+            <Navbar.Link isActive href="/">TRANG CHỦ</Navbar.Link>
             <Tooltip
               content={<Categories categories={categories}/>}
               css={{ left: '$0', transform: 'none' }}
               placement='bottom'
               hideArrow >
               <Navbar.Link href="#">
-                SẢN PHẨM
+                SẢN PHẨM <ArrowDropDown/>
               </Navbar.Link>
             </Tooltip>
             <Navbar.Link href="#">GIỚI THIỆU</Navbar.Link>
@@ -106,7 +99,7 @@ export default function Header() {
             <Input
               clearable
               contentRight={
-                <Button onClick={handleSearch} light size={16}><Search /></Button>
+                <Button onClick={handleSearch} disabled={search === '' ? true : false} light size={16}><Search /></Button>
               }
               contentRightStyling={false}
               underlined

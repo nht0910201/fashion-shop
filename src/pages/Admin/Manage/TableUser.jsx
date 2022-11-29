@@ -8,6 +8,7 @@ import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
 import { CSVLink } from "react-csv";
+import validator from 'validator';
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -17,6 +18,10 @@ export function AddModal() {
     const [visible, setVisible] = useState(false);
     const handler = () => setVisible(true);
     const closeHandler = () => {
+        setName('')
+        setEmail('')
+        setPass('')
+        setRole('ROLE_STAFF')
         setVisible(false);
     };
     const handleChangeName = (e) => {
@@ -32,13 +37,59 @@ export function AddModal() {
         setRole(e)
     }
     const adduser = async ({ name, email, password, phone, province, district, ward, address, gender, role }) => {
-        const wait = toast.loading("Vui lòng chờ ...")
-        let res = await addUserByAdmin({ name, email, password, phone, province, district, ward, address, gender, role })
-        if (res.data.success) {
-            UpdateSuccessNavigate(wait, 'Thêm tài khoản thành công', '/admin?page=user')
-        } else {
-            UpdateError(wait, 'Thêm tài khoản thất bại')
+        if(validator.isEmpty(name)){
+            toast.error('Vui lòng nhập tên người dùng', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
+        else if(!validator.isEmail(email)){
+            toast.error('Email sai định dạng. Vui lòng nhập lại', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(validator.isEmpty(password)){
+            toast.error('Vui lòng nhập mật khẩu', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if(password.length < 8){
+            toast.error('Vui lòng nhập mật khẩu có ít nhất 8 kí tự', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else{
+            const wait = toast.loading("Vui lòng chờ ...")
+            let res = await addUserByAdmin({ name, email, password, phone, province, district, ward, address, gender, role })
+            if (res.data.success) {
+                UpdateSuccessNavigate(wait, 'Thêm tài khoản thành công', '/admin?page=user')
+            } else {
+                UpdateError(wait, 'Thêm tài khoản thất bại')
+            }
+        }  
     }
     let phone = '0909090909'
     let province = 0
@@ -98,6 +149,7 @@ export function EditModal({ user }) {
         setUserNew({ ...userNew, state: e })
     }
     const closeHandler = () => {
+        setUserNew(user)
         setVisible(false);
     };
     const updateUser = async (data, id) => {

@@ -113,7 +113,7 @@ export default function ModalLogin() {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer justify="center">
-                    <Button ghost disabled={loading} color="warning" onClick={handleLogin}>
+                    <Button ghost disabled={(loading || username === '' || password === '') ? true : false} color="warning" onClick={handleLogin}>
                         {loading ? 
                         <Loading color={'currentColor'} type='points-opacity' />
                          : "Đăng nhập" }

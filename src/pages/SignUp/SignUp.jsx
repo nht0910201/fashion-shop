@@ -255,12 +255,24 @@ export default function SignUp() {
     }
     let type = 'register';
     const handleOnClick = async () => {
-        const wait = toast.loading("Vui lòng chờ ...")
-        let check = await verifyUser({ otp, email, type });
-        if (check.data.success) {
-            UpdateSuccessNavigate(wait, 'Đăng ký thành công', '/')
-        } else {
-            UpdateError(wait, 'Xác thực thất bại')
+        if(validator.isEmpty(otp)){
+            toast.error('Vui lòng nhập OTP', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }else{
+            const wait = toast.loading("Vui lòng chờ ...")
+            let check = await verifyUser({ otp, email, type });
+            if (check.data.success) {
+                UpdateSuccessNavigate(wait, 'Đăng ký thành công', '/')
+            } else {
+                UpdateError(wait, 'Xác thực thất bại')
+            }
         }
     }
     return (

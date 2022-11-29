@@ -17,7 +17,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { IconButton, ImageList, ImageListItem, Popover } from '@mui/material';
-import { FileUpload} from '@mui/icons-material';
+import { FileUpload } from '@mui/icons-material';
 import { Text } from '@nextui-org/react';
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -30,6 +30,7 @@ import { UpdateError } from '../../../../components/Alert/UpdateError';
 import { ChromePicker } from 'react-color';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import validator from 'validator';
 
 const steps = ['Thông tin sản phẩm', 'Phiên bản sản phẩm', 'Thông số'];
 
@@ -62,7 +63,7 @@ function AddProduct() {
     const [discount, setDiscount] = useState(0)
     const [category, setCategory] = useState('')
     const [brand, setBrand] = useState('')
-    const [description,setDes]= useState('')
+    const [description, setDes] = useState('')
     const [size, setSize] = useState('')
     const [stock, setStock] = useState('')
     const [color, setColor] = useState('#1a237e')
@@ -118,43 +119,168 @@ function AddProduct() {
     };
     const [productId, setProductId] = useState('')
     const addProduct = async ({ name, description, price, discount, category, brand }) => {
-        const wait = toast.loading('Vui lòng chờ ...!')
-        let res = await addProductByAdmin({ name, description, price, discount, category, brand })
-        console.log(res)
-        if (res.data.success) {
-            setProductId(res.data.data.id)
-            UpdateSuccessReload(wait, 'Thêm sản phẩm thành công', false)
-            setActiveStep(1)
-        } else {
-            UpdateError(wait, 'Thêm sản phẩm thất bại')
+        if (validator.isEmpty(name)) {
+            toast.error('Vui lòng nhập tên sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
+        else if (price === 0 || validator.isEmpty(price)) {
+            toast.error('Vui lòng nhập giá sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (discount < 0 || validator.isEmpty(price)) {
+            toast.error('Vui lòng nhập giảm giá sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (validator.isEmpty(category)) {
+            toast.error('Vui lòng chọn danh mục cho sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (validator.isEmpty(brand)) {
+            toast.error('Vui lòng chọn nhãn hàng cho sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (validator.isEmpty(description)) {
+            toast.error('Vui lòng nhập mô tả sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const wait = toast.loading('Vui lòng chờ ...!')
+            let res = await addProductByAdmin({ name, description, price, discount, category, brand })
+            if (res.data.success) {
+                setProductId(res.data.data.id)
+                UpdateSuccessReload(wait, 'Thêm sản phẩm thành công', false)
+                setActiveStep(1)
+            } else {
+                UpdateError(wait, 'Thêm sản phẩm thất bại')
+            }
+        }
+
     }
     const addProductOption = async () => {
-        const data = new FormData();
-        data.append('name', size)
-        data.append('stock', stock)
-        data.append('color', color)
-        data.append('extraFee', extraFee)
-        let arr = Array.from(files)
-        arr.forEach((file) => {
-            data.append('images', file)
-        })
-        const wait = toast.loading('Vui lòng chờ...!')
-        let res = await addProductOptionByAdmin(data, productId)
-        if (res.data.success) {
-            UpdateSuccessReload(wait, 'Thêm phiên bản thành công', false)
-        } else {
-            UpdateError(wait, 'Thêm phiên bản thất bại')
+        if (validator.isEmpty(size)) {
+            toast.error('Vui lòng nhập size', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (!validator.isInt(stock)) {
+            toast.error('Vui lòng nhập chính xác số lượng của phiên bản', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (files.length === 0) {
+            toast.error('Vui lòng chọn ảnh của phiên bản', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const data = new FormData();
+            data.append('name', size)
+            data.append('stock', stock)
+            data.append('color', color)
+            data.append('extraFee', extraFee)
+            let arr = Array.from(files)
+            arr.forEach((file) => {
+                data.append('images', file)
+            })
+            const wait = toast.loading('Vui lòng chờ...!')
+            let res = await addProductOptionByAdmin(data, productId)
+            if (res.data.success) {
+                UpdateSuccessReload(wait, 'Thêm phiên bản thành công', false)
+            } else {
+                UpdateError(wait, 'Thêm phiên bản thất bại')
+            }
         }
     }
     const addProductAttr = async ({ name, val }, id) => {
-
-        const wait = toast.loading('Vui lòng chờ...!')
-        let res = await addProductAttrByAdmin({ name, val }, id)
-        if (res.data.success) {
-            UpdateSuccessReload(wait, 'Thêm thông số chi tiết thành công', false)
+        if (validator.isEmpty(name)) {
+            toast.error('Vui lòng nhập tên thông số', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (validator.isEmpty(val)) {
+            toast.error('Vui lòng nhập giá trị của thông số', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         } else {
-            UpdateError(wait, 'Thêm thông số chi tiết thất bại')
+            const wait = toast.loading('Vui lòng chờ...!')
+            let res = await addProductAttrByAdmin({ name, val }, id)
+            if (res.data.success) {
+                UpdateSuccessReload(wait, 'Thêm thông số chi tiết thành công', false)
+            } else {
+                UpdateError(wait, 'Thêm thông số chi tiết thất bại')
+            }
         }
     }
     const handleSave = () => {
@@ -272,7 +398,7 @@ function AddProduct() {
                                     </FormControl>
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <label style={{fontSize:13}}>Mô tả sản phẩm</label>
+                                    <label style={{ fontSize: 13 }}>Mô tả sản phẩm</label>
                                     <ReactQuill theme="snow" value={description} onChange={handleChangeDes} />
                                 </Grid>
                             </Grid>
@@ -287,7 +413,7 @@ function AddProduct() {
                                         required
                                         id="name_version"
                                         name="name_version"
-                                        label="Tên phiên bản"
+                                        label="Size"
                                         fullWidth
                                         type={'text'}
                                         variant="standard"

@@ -100,7 +100,7 @@ function SideBar() {
         brand.setAttribute('hidden', true)
     }
     const handleLogout = () => {
-        navigate('/')
+        navigate('/loginManage')
         dispatch(authAction.logout())
     }
     return (

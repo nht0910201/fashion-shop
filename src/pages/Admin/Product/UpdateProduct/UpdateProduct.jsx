@@ -24,10 +24,11 @@ import { UpdateSuccessReload } from '../../../../components/Alert/UpdateSuccessR
 import { UpdateError } from '../../../../components/Alert/UpdateError';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import validator from 'validator';
 
 const theme = createTheme();
 
-export function EditOptionModal({ option, productId }) {
+export function EditOptionModal({ option }) {
     const [version, setVersion] = useState({ ...option, stock: option.variants[0].stock, color: option.variants[0].color })
     const [color, setColor] = useState(option.variants[0].color)
     const [oldColor, setOldColor] = useState(color.split('#')[1])
@@ -46,14 +47,49 @@ export function EditOptionModal({ option, productId }) {
         setVersion({ ...version, color: color.hex })
     }
     const updateOption = async (data, id, oldColor) => {
-        const wait = toast.loading('Vui lòng chờ...!')
-        let res = await updateProducOptionByAdmin(data, id, oldColor);
-        console.log(res)
-        if (res.success) {
-            UpdateSuccessReload(wait, 'Cập nhật phiên bản thành công', true)
-        } else {
-            UpdateError(wait, 'Cập nhật không thành công')
+        if (validator.isEmpty(version.name)) {
+            toast.error('Vui lòng nhập size', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
+        else if (version.extraFee < 0 || version.extraFee === '') {
+            toast.error('Vui lòng nhập phí cộng thêm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (version.stock < 0 || version.stock === '') {
+            toast.error('Vui lòng nhập số lượng', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const wait = toast.loading('Vui lòng chờ...!')
+            let res = await updateProducOptionByAdmin(data, id, oldColor);
+            if (res.success) {
+                UpdateSuccessReload(wait, 'Cập nhật phiên bản thành công', true)
+            } else {
+                UpdateError(wait, 'Cập nhật không thành công')
+            }
+        }
+
     }
     const handleSave = () => {
         updateOption(version, version.id, oldColor)
@@ -62,6 +98,7 @@ export function EditOptionModal({ option, productId }) {
     const handler = () => setVisible(true);
 
     const closeHandler = () => {
+        setVersion({ ...option, stock: option.variants[0].stock, color: option.variants[0].color })
         setVisible(false);
     };
     return (
@@ -85,9 +122,9 @@ export function EditOptionModal({ option, productId }) {
                     <Dropdown>
                         <Dropdown.Button light color="default" css={{ tt: "capitalize" }}>
                             <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black',marginRight:3 }}>
+                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black', marginRight: 3 }}>
                                 </span>
-                                <span style={{color:'black'}}>{color}</span>
+                                <span style={{ color: 'black' }}>{color}</span>
                             </Button>
                         </Dropdown.Button>
                         <Dropdown.Menu
@@ -98,13 +135,12 @@ export function EditOptionModal({ option, productId }) {
                             selectedKeys={color}
                             onAction={(key) => { setColor(key); setOldColor(key) }}
                         >
-                            {/* <Dropdown.Item key=''>Không</Dropdown.Item> */}
                             {option.variants.map((item) => (
                                 <Dropdown.Item key={item.color}>
                                     <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                        <span style={{ backgroundColor: item.color, padding: 10, border: '1px solid black',marginRight:3 }}>
+                                        <span style={{ backgroundColor: item.color, padding: 10, border: '1px solid black', marginRight: 3 }}>
                                         </span>
-                                        <span style={{color:'black'}}>{color}</span>
+                                        <span style={{ color: 'black' }}>{color}</span>
                                     </Button>
                                 </Dropdown.Item>
                             ))}
@@ -186,23 +222,69 @@ export function AddOptionModal({ productId }) {
         setColor(color.hex)
     }
     const addOption = async () => {
-        const data = new FormData();
-        data.append('name', name)
-        data.append('stock', stock)
-        data.append('color', color)
-        data.append('extraFee', extraFee)
-        let arr = Array.from(files)
-        arr.forEach((file) => {
-            data.append('images', file)
-        })
-        const wait = toast.loading('Vui lòng chờ...!')
-        let res = await addProductOptionByAdmin(data, productId)
-        console.log(res)
-        if (res.data.success) {
-            UpdateSuccessReload(wait, 'Thêm phiên bản thành công', false)
-        } else {
-            UpdateError(wait, 'Thêm phiên bản thất bại')
+        if (validator.isEmpty(name)) {
+            toast.error('Vui lòng nhập size', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
+        else if (stock <= 0 || stock === '') {
+            toast.error('Vui lòng nhập số lượng của phiên bản', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (extraFee < 0 || extraFee > 100 || extraFee === '') {
+            toast.error('Vui lòng nhập phí cộng thêm của phien bản', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (files.length === 0) {
+            toast.error('Vui lòng chọn ảnh của phiên bản', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const data = new FormData();
+            data.append('name', name)
+            data.append('stock', stock)
+            data.append('color', color)
+            data.append('extraFee', extraFee)
+            let arr = Array.from(files)
+            arr.forEach((file) => {
+                data.append('images', file)
+            })
+            const wait = toast.loading('Vui lòng chờ...!')
+            let res = await addProductOptionByAdmin(data, productId)
+            if (res.data.success) {
+                UpdateSuccessReload(wait, 'Thêm phiên bản thành công', false)
+            } else {
+                UpdateError(wait, 'Thêm phiên bản thất bại')
+            }
+        }
+
     }
     const handleSave = () => {
         addOption()
@@ -211,6 +293,11 @@ export function AddOptionModal({ productId }) {
     const handler = () => setVisible(true);
 
     const closeHandler = () => {
+        setName('')
+        setStock(0)
+        setFee(0)
+        setFiles([])
+        setPreview([])
         setVisible(false);
     };
     return (
@@ -317,6 +404,7 @@ export function EditAttrModal({ attr, productId }) {
     const handler = () => setVisible(true);
 
     const closeHandler = () => {
+        setProp(attr)
         setVisible(false);
     };
     const handleChangeName = (e) => {
@@ -325,17 +413,42 @@ export function EditAttrModal({ attr, productId }) {
     const handleChangeVal = (e) => {
         setProp({ ...prop, val: e.target.value })
     }
-    const updateAttr = async (data, id,name) => {
-        const wait = toast.loading('Vui lòng chờ...!');
-        let res = await updateAttrByAdmin(data, id,name)
-        if (res.success) {
-            UpdateSuccessReload(wait, 'Cập nhật thông số thành công', true);
-        } else {
-            UpdateError(wait, 'Cập nhật thông số không thành công')
+    const updateAttr = async (data, id, name) => {
+        if (validator.isEmpty(data.name)) {
+            toast.error('Vui lòng nhập tên thông số', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
+        else if (validator.isEmpty(prop.val)) {
+            toast.error('Vui lòng nhập giá trị của thông số', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const wait = toast.loading('Vui lòng chờ...!');
+            let res = await updateAttrByAdmin(data, id, name)
+            if (res.success) {
+                UpdateSuccessReload(wait, 'Cập nhật thông số thành công', true);
+            } else {
+                UpdateError(wait, 'Cập nhật thông số không thành công')
+            }
+        }
+
     }
     const handleSave = () => {
-        updateAttr(prop, productId,name)
+        updateAttr(prop, productId, name)
     }
     return (
         <div>
@@ -400,12 +513,36 @@ export function AddAttrModal({ productId }) {
         setVal(e.target.value)
     }
     const addAttr = async ({ name, val }, id) => {
-        const wait = toast.loading('Vui lòng chờ...!');
-        let res = await addProductAttrByAdmin({ name, val }, id)
-        if (res.data.success) {
-            UpdateSuccessReload(wait, 'Thêm thông số thành công', true);
-        } else {
-            UpdateError(wait, 'Thêm thông số không thành công')
+        if (validator.isEmpty(name)) {
+            toast.error('Vui lòng nhập tên thông số', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (validator.isEmpty(val)) {
+            toast.error('Vui lòng nhập giá trị thông số', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const wait = toast.loading('Vui lòng chờ...!');
+            let res = await addProductAttrByAdmin({ name, val }, id)
+            if (res.data.success) {
+                UpdateSuccessReload(wait, 'Thêm thông số thành công', true);
+            } else {
+                UpdateError(wait, 'Thêm thông số không thành công')
+            }
         }
     }
     const handleSave = () => {
@@ -415,6 +552,8 @@ export function AddAttrModal({ productId }) {
     const handler = () => setVisible(true);
 
     const closeHandler = () => {
+        setName('')
+        setVal('')
         setVisible(false);
     };
     return (
@@ -507,18 +646,66 @@ function UpdateProduct() {
         setProduct({ ...product, discount: e.target.value })
     }
     const handleChangeDes = (e) => {
-        setProduct(reverse =>{return {...reverse,description:e}})
+        setProduct(product => { return { ...product, description: e } })
     }
     const updateProduct = async (data, id) => {
-        const wait = toast.loading('Vui lòng chờ...!')
-        let res = await updateProductByAdmin(data, id);
-        if (res.success) {
-            setProduct(res.data)
-            setProductId(res.data.id)
-            UpdateSuccessReload(wait, 'Cập nhật thông tin sản phẩm thành công', false)
-        } else {
-            UpdateError(wait, 'Cập nhật thông tin không thành công')
+        if (validator.isEmpty(data.name)) {
+            toast.error('Vui lòng nhập tên sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
+        else if (data.price === null || data.price <= 0) {
+            toast.error('Vui lòng nhập giá sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (data.discount === null || data.discount < 0 || data.discount > 100) {
+            toast.error('Vui lòng nhập giảm giá của sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (validator.isEmpty(data.description)) {
+            toast.error('Vui lòng nhập mô tả sản phẩm', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            console.log(1)
+            const wait = toast.loading('Vui lòng chờ...!')
+            let res = await updateProductByAdmin(data, id);
+            if (res.success) {
+                setProduct(res.data)
+                setProductId(res.data.id)
+                UpdateSuccessReload(wait, 'Cập nhật thông tin sản phẩm thành công', false)
+            } else {
+                UpdateError(wait, 'Cập nhật thông tin không thành công')
+            }
+        }
+
     }
     const handleSave = () => {
         updateProduct(product, productId)
@@ -532,14 +719,14 @@ function UpdateProduct() {
             UpdateError(w, 'Xoá ảnh không thành công')
         }
     }
-    
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Grid container>
                 <Grid item xs={12} sm={6}>
                     <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
-                        <Button onClick={()=>navigate('/admin?page=product')}>Về trang quản lý</Button>
+                        <Button onClick={() => navigate('/admin?page=product')}>Về trang quản lý</Button>
                         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
                             <Typography component="h4" variant="h5" align="center">
                                 THÔNG TIN SẢN PHẨM
@@ -682,7 +869,7 @@ function UpdateProduct() {
                                         {option.variants.map((color) => (
                                             <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
                                                 <span style={{ backgroundColor: color.color, padding: 10, border: '1px solid black' }}>
-                                                </span> 
+                                                </span>
                                             </Button>
                                         ))}
                                     </Table.Cell>
@@ -828,9 +1015,9 @@ export function UploadImage({ pro }) {
                     <Dropdown>
                         <Dropdown.Button light color="default" css={{ tt: "capitalize" }}>
                             <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black',marginRight:3 }}>
+                                <span style={{ backgroundColor: color, padding: 10, border: '1px solid black', marginRight: 3 }}>
                                 </span>
-                                <span style={{color:'black'}}>{color}</span>
+                                <span style={{ color: 'black' }}>{color}</span>
                             </Button>
                         </Dropdown.Button>
                         <Dropdown.Menu
@@ -845,9 +1032,9 @@ export function UploadImage({ pro }) {
                                 arr.map((color) => (
                                     <Dropdown.Item key={color}>
                                         <Button size='small' disabled sx={{ padding: 0, margin: 0 }}>
-                                            <span style={{ backgroundColor: color, padding: 10, border: '1px solid black', marginRight:3 }}>
+                                            <span style={{ backgroundColor: color, padding: 10, border: '1px solid black', marginRight: 3 }}>
                                             </span>
-                                            <span style={{color:'black'}}>{color}</span>
+                                            <span style={{ color: 'black' }}>{color}</span>
                                         </Button>
                                     </Dropdown.Item>
                                 ))

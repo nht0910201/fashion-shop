@@ -67,7 +67,9 @@ export default function Review({ productId, productName }) {
                 color={'success'}
                 css={{ width: '50%' }}
                 ghost
-                type="button" onClick={handler}>
+                type="button" 
+                onClick={handler}
+            >
                 Đánh giá
             </Button>
             <Modal

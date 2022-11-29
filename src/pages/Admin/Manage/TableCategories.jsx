@@ -8,31 +8,47 @@ import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
 import { CSVLink } from "react-csv";
+import validator from 'validator';
 
-export function AddModal({categories}) {
-    const root = categories.filter((category)=>{
-        return category.root===true
+export function AddModal({ categories }) {
+    const root = categories.filter((category) => {
+        return category.root === true
     })
     const [name, setName] = useState('');
     const [parent_category, setParentCategory] = useState('');
     const [visible, setVisible] = useState(false);
     const handler = () => setVisible(true);
     const closeHandler = () => {
+        setName('')
+        setParentCategory('')
         setVisible(false);
     };
     const handleChangeName = (e) => {
         setName(e.target.value)
     }
-    const addCategory = async()=>{
-        const data = new FormData();
-        data.append('name',name)
-        data.append('parent_category',parent_category)
-        const wait = toast.loading('Vui lòng chờ...!')
-        let res = await addCategoryByAdmin(data)
-        if(res.data.success){
-            UpdateSuccessNavigate(wait,'Thêm danh mục thành công','/admin?page=category')
-        }else{
-            UpdateError(wait,'Thêm danh mục thất bại')
+    const addCategory = async () => {
+        if (validator.isEmpty(name)) {
+            toast.error('Vui lòng nhập tên danh mục', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const data = new FormData();
+            data.append('name', name)
+            data.append('parent_category', parent_category)
+            const wait = toast.loading('Vui lòng chờ...!')
+            let res = await addCategoryByAdmin(data)
+            if (res.data.success) {
+                UpdateSuccessNavigate(wait, 'Thêm danh mục thành công', '/admin?page=category')
+            } else {
+                UpdateError(wait, 'Thêm danh mục thất bại')
+            }
         }
     }
     const handleAddCategory = () => {
@@ -58,8 +74,8 @@ export function AddModal({categories}) {
                     <Input size='lg' placeholder="Tên danh mục" type={'text'} value={name} onChange={handleChangeName} />
                     <Dropdown>
                         <Dropdown.Button light color="default" css={{ tt: "capitalize" }}>
-                            {categories.filter((cat)=>{
-                                return (cat.id===parent_category)
+                            {categories.filter((cat) => {
+                                return (cat.id === parent_category)
                             })[0]?.name || 'Không'}
                         </Dropdown.Button>
                         <Dropdown.Menu
@@ -68,10 +84,10 @@ export function AddModal({categories}) {
                             disallowEmptySelection
                             selectionMode="single"
                             selectedKeys={parent_category}
-                            onAction={(key)=>setParentCategory(key)}
+                            onAction={(key) => setParentCategory(key)}
                         >
                             <Dropdown.Item key=''>Không</Dropdown.Item>
-                            {root.map((item)=>(
+                            {root.map((item) => (
                                 <Dropdown.Item key={item.id}>{item.name}</Dropdown.Item>
                             ))}
                         </Dropdown.Menu>
@@ -85,7 +101,7 @@ export function AddModal({categories}) {
                         Lưu
                     </Button>
                 </Modal.Footer>
-                <ToastContainer/>
+                <ToastContainer />
             </Modal>
         </div>
     );
@@ -103,20 +119,33 @@ export function EditModal({ category }) {
         setCategoryNew({ ...categoryNew, state: e })
     }
     const closeHandler = () => {
+        setCategoryNew(category)
         setVisible(false);
     };
-    const updateCategory = async (data,id) =>{
-        const w = toast.loading('Vui lòng chờ ...!')
-        let res = await updateCategoryByAdmin(data,id)
-        console.log(res)
-        if(res.success){
-            UpdateSuccessNavigate(w,'Cập nhật danh mục thành công','/admin?page=category')
-        }else{
-            UpdateError(w,'Cập nhật danh mục thất bại')
+    const updateCategory = async (data, id) => {
+        if (validator.isEmpty(data.name)) {
+            toast.error('Vui lòng nhập tên danh mục', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const w = toast.loading('Vui lòng chờ ...!')
+            let res = await updateCategoryByAdmin(data, id)
+            if (res.success) {
+                UpdateSuccessNavigate(w, 'Cập nhật danh mục thành công', '/admin?page=category')
+            } else {
+                UpdateError(w, 'Cập nhật danh mục thất bại')
+            }
         }
     }
     const handleUpdateCategory = () => {
-        updateCategory(categoryNew,categoryNew.id)
+        updateCategory(categoryNew, categoryNew.id)
     }
     return (
         <div>
@@ -149,12 +178,12 @@ export function EditModal({ category }) {
                         Lưu
                     </Button>
                 </Modal.Footer>
-                <ToastContainer/>
+                <ToastContainer />
             </Modal>
         </div>
     );
 }
-function TableCategories({ categories,show }) {
+function TableCategories({ categories, show }) {
     const collator = useCollator({ numeric: true });
     async function load() {
         return { items: categories }
@@ -178,20 +207,20 @@ function TableCategories({ categories,show }) {
         disable: 'Vô hiệu hóa',
     };
     return (
-        <div id='category' hidden = {show}>
+        <div id='category' hidden={show}>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>DANH MỤC</Text>
-                <div style={{display:'flex',alignItems:'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <CSVLink
                         data={categories}
                         filename={"categories.csv"}
                         className="btn btn-primary"
                         target="_blank"
-                        style={{marginRight:10}}
+                        style={{ marginRight: 10 }}
                     >
                         Export CSV
                     </CSVLink>
-                    <AddModal categories={categories}/>
+                    <AddModal categories={categories} />
                 </div>
             </Row>
             <Table
@@ -209,33 +238,32 @@ function TableCategories({ categories,show }) {
             >
                 <Table.Header>
                     <Table.Column align='center' key={'name'} allowsSorting>TÊN DANH MỤC*</Table.Column>
-                    <Table.Column>DANH MỤC GỐC</Table.Column>
-                    <Table.Column align='center'  key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
+                    <Table.Column align='center'>DANH MỤC GỐC</Table.Column>
+                    <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
                     <Table.Column>CHỈNH SỬA</Table.Column>
                 </Table.Header>
                 <Table.Body items={list.items} loadingState={list.loadingState}>
                     {(item) => (
                         <Table.Row key={item.id}>
-                            <Table.Cell css={{d: 'flex', justifyContent:'center', h: '100%', alignItems:'center'}}>{item.name}</Table.Cell>
-                            <Table.Cell >{item.root ? <CheckOutlined sx={{verticalAlign: 'unset'}}/> : ''}</Table.Cell>
-                            <Table.Cell css={{d: 'flex', justifyContent:'center' , h: '100%', alignItems:'center'}} >
+                            <Table.Cell css={{ d: 'flex', justifyContent: 'center', h: '100%', alignItems: 'center' }}>{item.name}</Table.Cell>
+                            <Table.Cell css={{textAlign:'center'}}>{item.root ? <CheckOutlined sx={{ verticalAlign: 'unset' }} /> : ''}</Table.Cell>
+                            <Table.Cell css={{ d: 'flex', justifyContent: 'center', h: '100%', alignItems: 'center' }} >
                                 <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
                             </Table.Cell>
                             <Table.Cell>
-                                <EditModal sx={{verticalAlign: 'unset'}} category={item}/>
+                                <EditModal sx={{ verticalAlign: 'unset' }} category={item} />
                             </Table.Cell>
                         </Table.Row>
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={Math.ceil(categories.length/4)}
+                    total={Math.ceil(categories.length / 4)}
                     loop
                     shadow
                     noMargin
                     align="center"
                     color={'warning'}
                     rowsPerPage={4}
-                    // onPageChange={(page) => console.log({ page })}
                 />
             </Table>
         </div>

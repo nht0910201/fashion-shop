@@ -194,7 +194,7 @@ function Statistic({ stats, show }) {
                     </div>
                     <Input underlined shadow={false} type={'date'} label='Từ ngày' value={from} onChange={handleChangeFrom} />
                     <Input underlined shadow={false} type={'date'} label='Đến ngày' value={to} onChange={handleChangeTo} />
-                    <Button disabled={(from === '' || to === '') ? true : false} css={{ marginTop: '$2' }} auto ghost color={'warning'} onClick={hanleClickStats}>Xem thống kê</Button>
+                    <Button disabled={(from === '' || to === '' || loading) ? true : false} css={{ marginTop: '$2' }} auto ghost color={'warning'} onClick={hanleClickStats}>Xem thống kê</Button>
                 </Row>
                 {loading ? <>
                     <Grid.Container wrap="wrap" justify="center" gap={2} >

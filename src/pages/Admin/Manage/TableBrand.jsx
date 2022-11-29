@@ -9,6 +9,7 @@ import { UpdateError } from '../../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../../components/Alert/UpdateSuccessNavigate';
 import { StyledBadge } from '../../MyOrder/StyledBadge';
 import { CSVLink } from "react-csv";
+import validator from 'validator';
 
 export function AddModal() {
     const [name, setName] = useState('');
@@ -17,6 +18,9 @@ export function AddModal() {
     const [preview, setPreview] = useState('')
     const handler = () => setVisible(true);
     const closeHandler = () => {
+        setName('')
+        setFile(null)
+        setPreview('')
         setVisible(false);
     };
     const handleChangeName = (e) => {
@@ -27,15 +31,39 @@ export function AddModal() {
         setPreview(URL.createObjectURL(e.target.files[0]))
     }
     const addBrand = async () => {
-        const data = new FormData();
-        data.append('file', file)
-        data.append('name', name)
-        const w = toast.loading("Vui lòng chờ ...")
-        let res = await addBrandByAdmin(data)
-        if (res.data.success) {
-            UpdateSuccessNavigate(w, 'Thêm nhãn hàng thành công', '/admin?page=brand')
-        } else {
-            UpdateError(w, 'Thêm nhãn hàng thất bại thất bại')
+        if (validator.isEmpty(name)) {
+            toast.error('Vui lòng nhập tên nhãn hàng', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else if (file === null) {
+            toast.error('Vui lòng nhập chọn ảnh logo nhãn hàng', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const data = new FormData();
+            data.append('file', file)
+            data.append('name', name)
+            const w = toast.loading("Vui lòng chờ ...")
+            let res = await addBrandByAdmin(data)
+            if (res.data.success) {
+                UpdateSuccessNavigate(w, 'Thêm nhãn hàng thành công', '/admin?page=brand')
+            } else {
+                UpdateError(w, 'Thêm nhãn hàng thất bại thất bại')
+            }
         }
     }
     const handleAddBrand = () => {
@@ -112,19 +140,35 @@ export function EditModal({ brand }) {
         setPreview(URL.createObjectURL(e.target.files[0]))
     }
     const closeHandler = () => {
+        setBrandNew(brand)
+        setFile(null)
+        setPreview('')
         setVisible(false);
     };
     const updateBrand = async () => {
-        const wait = toast.loading('Vui lòng chờ ...!')
-        const data = new FormData();
-        data.append('file', file)
-        data.append('name', brandNew.name)
-        data.append('state', brandNew.state)
-        let res = await updateBrandByAdmin(data, brandNew.id)
-        if (res.data.success) {
-            UpdateSuccessNavigate(wait, 'Cập nhật nhãn hàng thành công', '/admin?page=brand');
-        } else {
-            UpdateError(wait, 'Cập nhật nhãn hàng thất bại')
+        if (validator.isEmpty(brandNew.name)) {
+            toast.error('Vui lòng nhập tên nhãn hàng', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+        }
+        else {
+            const wait = toast.loading('Vui lòng chờ ...!')
+            const data = new FormData();
+            data.append('file', file)
+            data.append('name', brandNew.name)
+            data.append('state', brandNew.state)
+            let res = await updateBrandByAdmin(data, brandNew.id)
+            if (res.data.success) {
+                UpdateSuccessNavigate(wait, 'Cập nhật nhãn hàng thành công', '/admin?page=brand');
+            } else {
+                UpdateError(wait, 'Cập nhật nhãn hàng thất bại')
+            }
         }
     }
     const handleUpdateBrand = () => {
@@ -214,13 +258,13 @@ function TableBrand({ brands, show }) {
         <div hidden={show} id='brand'>
             <Row justify='space-between' align='center' css={{ marginTop: '$5', marginBottom: '$5' }}>
                 <Text b size={20}>NHÃN HÀNG</Text>
-                <div style={{display:'flex',alignItems:'center'}}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                     <CSVLink
                         data={brands}
                         filename={"brands.csv"}
                         className="btn btn-primary"
                         target="_blank"
-                        style={{marginRight:10}}
+                        style={{ marginRight: 10 }}
                     >
                         Export CSV
                     </CSVLink>
@@ -250,18 +294,18 @@ function TableBrand({ brands, show }) {
                             <Table.Cell>
                                 <Image src={item.image} width={80} />
                             </Table.Cell>
-                            <Table.Cell css={{textAlign:'center'}}>{item.name}</Table.Cell>
-                            <Table.Cell css={{textAlign:'center'}}>
+                            <Table.Cell css={{ textAlign: 'center' }}>{item.name}</Table.Cell>
+                            <Table.Cell css={{ textAlign: 'center' }}>
                                 <StyledBadge type={item.state}>{state[item.state]}</StyledBadge>
                             </Table.Cell>
-                            <Table.Cell css={{d:'flex',justifyContent:'center',h:'100%',alignItems:'center'}}>
+                            <Table.Cell css={{ d: 'flex', justifyContent: 'center', h: '100%', alignItems: 'center' }}>
                                 <EditModal brand={item} />
                             </Table.Cell>
                         </Table.Row>
                     )}
                 </Table.Body>
                 <Table.Pagination
-                    total={Math.ceil(brands.length/3)}
+                    total={Math.ceil(brands.length / 3)}
                     loop
                     shadow
                     noMargin

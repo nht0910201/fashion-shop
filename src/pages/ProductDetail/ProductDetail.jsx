@@ -70,7 +70,7 @@ function ProductDetail() {
             }
         });
     };
-
+    console.log(product)
     const quantity = 1;
     const addToCart = async ({ productOptionId, color, quantity }) => {
         if (curUser?.id !== undefined) {
@@ -311,6 +311,29 @@ function ProductDetail() {
                                     </Card.Body>
                                 </Card>
                             </Row>
+                        </Grid2>
+                        <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
+                            <Row>
+                                <Text css={{ marginLeft: '$10' }} size={30}>
+                                    Thông số sản phẩm
+                                </Text>
+                            </Row>
+
+                            {product?.attr?.length !== 0 ? (
+                                product?.attr?.map((attr) => (
+                                    <Row key={attr.id} css={{ marginLeft: '$20' }}>
+                                        <Col>
+                                            <Text size={'$lg'}>{attr.name}</Text>
+                                        </Col>
+                                        <Col>
+                                            <Text size={'$lg'}>{attr.val}</Text>
+                                        </Col>
+                                    </Row>
+                                ))
+                            ) : (
+                                <Text>Sản phẩm chưa có thông số</Text>
+                            )}
+                            <Divider />
                         </Grid2>
                         <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
                             <Row>
