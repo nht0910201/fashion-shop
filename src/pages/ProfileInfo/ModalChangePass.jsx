@@ -113,7 +113,7 @@ export default function ModalChangePass() {
                         color="primary"
                         size="lg"
                         type={'password'}
-                        placeholder="Mật khẫu cũ"
+                        placeholder="Mật khẩu cũ"
                         value={oldPassword}
                         onChange={handleChangeoldPassword}
                         contentLeft={<Password fill="currentColor" />}

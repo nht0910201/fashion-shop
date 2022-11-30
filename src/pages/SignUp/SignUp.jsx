@@ -319,8 +319,8 @@ export default function SignUp() {
                                             value={gender}
                                             onChange={handleChangeGender}
                                         >
-                                            <MenuItem value='male'>Male</MenuItem>
-                                            <MenuItem value='female'>Female</MenuItem>
+                                            <MenuItem value='male'>Nam</MenuItem>
+                                            <MenuItem value='female'>Nữ</MenuItem>
                                         </Select>
                                     </FormControl>
                                 </Grid>

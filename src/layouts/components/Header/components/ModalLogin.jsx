@@ -28,11 +28,11 @@ export default function ModalLogin() {
     const login = async ({ username, password }) => {
         const res = await userLogin({ username, password })
         if (res.data.success) {
-            await dispatch(authAction.login(res.data));
             if(res.data.data.role==='ROLE_ADMIN' || res.data.data.role==='ROLE_STAFF')
             {
-                window.location.href = '/admin'
+                window.location.href = '/404'
             }else{
+                await dispatch(authAction.login(res.data));
                 navigate('/')
             }
         }
@@ -100,7 +100,7 @@ export default function ModalLogin() {
                         fullWidth
                         color="warning"
                         size="lg"
-                        placeholder="Password"
+                        placeholder="Mật khẩu"
                         value={password}
                         type="password"
                         onChange={onChangePasswordHanle}

@@ -214,7 +214,7 @@ export default function ProfileInfo() {
                         shape="circle"
                         size="xs"
                     >
-                        <Avatar src={user.avatar} css={{ size: '$20', marginTop: '$10' }} />
+                        <Avatar src={user.avatar} zoomed bordered css={{ size: '$20', marginTop: '$10' }} />
                     </Badge>
 
                     <Box noValidate sx={{ mt: 1 }}>

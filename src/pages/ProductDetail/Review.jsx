@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UpdateSuccessReload } from './../../components/Alert/UpdateSuccessReload';
 import { UpdateError } from './../../components/Alert/UpdateError';
 import { getUserFromLocalStorage } from "../../utils/userHanle";
+import { ReviewsOutlined } from "@mui/icons-material";
 
 export default function Review({ productId, productName }) {
     let userCur = getUserFromLocalStorage()
@@ -64,13 +65,13 @@ export default function Review({ productId, productName }) {
     return (
         <div>
             <Button
-                color={'success'}
+                color={'warning'}
                 css={{ width: '50%' }}
                 ghost
                 type="button" 
                 onClick={handler}
             >
-                Đánh giá
+                <ReviewsOutlined sx={{mr:1}}/> Đánh giá
             </Button>
             <Modal
                 closeButton

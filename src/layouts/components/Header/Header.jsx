@@ -10,7 +10,7 @@ import { getUserFromLocalStorage } from '../../../utils/userHanle';
 import ModalLogin from './components/ModalLogin';
 import { Logo } from './components/Logo';
 import 'react-toastify/dist/ReactToastify.css';
-import { ArrowDropDown, Search, ShoppingBagOutlined } from '@mui/icons-material';
+import { KeyboardArrowDown, Search, ShoppingBagOutlined } from '@mui/icons-material';
 import Categories from './components/Categories';
 
 export default function Header() {
@@ -29,13 +29,17 @@ export default function Header() {
   const optionClient = [
     { name: 'Thông tin cá nhân', href: `/profile/${userCur?.id}`},
     { name: 'Đơn hàng của tôi', href: '/myOrder'},
-    
   ]
   const optionAdmin = [
     { name: 'Thông tin cá nhân', href: `/profile/${userCur?.id}`},
     { name: 'Đơn hàng của tôi', href: '/myOrder'},
     { name: 'Quản lý', href: '/admin'},
   ]
+  const optionRole = {
+    'ROLE_ADMIN': 'Quản trị viên',
+    'ROLE_STAFF': 'Nhân viên',
+    'ROLE_USER': 'Khách hàng'
+  }
   const handleLogout = () => {
     navigate('/')
     dispatch(authAction.logout())
@@ -72,7 +76,7 @@ export default function Header() {
               placement='bottom'
               hideArrow >
               <Navbar.Link href="#">
-                SẢN PHẨM <ArrowDropDown/>
+                SẢN PHẨM <KeyboardArrowDown/>
               </Navbar.Link>
             </Tooltip>
             <Navbar.Link href="#">GIỚI THIỆU</Navbar.Link>
@@ -127,6 +131,7 @@ export default function Header() {
                 <Navbar.Item>
                   <Dropdown.Trigger>
                     <Avatar
+                      zoomed
                       bordered
                       as="button"
                       color="warning"
@@ -141,27 +146,29 @@ export default function Header() {
                   onAction={(key) => {
                     window.location.href = key
                   }}
-                  css={{ paddingTop: '$0' }}
                 >
                   {/* {optionMenu.map((option) => (
                     <Dropdown.Item key={option.href} color="default">
                       {option.name}
                     </Dropdown.Item>
                   ))} */}
+                  <Dropdown.Item key={`profile/${userCur?.id}`} description={optionRole[userCur?.role]}  color="default">
+                      {userCur?.name}
+                    </Dropdown.Item>
                   {userCur.role === 'ROLE_USER' ?
-                    optionClient.map((option) => (
-                      <Dropdown.Item key={option.href} color="default">
+                    optionClient.map((option, index) => (
+                      <Dropdown.Item withDivider={index === 0 ? true: false} key={option.href} color="default">
                         {option.name}
                       </Dropdown.Item>
                     ))
                     :
-                    optionAdmin.map((option) => (
-                      <Dropdown.Item key={option.href} color="default">
+                    optionAdmin.map((option, index) => (
+                      <Dropdown.Item withDivider={index === 0 ? true: false} key={option.href} color="default">
                         {option.name}
                       </Dropdown.Item>
                     ))
                   }
-                  <Dropdown.Item withDivider color="default">
+                  <Dropdown.Item withDivider color="error">
                     <Button onClick={handleLogout} color={'error'} light css={{ display: "flex", justifyContent: "flex-start", padding: "$0" }}>Đăng xuất</Button>
                   </Dropdown.Item>
                 </Dropdown.Menu>
