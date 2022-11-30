@@ -9,7 +9,7 @@ function App() {
         <Router>
             <div className="App">
                 <Routes>
-                    {userCur === undefined || (userCur.role !== 'ROLE_ADMIN' && userCur.role !== 'ROLE_STAFF') ?
+                    {userCur === undefined || userCur.role === 'ROLE_USER' ?
                         publicRoutes.map((route, index) => {
                             const Page = route.component
                             let Layout = Fragment;
