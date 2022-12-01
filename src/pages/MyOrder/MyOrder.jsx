@@ -32,7 +32,8 @@ export default function MyOrder() {
     }, []);
     const collator = useCollator({ numeric: true });
     async function load() {
-        return { items: await order }
+        let item = await order
+        return { items :item}
     }
     async function sort({ items, sortDescriptor }) {
         return {
@@ -85,6 +86,7 @@ export default function MyOrder() {
                                     height: "calc($space$14 * 10)",
                                     minWidth: "100%",
                                 }}
+                                color={'warning'}
                                 selectionMode={'single'}
                                 sortDescriptor={list.sortDescriptor}
                                 onSortChange={list.sort}
