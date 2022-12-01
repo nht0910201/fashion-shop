@@ -10,6 +10,8 @@ export const UpdateError = (wait,msg) => {
             autoClose: 1500,
             pauseOnHover: false,
             draggable: true,
+            closeOnClick: true,
+            closeButton: true,
         }
     );
 }

@@ -162,7 +162,7 @@ function Cart() {
                                             </Button>
                                             <Input
                                                 width="50px"
-                                                type={'tel'}
+                                                type={'number'}
                                                 shadow={false}
                                                 underlined
                                                 value={cartItem.quantity}

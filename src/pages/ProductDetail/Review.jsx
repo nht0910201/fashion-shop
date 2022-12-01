@@ -1,5 +1,5 @@
 import { Rating } from "@mui/material";
-import { Modal, Button, Text, Textarea } from "@nextui-org/react";
+import { Modal, Button, Text, Textarea, Loading } from "@nextui-org/react";
 import { useState } from "react";
 import { review } from "../../services/ReviewService";
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,6 +15,7 @@ export default function Review({ productId, productName }) {
     const handler = () => setVisible(true);
     const [content, setContent] = useState('')
     const [rate, setRate] = useState(5.0)
+    const [load, setLoad] = useState(false)
     const closeHandler = () => {
         setContent('')
         setRate(5.0)
@@ -27,6 +28,7 @@ export default function Review({ productId, productName }) {
         setRate(e.target.value)
     }
     const sendReview = async ({ content, productId, rate }) => {
+        setLoad(true)
         if (userCur?.id === undefined) {
             toast.error('Vui lòng đăng nhập', {
                 position: "top-right",
@@ -52,8 +54,10 @@ export default function Review({ productId, productName }) {
                 const wait = toast.loading("Vui lòng chờ ...")
                 let res = await review({ content, productId, rate })
                 if (res.data.success) {
+                    setLoad(false)
                     UpdateSuccessReload(wait, 'Gửi nhận xét đánh giá thành công', true);
                 } else {
+                    setLoad(false)
                     UpdateError(wait, 'Bạn đã đánh giá sản phẩm này')
                 }
             }   
@@ -98,8 +102,10 @@ export default function Review({ productId, productName }) {
                     <Button auto flat color="error" onClick={closeHandler}>
                         Huỷ
                     </Button>
-                    <Button auto onClick={handleClickSend}>
-                        Gửi
+                    <Button auto color={'warning'} disabled={content === '' || load ? true : false} onClick={handleClickSend}>
+                    {load ? 
+                        <Loading color={'currentColor'} type='points-opacity' />
+                         : "Gửi" }
                     </Button>
                 </Modal.Footer>
                 <ToastContainer />

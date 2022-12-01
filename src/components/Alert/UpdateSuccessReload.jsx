@@ -11,6 +11,8 @@ export const UpdateSuccessReload = ( wait,msg,check ) => {
             autoClose: 3000,
             pauseOnHover: false,
             draggable: true,
+            closeOnClick: true,
+            closeButton: true,
             onClose:() => {
                 if(check===true)
                 {

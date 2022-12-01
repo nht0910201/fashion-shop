@@ -11,6 +11,8 @@ export const UpdateSuccessNavigate = (wait,msg,url) => {
             autoClose: 3000,
             pauseOnHover: false,
             draggable: true,
+            closeOnClick: true,
+            closeButton: true,
             onClose:()=> window.location.href = url
         }
     );
