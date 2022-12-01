@@ -1,5 +1,5 @@
 import { RemoveRedEyeOutlined } from '@mui/icons-material';
-import { Divider, Grid, Loading, Text } from '@nextui-org/react';
+import { Grid, Loading, Text, useAsyncList, useCollator } from '@nextui-org/react';
 import { Table } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,18 +13,16 @@ export default function MyOrder() {
             style: 'currency',
             currency: 'VND',
         }).format(value);
-    const [now, setNow] = useState([]);
-    const [last, setLast] = useState([]);
+    const [order, setOrder] = useState([])
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         async function getData() {
             setLoading(true);
             let res = await getOrders();
+            console.log(res)
             if (res.success) {
-                let temp1 = res.data.filter((order) => order.state !== 'paid');
-                let temp2 = res.data.filter((order) => order.state === 'paid');
-                setNow(temp1);
-                setLast(temp2);
+                let temp1 = res.data.filter((order) => order.state !== 'enable');
+                setOrder(temp1);
                 setLoading(false);
             } else {
                 setLoading('404');
@@ -32,6 +30,23 @@ export default function MyOrder() {
         }
         getData();
     }, []);
+    const collator = useCollator({ numeric: true });
+    async function load() {
+        return { items: await order }
+    }
+    async function sort({ items, sortDescriptor }) {
+        return {
+            items: items.sort((a, b) => {
+                let first = a[sortDescriptor.column];
+                let second = b[sortDescriptor.column];
+                let cmp = collator.compare(first, second);
+                if (sortDescriptor.direction === "descending") {
+                    cmp *= -1;
+                }
+                return cmp;
+            }),
+        };
+    }
     const state = {
         'enable': 'Hiện tại',
         'done': 'Hoàn tất',
@@ -40,7 +55,7 @@ export default function MyOrder() {
         'delivery': 'Đang giao hàng',
         'cancel': 'Đã hủy',
     }
-
+    const list = useAsyncList({ load, sort });
     return (
         <>
             {loading === true ? (
@@ -62,96 +77,53 @@ export default function MyOrder() {
                     ) : (
                         <>
                             <Text size={30} css={{ textAlign: 'center' }}>
-                                Đơn hàng hiện tại
+                                ĐƠN HÀNG
                             </Text>
                             <Table
-                                aria-label="Example table with dynamic content"
+                                aria-label='My Order'
                                 css={{
-                                    height: 'auto',
-                                    minWidth: '100%',
+                                    height: "calc($space$14 * 10)",
+                                    minWidth: "100%",
                                 }}
+                                selectionMode={'single'}
+                                sortDescriptor={list.sortDescriptor}
+                                onSortChange={list.sort}
                             >
                                 <Table.Header>
-                                    <Table.Column>MÃ ĐƠN HÀNG</Table.Column>
-                                    <Table.Column>NGƯỜI ĐẶT</Table.Column>
-                                    <Table.Column>TỔNG SỐ TIỀN</Table.Column>
-                                    <Table.Column>SỐ LƯỢNG SẢN PHẨM</Table.Column>
-                                    <Table.Column>TRẠNG THÁI</Table.Column>
+                                    <Table.Column key={'id'}>MÃ ĐƠN HÀNG</Table.Column>
+                                    <Table.Column align='center' key={'userName'}>NGƯỜI ĐẶT</Table.Column>
+                                    <Table.Column align='center' key={'totalPrice'} allowsSorting>TỔNG SỐ TIỀN*</Table.Column>
+                                    <Table.Column align='center' key={'totalQuantity'} allowsSorting>SỐ LƯỢNG SẢN PHẨM*</Table.Column>
+                                    <Table.Column align='center' key={'state'} allowsSorting>TRẠNG THÁI*</Table.Column>
                                     <Table.Column></Table.Column>
                                 </Table.Header>
 
-                                <Table.Body>
-                                    {now.map((row) => (
+                                <Table.Body items={list.items} loadingState={list.loadingState}>
+                                    {(row) => (
                                         <Table.Row key={row.id}>
                                             <Table.Cell>{row.id}</Table.Cell>
-                                            <Table.Cell>{row.userName}</Table.Cell>
-                                            <Table.Cell>{formatPrice(row.totalPrice)}</Table.Cell>
-                                            <Table.Cell>{row.totalProduct}</Table.Cell>
-                                            <Table.Cell>
+                                            <Table.Cell css={{textAlign:'center'}}>{row.userName}</Table.Cell>
+                                            <Table.Cell css={{textAlign:'center'}}>{formatPrice(row.totalPrice)}</Table.Cell>
+                                            <Table.Cell css={{textAlign:'center'}}>{row.totalProduct}</Table.Cell>
+                                            <Table.Cell css={{textAlign:'center'}}>
                                                 <StyledBadge type={row.state}>{state[row.state]}</StyledBadge>
                                             </Table.Cell>
-                                            <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Table.Cell css={{ display: 'flex', justifyContent: 'center',h:'100%' }}>
                                                 <button onClick={() => navigate(`/orderDetail/${row.id}`)}>
                                                     <RemoveRedEyeOutlined />
                                                 </button>
                                             </Table.Cell>
                                         </Table.Row>
-                                    ))}
+                                    )}
                                 </Table.Body>
                                 <Table.Pagination
+                                    total={Math.ceil(order?.length / 5)}
                                     shadow
+                                    loop
                                     noMargin
                                     align="center"
                                     color={'warning'}
-                                    rowsPerPage={3}
-                                    onPageChange={(page) => console.log({ page })}
-                                />
-                            </Table>
-                            <Divider />
-                            <Text size={30} css={{ textAlign: 'center' }}>
-                                Đơn hàng hoàn tất
-                            </Text>
-                            <Table
-                                aria-label="Example table with dynamic content"
-                                css={{
-                                    height: 'auto',
-                                    minWidth: '100%',
-                                }}
-                            >
-                                <Table.Header>
-                                    <Table.Column>MÃ ĐƠN HÀNG</Table.Column>
-                                    <Table.Column>NGƯỜI ĐẶT</Table.Column>
-                                    <Table.Column>TỔNG SỐ TIỀN</Table.Column>
-                                    <Table.Column>SỐ LƯỢNG SẢN PHẨM</Table.Column>
-                                    <Table.Column>TRẠNG THÁI</Table.Column>
-                                    <Table.Column></Table.Column>
-                                </Table.Header>
-
-                                <Table.Body>
-                                    {last.map((row) => (
-                                        <Table.Row key={row.id}>
-                                            <Table.Cell>{row.id}</Table.Cell>
-                                            <Table.Cell>{row.userName}</Table.Cell>
-                                            <Table.Cell>{formatPrice(row.totalPrice)}</Table.Cell>
-                                            <Table.Cell>{row.totalProduct}</Table.Cell>
-                                            <Table.Cell>
-                                                <StyledBadge type={row.state}>{row.state}</StyledBadge>
-                                            </Table.Cell>
-                                            <Table.Cell css={{ display: 'flex', justifyContent: 'center' }}>
-                                                <button onClick={() => navigate(`/orderDetail/${row.id}`)}>
-                                                    <RemoveRedEyeOutlined />
-                                                </button>
-                                            </Table.Cell>
-                                        </Table.Row>
-                                    ))}
-                                </Table.Body>
-                                <Table.Pagination
-                                    shadow
-                                    noMargin
-                                    align="center"
-                                    color={'warning'}
-                                    rowsPerPage={3}
-                                    // onPageChange={(page) => console.log({ page })}
+                                    rowsPerPage={5}
                                 />
                             </Table>
                         </>

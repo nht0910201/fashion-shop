@@ -10,7 +10,7 @@ export const review = async (data={}) =>{
 }
 export const getReviewsByProduct = async (id,page) =>{
     try {
-        const response = await get(`/reviews/${id}?size=1&page=${page}`);
+        const response = await get(`/reviews/${id}?size=5&page=${page}`);
         return response
     } catch (error) { 
         return error.response.data 

@@ -59,6 +59,7 @@ function ProductDetail() {
                 setProductOptionId(res.data.options[0].id);
                 setColorList(res.data.options[0].variants);
                 setColor(res.data.options[0].variants[0].color);
+                setFee(res.data.options[0].extraFee)
                 SetLoad(false);
             }
         }
@@ -76,6 +77,7 @@ function ProductDetail() {
     let curUser = getUserFromLocalStorage();
     const [colorList, setColorList] = useState([]);
     const [color, setColor] = useState('');
+    const [extraFee,setFee] = useState(0)
     const [productOptionId, setProductOptionId] = useState('');
     const handleChangeSize = (e) => {
         setProductOptionId(e);
@@ -83,6 +85,7 @@ function ProductDetail() {
             if (option.id === e) {
                 setColorList(option.variants);
                 setColor(option.variants[0].color);
+                setFee(option.extraFee)
             }
         });
     };
@@ -229,10 +232,10 @@ function ProductDetail() {
                             </Row>
                             <Row justify="space-between" align="center">
                                 <Text b size={40}>
-                                    {formatPrice(product.discountPrice)}
+                                    {formatPrice(product.discountPrice+extraFee)}
                                 </Text>
                                 <Text b size={20} del hidden={product.discount > 0 ? false : true}>
-                                    {formatPrice(product.price)}
+                                    {formatPrice(product.price+extraFee)}
                                 </Text>
                                 <Badge color={'error'} hidden={product.discount <= 0 ? true : false}>
                                     -{product.discount}%

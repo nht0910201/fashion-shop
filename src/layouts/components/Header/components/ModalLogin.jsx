@@ -30,7 +30,15 @@ export default function ModalLogin() {
         if (res.data.success) {
             if(res.data.data.role==='ROLE_ADMIN' || res.data.data.role==='ROLE_STAFF')
             {
-                window.location.href = '/404'
+                toast.error('Sai tài khoản hoặc mật khẩu', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                });
             }else{
                 await dispatch(authAction.login(res.data));
                 navigate('/')
