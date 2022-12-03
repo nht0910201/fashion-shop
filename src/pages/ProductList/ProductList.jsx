@@ -18,6 +18,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { getProductByCategory, searchProduct } from "../../services/ProductService";
 import { Rating, Tooltip, Skeleton, Slider } from "@mui/material";
 import { filter } from 'smart-array-filter'
+import { Filter, FilterAlt } from "@mui/icons-material";
 export default function ProductList() {
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
@@ -126,9 +127,11 @@ export default function ProductList() {
 
         <Grid.Container gap={1}>
             <Grid xs={12} justify='space-between'>
-                <Popover>
+                <Popover placement="bottom-right">
                     <Popover.Trigger>
-                        <Button color="warning" auto ghost>Lọc sản phẩm</Button>
+                        <Button auto light animated={false}>
+                            <FilterAlt/>
+                        </Button>
                     </Popover.Trigger>
                     <Popover.Content css={{marginRight:'$0',width:'50%'}}>
                         <Grid.Container

@@ -393,7 +393,7 @@ function Order() {
                                 src="https://hstatic.net/0/0/global/design/seller/image/payment/vnpay_new.svg?v=1"
                             />
                             <Spacer />
-                            VN-PAY
+                            VNPAY
                         </Radio>
                         <Radio value="paypal">
                             <Image

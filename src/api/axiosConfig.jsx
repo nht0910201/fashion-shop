@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getFromLocalStorage } from '../utils/tokenHandle';
-import { API_ADDRESS, API_HOST, SHOP_ID, TOKEN_API_ADDRESS } from '../common/const';
+import { API_ADDRESS, API_HOST, API_LOCAL, SHOP_ID, TOKEN_API_ADDRESS } from '../common/const';
 
 const axiosConfig = axios.create({
     baseURL: API_HOST

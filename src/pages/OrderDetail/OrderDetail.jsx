@@ -34,6 +34,7 @@ function OrderDetail() {
     useEffect(() => {
         async function getOrderDetail() {
             let res = await getOrder(id)
+            console.log(res)
             setOrder(res.data)
         }
         getOrderDetail()
@@ -148,6 +149,18 @@ function OrderDetail() {
                     <Col >
                         <Text size={'$xl'}>
                             {order?.paymentType}
+                        </Text>
+                    </Col>
+                </Row>
+                <Row gap={2} justify='center'>
+                    <Col>
+                        <Text size={'$xl'}>
+                            Tình trạng thanh toán:
+                        </Text>
+                    </Col>
+                    <Col >
+                        <Text size={'$xl'}>
+                            {order?.paymentInfo.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
                         </Text>
                     </Col>
                 </Row>

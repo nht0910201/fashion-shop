@@ -19,7 +19,6 @@ export default function MyOrder() {
         async function getData() {
             setLoading(true);
             let res = await getOrders();
-            console.log(res)
             if (res.success) {
                 let temp1 = res.data.filter((order) => order.state !== 'enable');
                 setOrder(temp1);
@@ -96,6 +95,7 @@ export default function MyOrder() {
                             >
                                 <Table.Header>
                                     <Table.Column key={'id'}>MÃ ĐƠN HÀNG</Table.Column>
+                                    <Table.Column align='center' key={'createdDate'} allowsSorting>NGÀY ĐẶT</Table.Column>
                                     <Table.Column align='center' key={'userName'}>NGƯỜI ĐẶT</Table.Column>
                                     <Table.Column align='center' key={'totalPrice'} allowsSorting>TỔNG SỐ TIỀN*</Table.Column>
                                     <Table.Column align='center' key={'totalQuantity'} allowsSorting>SỐ LƯỢNG SẢN PHẨM*</Table.Column>
@@ -107,6 +107,7 @@ export default function MyOrder() {
                                     {(row) => (
                                         <Table.Row key={row.id}>
                                             <Table.Cell>{row.id}</Table.Cell>
+                                            <Table.Cell css={{textAlign:'center'}}>{row.createdDate}</Table.Cell>
                                             <Table.Cell css={{textAlign:'center'}}>{row.userName}</Table.Cell>
                                             <Table.Cell css={{textAlign:'center'}}>{formatPrice(row.totalPrice)}</Table.Cell>
                                             <Table.Cell css={{textAlign:'center'}}>{row.totalProduct}</Table.Cell>

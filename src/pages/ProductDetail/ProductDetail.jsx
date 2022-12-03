@@ -80,6 +80,7 @@ function ProductDetail() {
     const [color, setColor] = useState('');
     const [extraFee, setFee] = useState(0)
     const [productOptionId, setProductOptionId] = useState('');
+    const [loadMore, setLoadMore] = useState(false)
     const handleChangeSize = (e) => {
         setProductOptionId(e);
         product.options.forEach((option) => {
@@ -120,6 +121,9 @@ function ProductDetail() {
         addToCart({ productOptionId, color, quantity });
     };
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
+    const handleLoadMore = () => {
+        setLoadMore(!loadMore)
+    }
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ');
     }
@@ -341,17 +345,21 @@ function ProductDetail() {
                                 <Text>Sản phẩm chưa có thông số</Text>
                                 :
                                 <>
-                                    <Row>
+                                    <Row justify='space-between' align='center'>
                                         <Text css={{ marginLeft: '$10' }} size={30}>
                                             Thông số sản phẩm
                                         </Text>
+                                        <Button as={Text} light animated={false} auto  onClick={handleLoadMore}>
+                                            {loadMore ? 'Thu gọn' : 'Xem tất cả'}
+                                        </Button>
                                     </Row>
                                     <Table
                                         aria-label="Table Attribute"
                                         bordered
                                         shadow={false}
+                                        width={'25%'}
                                         css={{
-                                            height: "auto",
+                                            height: "50%",
                                             minWidth: "25%",
                                         }}
                                         selectionMode={'single'}
@@ -362,12 +370,19 @@ function ProductDetail() {
                                             <Table.Column>Giá trị</Table.Column>
                                         </Table.Header>
                                         <Table.Body>
-                                            {product?.attr?.map((attr) => (
+                                            {loadMore ? product?.attr?.map((attr) => (
                                                 <Table.Row key={attr.id}>
                                                     <Table.Cell>{attr.name}</Table.Cell>
                                                     <Table.Cell>{attr.val}</Table.Cell>
                                                 </Table.Row>
-                                            ))}
+                                            )) :
+                                                product?.attr?.slice(0,2).map((attr) => (
+                                                    <Table.Row key={attr.id}>
+                                                        <Table.Cell>{attr.name}</Table.Cell>
+                                                        <Table.Cell>{attr.val}</Table.Cell>
+                                                    </Table.Row>
+                                                ))
+                                            }
                                         </Table.Body>
                                     </Table>
                                 </>
