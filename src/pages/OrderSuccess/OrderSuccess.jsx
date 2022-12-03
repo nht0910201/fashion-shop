@@ -45,7 +45,7 @@ function OrderSuccess() {
                                 
                             </>
                     }
-                    <Button css={{ marginLeft: 'auto', marginRight: 'auto', marginTop: '$10' }} onClick={handleOnClick} size={"md"} ghost>Home</Button>
+                    <Button css={{ marginLeft: 'auto', marginRight: 'auto', marginTop: '$10' }} onClick={handleOnClick} size={"md"} shadow color={'warning'}>Trang chủ</Button>
                 </Paper>
             </Container>
         </ThemeProvider>

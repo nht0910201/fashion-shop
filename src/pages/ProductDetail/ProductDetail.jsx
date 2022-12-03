@@ -60,7 +60,7 @@ function ProductDetail() {
                 setProductOptionId(res.data.options[0].id);
                 setColorList(res.data.options[0].variants);
                 setColor(res.data.options[0].variants[0].color);
-                setFee(res.data.options[0].extraFee)
+                setFee(res.data.options[0].extraFee);
                 SetLoad(false);
             }
         }
@@ -78,16 +78,16 @@ function ProductDetail() {
     let curUser = getUserFromLocalStorage();
     const [colorList, setColorList] = useState([]);
     const [color, setColor] = useState('');
-    const [extraFee, setFee] = useState(0)
+    const [extraFee, setFee] = useState(0);
     const [productOptionId, setProductOptionId] = useState('');
-    const [loadMore, setLoadMore] = useState(false)
+    const [loadMore, setLoadMore] = useState(false);
     const handleChangeSize = (e) => {
         setProductOptionId(e);
         product.options.forEach((option) => {
             if (option.id === e) {
                 setColorList(option.variants);
                 setColor(option.variants[0].color);
-                setFee(option.extraFee)
+                setFee(option.extraFee);
             }
         });
     };
@@ -122,8 +122,8 @@ function ProductDetail() {
     };
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     const handleLoadMore = () => {
-        setLoadMore(!loadMore)
-    }
+        setLoadMore(!loadMore);
+    };
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ');
     }
@@ -176,26 +176,26 @@ function ProductDetail() {
                     >
                         {loading
                             ? Array.from(new Array(3)).map((index) => (
-                                <SwiperSlide key={index}>
-                                    <Skeleton
-                                        variant="rounded"
-                                        width={'100%'}
-                                        height={'15vh'}
-                                        sx={{ marginBottom: 2 }}
-                                    />
-                                </SwiperSlide>
-                            ))
+                                  <SwiperSlide key={index}>
+                                      <Skeleton
+                                          variant="rounded"
+                                          width={'100%'}
+                                          height={'15vh'}
+                                          sx={{ marginBottom: 2 }}
+                                      />
+                                  </SwiperSlide>
+                              ))
                             : product?.images?.map((image) => (
-                                <SwiperSlide key={`${image.imageId}`}>
-                                    <Image
-                                        height={150}
-                                        src={`${image.url}`}
-                                        css={{ cursor: 'pointer' }}
-                                        alt="...Loading"
-                                        objectFit="contain"
-                                    />
-                                </SwiperSlide>
-                            ))}
+                                  <SwiperSlide key={`${image.imageId}`}>
+                                      <Image
+                                          height={150}
+                                          src={`${image.url}`}
+                                          css={{ cursor: 'pointer' }}
+                                          alt="...Loading"
+                                          objectFit="contain"
+                                      />
+                                  </SwiperSlide>
+                              ))}
                     </Swiper>
                 </Grid2>
                 {loading ? (
@@ -221,18 +221,24 @@ function ProductDetail() {
                             <Row>
                                 <Text size={30}>{product.name}</Text>
                             </Row>
-                            <Row>
-                                {product.state === 'enable' ? (
-                                    <Text color="success" size={20}>
-                                        Còn hàng
-                                    </Text>
-                                ) : (
-                                    <>
-                                        <Text color="error" size={20}>
-                                            Hết hàng
+                            <Row justify="space-between" align="center">
+                                <Row>
+                                    {product.state === 'enable' ? (
+                                        <Text color="success" size={20}>
+                                            Còn hàng
                                         </Text>
-                                    </>
-                                )}
+                                    ) : (
+                                        <>
+                                            <Text color="error" size={20}>
+                                                Hết hàng
+                                            </Text>
+                                        </>
+                                    )}
+                                </Row>
+                                <Row align='center' justify='flex-end'>
+                                    <Rating readOnly precision={0.1} sx={{mr:'0.3rem'}} size="small" value={product.rate} /> 
+                                    {product.rateCount} đánh giá
+                                </Row>
                             </Row>
                             <Row justify="space-between" align="center">
                                 <Text b size={40}>
@@ -341,15 +347,15 @@ function ProductDetail() {
                             </Row>
                         </Grid2>
                         <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf', margin: 2 }}>
-                            {product?.attr?.length === 0 ?
+                            {product?.attr?.length === 0 ? (
                                 <Text>Sản phẩm chưa có thông số</Text>
-                                :
+                            ) : (
                                 <>
-                                    <Row justify='space-between' align='center'>
+                                    <Row justify="space-between" align="center">
                                         <Text css={{ marginLeft: '$10' }} size={30}>
                                             Thông số sản phẩm
                                         </Text>
-                                        <Button as={Text} light animated={false} auto  onClick={handleLoadMore}>
+                                        <Button as={Text} light animated={false} auto onClick={handleLoadMore}>
                                             {loadMore ? 'Thu gọn' : 'Xem tất cả'}
                                         </Button>
                                     </Row>
@@ -359,8 +365,8 @@ function ProductDetail() {
                                         shadow={false}
                                         width={'25%'}
                                         css={{
-                                            height: "50%",
-                                            minWidth: "25%",
+                                            height: '50%',
+                                            minWidth: '25%',
                                         }}
                                         selectionMode={'single'}
                                         color={'warning'}
@@ -370,23 +376,23 @@ function ProductDetail() {
                                             <Table.Column>Giá trị</Table.Column>
                                         </Table.Header>
                                         <Table.Body>
-                                            {loadMore ? product?.attr?.map((attr) => (
-                                                <Table.Row key={attr.id}>
-                                                    <Table.Cell>{attr.name}</Table.Cell>
-                                                    <Table.Cell>{attr.val}</Table.Cell>
-                                                </Table.Row>
-                                            )) :
-                                                product?.attr?.slice(0,2).map((attr) => (
-                                                    <Table.Row key={attr.id}>
-                                                        <Table.Cell>{attr.name}</Table.Cell>
-                                                        <Table.Cell>{attr.val}</Table.Cell>
-                                                    </Table.Row>
-                                                ))
-                                            }
+                                            {loadMore
+                                                ? product?.attr?.map((attr) => (
+                                                      <Table.Row key={attr.id}>
+                                                          <Table.Cell>{attr.name}</Table.Cell>
+                                                          <Table.Cell>{attr.val}</Table.Cell>
+                                                      </Table.Row>
+                                                  ))
+                                                : product?.attr?.slice(0, 2).map((attr) => (
+                                                      <Table.Row key={attr.id}>
+                                                          <Table.Cell>{attr.name}</Table.Cell>
+                                                          <Table.Cell>{attr.val}</Table.Cell>
+                                                      </Table.Row>
+                                                  ))}
                                         </Table.Body>
                                     </Table>
                                 </>
-                            }
+                            )}
                             {/* {product?.attr?.length !== 0 ? (
                                 product?.attr?.map((attr) => (
                                     <Row key={attr.id} css={{ marginLeft: '$20' }}>
@@ -419,13 +425,14 @@ function ProductDetail() {
 
                             {reviews?.list?.length !== 0 ? (
                                 reviews?.list?.map((review) => (
+                                    <>
                                     <Row key={review.id} css={{ marginLeft: '$18' }}>
                                         <Col>
                                             <Row>
                                                 <User
                                                     css={{ p: 'unset' }}
                                                     text={review.reviewedBy}
-                                                    color='warning'
+                                                    color="warning"
                                                     bordered
                                                     name={review.reviewedBy}
                                                     description={review.createdDate}
@@ -436,7 +443,7 @@ function ProductDetail() {
                                                     value={review.rate}
                                                     readOnly
                                                     defaultValue={0}
-                                                    precision={0.5}
+                                                    precision={0.1}
                                                     max={5}
                                                 />
                                             </Row>
@@ -445,6 +452,8 @@ function ProductDetail() {
                                             </Row>
                                         </Col>
                                     </Row>
+                                    <Divider css={{mt: '$1', mb:'$3'}}/>
+                                    </>
                                 ))
                             ) : (
                                 <Text>Sản phẩm chưa có đánh giá</Text>

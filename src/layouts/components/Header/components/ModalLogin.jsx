@@ -9,7 +9,7 @@ import { useState } from "react";
 import { userLogin } from "../../../../services/AuthService";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Facebook, Google } from "@mui/icons-material";
+import { Facebook, Google, Pin } from "@mui/icons-material";
 
 export default function ModalLogin() {
     const [visible, setVisible] = React.useState(false);
@@ -20,13 +20,16 @@ export default function ModalLogin() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const[otpInput, setOtp] = useState({hidden: true, otp:''})
     const closeHandler = () => {
         setUsername('')
         setPassword('')
+        setOtp({hidden: true, otp:''})
+        setLoading(false)
         setVisible(false);
     };
-    const login = async ({ username, password }) => {
-        const res = await userLogin({ username, password })
+    const login = async ({ username, password, otp }) => {
+        const res = await userLogin({ username, password, otp })
         if (res.data.success) {
             if(res.data.data.role==='ROLE_ADMIN' || res.data.data.role==='ROLE_STAFF')
             {
@@ -39,14 +42,36 @@ export default function ModalLogin() {
                     draggable: true,
                     progress: undefined,
                 });
-            }else{
-                await dispatch(authAction.login(res.data));
-                navigate('/')
+            } else{
+                if (res.data.data.accessToken === 'unverified') {
+                    toast.info('Vui lòng điền mã xác minh được gửi về email để hoàn thành xác thực!', {
+                        position: "top-right",
+                        autoClose: 10000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    setLoading(false)
+                    setOtp({...otp,hidden: false})
+                } else {
+                    await dispatch(authAction.login(res.data));
+                    navigate('/')
+                }
             }
         }
         else {
+            let message = "Sai tài khoản hoặc mật khẩu";
             setLoading(false)
-            toast.error('Sai tài khoản hoặc mật khẩu', {
+            if (otpInput.otp !== undefined && otpInput.otp !== '' ) {
+                if (res.data.message === 'Expired') {
+                    message = "OTP đã hết hạn!";
+                    setOtp({hidden: true, otp: ''})
+                }
+                message = "OTP không chính xác!";
+            }
+            toast.error(message, {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -63,9 +88,13 @@ export default function ModalLogin() {
     const onChangePasswordHanle = (e) => {
         setPassword(e.target.value)
     }
+    const onChangeOtpHandle = (e) => {
+        setOtp({...otpInput, otp: e.target.value})
+    }
     const handleLogin = () => {
         setLoading(true)
-        login({ username, password })
+        let otp = otpInput.otp
+        login({ username, password, otp })
     }
 
     return (
@@ -114,6 +143,20 @@ export default function ModalLogin() {
                         onChange={onChangePasswordHanle}
                         contentLeft={<Password fill="currentColor" />}
                     />
+                    {!otpInput.hidden ? 
+                        <Input
+                        clearable
+                        bordered
+                        fullWidth
+                        color="warning"
+                        size="lg"
+                        placeholder="OTP"
+                        value={otpInput.otp}  
+                        type="number"
+                        onChange={onChangeOtpHandle}
+                        contentLeft={<Pin/>}
+                    /> : ''
+                    }
                     <Row justify="end" css={{ borderBottom: "$black", width: 'auto' }}>
                         <Link href="/forgotPassword">
                             <Text size={14} color='error'>Quên mật khẩu?</Text>
@@ -121,7 +164,7 @@ export default function ModalLogin() {
                     </Row>
                 </Modal.Body>
                 <Modal.Footer justify="center">
-                    <Button ghost disabled={(loading || username === '' || password === '') ? true : false} color="warning" onClick={handleLogin}>
+                    <Button ghost disabled={(loading || username === '' || password === '' || (!otpInput.hidden && (otpInput.otp === '' || otpInput.otp === undefined))) ? true : false} color="warning" onClick={handleLogin}>
                         {loading ? 
                         <Loading color={'currentColor'} type='points-opacity' />
                          : "Đăng nhập" }

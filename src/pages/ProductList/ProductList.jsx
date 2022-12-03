@@ -293,7 +293,7 @@ export default function ProductList() {
                                                     </Badge>
                                                 ))}
                                             </Col>
-                                            <Rating size="small" value={product.rate} readOnly />
+                                            <Rating size="small" precision={0.1} value={product.rate} readOnly />
 
                                         </Row>
                                     </Col>

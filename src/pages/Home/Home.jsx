@@ -241,7 +241,7 @@ function Home() {
                                                                 ></Badge>
                                                             ))}
                                                         </Col>
-                                                        <Rating size="small" value={5} readOnly />
+                                                        <Rating precision={0.1} size="small" value={product.rate} readOnly />
                                                     </Row>
                                                 </Col>
                                             </Row>
@@ -384,7 +384,7 @@ function Home() {
                                                                 ></Badge>
                                                             ))}
                                                         </Col>
-                                                        <Rating size="small" value={5} readOnly />
+                                                        <Rating precision={0.1} size="small" value={product.rate} readOnly />
                                                     </Row>
                                                 </Col>
                                             </Row>

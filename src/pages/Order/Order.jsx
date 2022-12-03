@@ -372,8 +372,8 @@ function Order() {
                     <Text size={'$xl'}>Chọn phương thức thanh toán</Text>
                 </Row>
                 <Row gap={1}>
-                    <Radio.Group size="lg" value={paymentType} onChange={setPaymentType}>
-                        <Radio value="cod">
+                    <Radio.Group color='warning' size="lg" css={{width: '90%', boxShadow: '0 0 0 1px #d9d9d9', borderRadius: '$xs'}}  value={paymentType} onChange={setPaymentType}>
+                        <Radio value="cod" css={{padding: '$9'}}>
                             <Image
                                 width={40}
                                 height={40}
@@ -384,7 +384,7 @@ function Order() {
                             <Spacer />
                             Thanh toán khi nhận hàng
                         </Radio>
-                        <Radio value="vnpay">
+                        <Radio value="vnpay" css={{padding: '$9' ,boxShadow: '0 0 0 1px #d9d9d9', mt:'$0 !important'}}>
                             <Image
                                 width={40}
                                 height={40}
@@ -395,7 +395,7 @@ function Order() {
                             <Spacer />
                             VNPAY
                         </Radio>
-                        <Radio value="paypal">
+                        <Radio value="paypal" css={{padding: '$9' , mt:'$0 !important'}}>
                             <Image
                                 width={40}
                                 height={40}
@@ -426,7 +426,7 @@ function Order() {
                     <Loading size="xl" type="gradient" color={'warning'} />
                 </Grid>
             ) : (
-                <Grid xs={12} sm={5} direction="column" css={{ backgroundColor: '#fafafa' }}>
+                <Grid xs={12} sm={5} direction="column" css={{ backgroundColor: '#fafafa', boxShadow: '1px 0 0 #e1e1e1 inset' }}>
                     <Row justify="flex-end">
                         <Button onClick={backCart} size={'lg'} light color={'primary'}>
                             Quay lại giỏ hàng
