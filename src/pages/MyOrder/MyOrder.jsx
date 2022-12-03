@@ -32,8 +32,7 @@ export default function MyOrder() {
     }, []);
     const collator = useCollator({ numeric: true });
     async function load() {
-        let item = await order
-        return { items :item}
+        return { items :order}
     }
     async function sort({ items, sortDescriptor }) {
         return {
@@ -48,6 +47,7 @@ export default function MyOrder() {
             }),
         };
     }
+    
     const state = {
         'enable': 'Hiện tại',
         'done': 'Hoàn tất',
@@ -57,6 +57,9 @@ export default function MyOrder() {
         'cancel': 'Đã hủy',
     }
     const list = useAsyncList({ load, sort });
+    useEffect (()=>{
+        list.reload()
+    },[order])
     return (
         <>
             {loading === true ? (

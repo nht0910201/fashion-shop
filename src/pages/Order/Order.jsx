@@ -13,6 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from '../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../components/Alert/UpdateSuccessNavigate';
 import validator from 'validator';
+import { UpdateSuccessReload } from '../../components/Alert/UpdateSuccessReload';
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ');
 }
@@ -223,9 +224,11 @@ function Order() {
         else {
             const wait = toast.loading('Vui lòng chờ ...');
             let res = await makeAnOrder(paymentType, orderId, { ...user, shippingFee: shippingFee });
+            console.log(res.data.data)
             if (res.data.success) {
                 if (paymentType === 'cod') {
-                    UpdateSuccessNavigate(wait, 'Đặt hàng thành công', '/redirect/payment?success=true&cancel=false');
+                    UpdateSuccessReload(wait, 'Đặt hàng thành công', false);
+                    window.location.href = '/redirect/payment?success=true&cancel=false'
 
                 } else {
                     window.location.href = res.data.data;

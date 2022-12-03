@@ -23,6 +23,7 @@ import {
     Pagination as Pagination2,
     Tooltip,
     User,
+    Table,
 } from '@nextui-org/react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -77,7 +78,7 @@ function ProductDetail() {
     let curUser = getUserFromLocalStorage();
     const [colorList, setColorList] = useState([]);
     const [color, setColor] = useState('');
-    const [extraFee,setFee] = useState(0)
+    const [extraFee, setFee] = useState(0)
     const [productOptionId, setProductOptionId] = useState('');
     const handleChangeSize = (e) => {
         setProductOptionId(e);
@@ -89,7 +90,6 @@ function ProductDetail() {
             }
         });
     };
-    console.log(product);
     const quantity = 1;
     const addToCart = async ({ productOptionId, color, quantity }) => {
         if (curUser?.id !== undefined) {
@@ -172,26 +172,26 @@ function ProductDetail() {
                     >
                         {loading
                             ? Array.from(new Array(3)).map((index) => (
-                                  <SwiperSlide key={index}>
-                                      <Skeleton
-                                          variant="rounded"
-                                          width={'100%'}
-                                          height={'15vh'}
-                                          sx={{ marginBottom: 2 }}
-                                      />
-                                  </SwiperSlide>
-                              ))
+                                <SwiperSlide key={index}>
+                                    <Skeleton
+                                        variant="rounded"
+                                        width={'100%'}
+                                        height={'15vh'}
+                                        sx={{ marginBottom: 2 }}
+                                    />
+                                </SwiperSlide>
+                            ))
                             : product?.images?.map((image) => (
-                                  <SwiperSlide key={`${image.imageId}`}>
-                                      <Image
-                                          height={150}
-                                          src={`${image.url}`}
-                                          css={{ cursor: 'pointer' }}
-                                          alt="...Loading"
-                                          objectFit="contain"
-                                      />
-                                  </SwiperSlide>
-                              ))}
+                                <SwiperSlide key={`${image.imageId}`}>
+                                    <Image
+                                        height={150}
+                                        src={`${image.url}`}
+                                        css={{ cursor: 'pointer' }}
+                                        alt="...Loading"
+                                        objectFit="contain"
+                                    />
+                                </SwiperSlide>
+                            ))}
                     </Swiper>
                 </Grid2>
                 {loading ? (
@@ -232,10 +232,10 @@ function ProductDetail() {
                             </Row>
                             <Row justify="space-between" align="center">
                                 <Text b size={40}>
-                                    {formatPrice(product.discountPrice+extraFee)}
+                                    {formatPrice(product.discountPrice + extraFee)}
                                 </Text>
                                 <Text b size={20} del hidden={product.discount > 0 ? false : true}>
-                                    {formatPrice(product.price+extraFee)}
+                                    {formatPrice(product.price + extraFee)}
                                 </Text>
                                 <Badge color={'error'} hidden={product.discount <= 0 ? true : false}>
                                     -{product.discount}%
@@ -272,7 +272,7 @@ function ProductDetail() {
                                     </div>
                                 </RadioGroup>
                                 {/* Button modal */}
-                                <SizeChoosing/>
+                                <SizeChoosing />
                             </Row>
                             <Row css={{ marginTop: '$10' }}>
                                 <RadioGroup className="mt-2" value={color} onChange={setColor}>
@@ -336,14 +336,43 @@ function ProductDetail() {
                                 </Card>
                             </Row>
                         </Grid2>
-                        <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
-                            <Row>
-                                <Text css={{ marginLeft: '$10' }} size={30}>
-                                    Thông số sản phẩm
-                                </Text>
-                            </Row>
-
-                            {product?.attr?.length !== 0 ? (
+                        <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf', margin: 2 }}>
+                            {product?.attr?.length === 0 ?
+                                <Text>Sản phẩm chưa có thông số</Text>
+                                :
+                                <>
+                                    <Row>
+                                        <Text css={{ marginLeft: '$10' }} size={30}>
+                                            Thông số sản phẩm
+                                        </Text>
+                                    </Row>
+                                    <Table
+                                        aria-label="Table Attribute"
+                                        bordered
+                                        shadow={false}
+                                        css={{
+                                            height: "auto",
+                                            minWidth: "25%",
+                                        }}
+                                        selectionMode={'single'}
+                                        color={'warning'}
+                                    >
+                                        <Table.Header>
+                                            <Table.Column>Thông số</Table.Column>
+                                            <Table.Column>Giá trị</Table.Column>
+                                        </Table.Header>
+                                        <Table.Body>
+                                            {product?.attr?.map((attr) => (
+                                                <Table.Row key={attr.id}>
+                                                    <Table.Cell>{attr.name}</Table.Cell>
+                                                    <Table.Cell>{attr.val}</Table.Cell>
+                                                </Table.Row>
+                                            ))}
+                                        </Table.Body>
+                                    </Table>
+                                </>
+                            }
+                            {/* {product?.attr?.length !== 0 ? (
                                 product?.attr?.map((attr) => (
                                     <Row key={attr.id} css={{ marginLeft: '$20' }}>
                                         <Col>
@@ -356,7 +385,7 @@ function ProductDetail() {
                                 ))
                             ) : (
                                 <Text>Sản phẩm chưa có thông số</Text>
-                            )}
+                            )} */}
                         </Grid2>
                         <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
                             <Row>
@@ -378,14 +407,14 @@ function ProductDetail() {
                                     <Row key={review.id} css={{ marginLeft: '$18' }}>
                                         <Col>
                                             <Row>
-                                            <User
-                                                css={{p:'unset'}}
-                                                text={review.reviewedBy}
-                                                color='warning'
-                                                bordered
-                                                name={review.reviewedBy}
-                                                description={review.createdDate}
-                                            />
+                                                <User
+                                                    css={{ p: 'unset' }}
+                                                    text={review.reviewedBy}
+                                                    color='warning'
+                                                    bordered
+                                                    name={review.reviewedBy}
+                                                    description={review.createdDate}
+                                                />
                                             </Row>
                                             <Row gap={4.5}>
                                                 <Rating
@@ -397,8 +426,8 @@ function ProductDetail() {
                                                 />
                                             </Row>
                                             <Row gap={4.5}>
-                                                <Text   css={{m:'unset'}}>{review.content}</Text>
-                                                </Row>
+                                                <Text css={{ m: 'unset' }}>{review.content}</Text>
+                                            </Row>
                                         </Col>
                                     </Row>
                                 ))
@@ -413,6 +442,7 @@ function ProductDetail() {
                                         setPage(page - 1);
                                     }}
                                     total={reviews.totalPage}
+                                    css={{ margin: '$5' }}
                                 />
                             </Row>
                             <Divider />
