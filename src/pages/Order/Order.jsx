@@ -93,7 +93,7 @@ function Order() {
                     service_type_id: 2,
                     to_district_id: district,
                     to_ward_code: ward,
-                    weight: 10 * cart.totalProduct,
+                    weight: 30 * cart.totalProduct,
                 });
                 if (fee.code === 200) {
                     setShippingFee(fee.data.total);

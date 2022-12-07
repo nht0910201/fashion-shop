@@ -16,6 +16,7 @@ const slider = [
     'https://file.hstatic.net/1000184601/collection/banner_men_bdabcc70837a405389d87942821ff2e6.jpg',
     'https://file.hstatic.net/1000184601/collection/banner_women_71d0e5bced414bdc9d1ecc2fedd924a7.jpg',
     'https://file.hstatic.net/1000184601/collection/banner_outerwear_776b99c3343c45a79d9f0782c2b8bbb8.jpg',
+    'https://file.hstatic.net/1000184601/file/cover_pc_53d8b9fe80db4553a3a748cb20b5f9d2.jpg',
 ];
 
 function Home() {

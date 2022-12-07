@@ -126,7 +126,9 @@ export default function Header() {
           </Navbar.Item>
           {userCur?.id !== undefined ?
             <>
-              <Button onClick={handleClickCart} size={'xs'} light css={{ padding: '$0' }}><ShoppingBagOutlined /></Button>
+              <Tooltip content={'Giỏ hàng'} color={'warning'} keepMounted placement={'bottom'}>
+                <Button onClick={handleClickCart} size={'xs'} animated={false} light css={{ padding: '$0' }}><ShoppingBagOutlined /></Button>
+              </Tooltip>
               <Dropdown placement="bottom-right">
                 <Navbar.Item>
                   <Dropdown.Trigger>
