@@ -224,7 +224,7 @@ function Order() {
         else {
             const wait = toast.loading('Vui lòng chờ ...');
             let res = await makeAnOrder(paymentType, orderId, { ...user, shippingFee: shippingFee });
-            console.log(res.data.data)
+            console.log(res)
             if (res.data.success) {
                 if (paymentType === 'cod') {
                     UpdateSuccessReload(wait, 'Đặt hàng thành công', false);
@@ -234,7 +234,13 @@ function Order() {
                     window.location.href = res.data.data;
                 }
             } else {
-                UpdateError(wait, 'Đặt hàng không thành công');
+                if(res.data.status === 409){
+                    const errMsg = res.data.message.split(':')[1]
+                    UpdateError(wait, `Quá số lượng sản phẩm ${errMsg} hiện có. Vui lòng chọn số lượng khác`);
+                }else{
+                    UpdateError(wait, 'Đặt hàng không thành công');
+                }
+                
             }
         }
     };
@@ -307,12 +313,10 @@ function Order() {
                 </Row>
                 <Row gap={1}>
                     <FormControl sx={{ width: '90%', m: 'unset' }} margin="normal">
-                        {/* <InputLabel id="district-label">Quận/Huyện</InputLabel> */}
                         <Text css={{p: 'unset', lineHeight: '$md', marginTop: '0.5rem', mb: '6px'}} color='black' weight='normal' size={'1.125rem'}>Quận/Huyện</Text>
                         <Select
                             labelId="district-label"
                             displayEmpty
-                            // label="Quận/Huyện"
                             disabled={province === undefined ? true : false}
                             id="district"
                             sx={{ borderRadius: '1rem' }}
@@ -442,9 +446,9 @@ function Order() {
                             <Col>
                                 <Row css={{ marginTop: '$5' }}>{cartItem.name}</Row>
                                 <Row align="center">
-                                    <Text size={18}>SL: {cartItem.quantity} /</Text>
+                                    <Text size={18}>Số lượng: {cartItem.quantity} /</Text>
                                     <Text size={18} css={{ marginLeft: '$2', marginRight: '$2' }}>
-                                        {cartItem.size} /{' '}
+                                        Size: {cartItem.size} / Màu:{' '}
                                     </Text>
                                     <span
                                         className={classNames(
@@ -484,7 +488,7 @@ function Order() {
                             <Text size={'$3xl'}>Tổng cộng:</Text>
                         </Col>
                         <Col offset={5}>
-                            <Text size={'$3xl'}>{formatPrice(cart.totalPrice)}</Text>
+                            <Text size={'$3xl'}>{formatPrice(cart.totalPrice + shippingFee)}</Text>
                         </Col>
                     </Row>
                 </Grid>

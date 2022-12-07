@@ -10,7 +10,7 @@ import { UpdateSuccessReload } from '../../components/Alert/UpdateSuccessReload'
 import { UpdateError } from '../../components/Alert/UpdateError';
 import { UpdateSuccessNavigate } from '../../components/Alert/UpdateSuccessNavigate';
 import { getUserFromLocalStorage } from '../../utils/userHanle';
-import { DeleteForeverOutlined } from '@mui/icons-material';
+import { AlarmTwoTone, DeleteForeverOutlined } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@mui/material';
 
@@ -28,15 +28,13 @@ function Cart() {
     useEffect(() => {
         async function getData() {
             let res = await getCart();
-            console.log(res)
             if (res.success) {
-                if(res.data.totalProduct === 0)
-                {
+                if (res.data.totalProduct === 0) {
                     setCart('404')
-                }else{
+                } else {
                     setCart(res.data);
                 }
-                
+
             }
             else {
                 setCart('404')
@@ -55,6 +53,7 @@ function Cart() {
         const wait = toast.loading('Vui lòng chờ ...');
         if (curUser?.id !== undefined) {
             let res = await addProductToCart({ productOptionId, color, quantity });
+            console.log(res)
             if (res.data.success) {
                 cart.items.forEach((item) => {
                     if (item.itemId === res.data.data.itemId) item.quantity = res.data.data.quantity;
@@ -62,9 +61,14 @@ function Cart() {
                 setCart(cart);
                 UpdateSuccessReload(wait, 'Cập nhật giỏ hàng thành công', false);
             } else {
-                UpdateError(wait, 'Cập nhật giỏ hàng thất bại');
+                if(res.data.status===409){
+                    UpdateError(wait, 'Quá số lượng sản phẩm hiện có. Vui lòng chọn số lượng khác');
+                }else{
+                    UpdateError(wait, 'Cập nhật giỏ hàng không thành công');
+                } 
             }
-        } else {
+        } 
+        else {
             let url = '/';
             UpdateSuccessNavigate(wait, 'Vui lòng Đăng nhập', url);
         }
@@ -82,7 +86,7 @@ function Cart() {
         navigate('/order');
     };
     return (
-        <Grid2 container spacing={3}>
+        <Grid2 container spacing={3} sx={{ height: '100vh' }}>
             <Grid2 xs={6} md={8}>
                 <Row
                     align="center"
@@ -166,12 +170,26 @@ function Cart() {
                                                 shadow={false}
                                                 underlined
                                                 value={cartItem.quantity}
-                                                onBlur={(e) =>
-                                                    updateChangeCart(
-                                                        cartItem.productOptionId,
-                                                        cartItem.color,
-                                                        e.target.value - cartItem.quantity,
-                                                    )
+                                                defaultValue={cartItem.quantity}
+                                                onBlur={(e) => {
+                                                    if (e.target.value <= 0) {
+                                                        toast.error('Số lượng không hợp lệ. Vui lòng nhập lại', {
+                                                            position: "top-right",
+                                                            autoClose: 3000,
+                                                            hideProgressBar: false,
+                                                            closeOnClick: true,
+                                                            pauseOnHover: false,
+                                                            draggable: true,
+                                                            progress: undefined,
+                                                        });
+                                                    } else {
+                                                        updateChangeCart(
+                                                            cartItem.productOptionId,
+                                                            cartItem.color,
+                                                            e.target.value - cartItem.quantity,
+                                                        )
+                                                        } 
+                                                    }
                                                 }
                                             />
                                             <Button
@@ -202,14 +220,14 @@ function Cart() {
                                     Tổng số tiền:{' '}
                                     <Text b size={20}>
                                         {' '}
-                                        {formatPrice(cart?.items.reduce((total,cur)=>total+(cur.price * cur.quantity),0)) || 0}
+                                        {formatPrice(cart?.items.reduce((total, cur) => total + (cur.price * cur.quantity), 0)) || 0}
                                     </Text>
                                 </Row>
                                 <Row justify="space-between" css={{ marginTop: '$10' }}>
                                     Giảm giá:{' '}
                                     <Text b size={20}>
                                         {' '}
-                                        {formatPrice(cart?.items.reduce((total,cur)=>total+(cur.price * cur.quantity),0) - cart?.totalPrice) || 0 }
+                                        {formatPrice(cart?.items.reduce((total, cur) => total + (cur.price * cur.quantity), 0) - cart?.totalPrice) || 0}
                                     </Text>
                                 </Row>
                                 <Row justify="space-between" css={{ marginTop: '$10' }}>
