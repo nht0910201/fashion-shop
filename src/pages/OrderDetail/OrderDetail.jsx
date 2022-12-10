@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cancelOrder, getOrder } from "../../services/UserService";
+import { cancelOrder, finishOrder, getOrder } from "../../services/UserService";
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Divider, Grid, Image, Loading, Row, Text } from "@nextui-org/react";
 import { getDistrict, getProvince, getWard } from "../../services/AuthService";
@@ -16,8 +16,10 @@ const status = [
     { key: 0, step: 'enable', value: 'Bắt đầu' },
     { key: 1, step: 'process', value: 'Đang xử lý' },
     { key: 2, step: 'pending', value: 'Chờ xác nhận' },
-    { key: 3, step: 'delivery', value: 'Đang giao hàng' },
-    { key: 4, step: 'done', value: 'Hoàn tất' },
+    { key: 3, step: 'prepare', value: 'Đang chuẩn bị hàng' },
+    { key: 4, step: 'delivery', value: 'Đang giao hàng' },
+    { key: 5, step: 'delivered', value: 'Đã giao hàng' },
+    { key: 6, step: 'done', value: 'Hoàn tất' },
 ]
 function OrderDetail() {
     let navigate = useNavigate()
@@ -70,14 +72,29 @@ function OrderDetail() {
         const wait = toast.loading("Vui lòng chờ ...")
         let res = await cancelOrder(id)
         if (res.success) {
-            UpdateSuccessNavigate(wait, 'Đăng ký thành công', '/myOrder')
+            UpdateSuccessNavigate(wait, 'Hủy đơn hàng thành công', '/myOrder')
         } else {
-            UpdateError(wait, 'Xoá đơn hàng thất bại')
+            UpdateError(wait, 'Hủy đơn hàng thất bại')
         }
 
     }
     const handleCancel = () => {
         cancel(order.id)
+    }
+
+    const finish = async (id) => {
+        const wait = toast.loading("Vui lòng chờ ...")
+        let res = await finishOrder(id)
+        console.log(res)
+        if (res.success) {
+            UpdateSuccessNavigate(wait, 'Xác nhận đã nhận hàng thành công', '/myOrder')
+        } else {
+            UpdateError(wait, 'Xác nhận đã nhận hàng thất bại')
+        }
+
+    }
+    const handleFinish = () => {
+        finish(order.id)
     }
     return (
         <Grid.Container wrap="wrap" justify="center" gap={2} >
@@ -93,13 +110,7 @@ function OrderDetail() {
                         <Button onClick={() => navigate('/myOrder')} light color={'primary'}>
                             Đơn hàng của tôi
                         </Button>
-                        {order.state === 'pending' ?
-                            <Button onClick={handleCancel} light color={'error'}>
-                                Huỷ đơn hàng
-                            </Button>    
-                            :
-                            <></>
-                    }
+                        
                     </div>
                 </Row>
                 <Divider />
@@ -211,7 +222,9 @@ function OrderDetail() {
                     </Col>
                     <Col>
                         <Text size={'$xl'}>
-                            Miễn phí
+                            {order.deliveryDetail.deliveryInfo?.fee ? 
+                                formatPrice(order.deliveryDetail.deliveryInfo?.fee) 
+                                :'Miễn phí'}
                         </Text>
                     </Col>
                 </Row>
@@ -224,7 +237,7 @@ function OrderDetail() {
                     </Col>
                     <Col>
                         <Text size={'$3xl'}>
-                            {formatPrice(order.totalPrice)}
+                            {formatPrice(order.totalPrice + order.deliveryDetail.deliveryInfo?.fee || order.totalPrice)}
                         </Text>
                     </Col>
                 </Row>
@@ -249,6 +262,19 @@ function OrderDetail() {
                             }
                         </Stepper>
                     </Box>
+                </Row>
+                <Row gap={2} css={{mt: '$8', mb: '$5'}} justify='center'>
+                    {order.state === 'pending' ?
+                                <Button onClick={handleCancel} rounded color={'error'}>
+                                    Huỷ đơn hàng
+                                </Button>    
+                                : order.state === 'delivered' ?
+                                <Button onClick={handleFinish} rounded color={'gradient'}>
+                                    Đã nhận hàng
+                                </Button>    
+                                :
+                                <></>
+                        }
                 </Row>
             </Grid>
             }

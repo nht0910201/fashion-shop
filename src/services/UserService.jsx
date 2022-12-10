@@ -67,3 +67,11 @@ export const cancelOrder = async (id) =>{
         return error.response
     }
 }
+export const finishOrder = async (id) =>{
+    try{
+        const response = await put(`/orders/done/${id}`);
+        return response
+    }catch(error){
+        return error.response
+    }
+}

@@ -53,6 +53,8 @@ export default function MyOrder() {
         'process': 'Đang xử lý',
         'pending': 'Đang chờ xác nhận',
         'delivery': 'Đang giao hàng',
+        'delivered': 'Đã giao hàng',
+        'prepare': 'Đang chuẩn bị hàng',
         'cancel': 'Đã hủy',
     }
     const list = useAsyncList({ load, sort });

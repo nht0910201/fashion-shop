@@ -3,7 +3,7 @@ import { Button, Col, Divider, Grid, Image, Input, Loading, Radio, Row, Spacer, 
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { calShipingFee, getDistrict, getProvince, getWard } from '../../services/AuthService';
+import { calShipingFee, getDistrict, getProvince, getService, getWard } from '../../services/AuthService';
 import { getCart } from '../../services/CartService';
 import { makeAnOrder } from '../../services/Payment';
 import { getUserByID } from '../../services/UserService';
@@ -33,7 +33,7 @@ function Order() {
             setCart(res.data);
         }
         getData();
-    }, [cart]);
+    }, []);
 
     const [user, setUser] = useState({});
     const [provinces, setProvinces] = useState([]);
@@ -43,6 +43,7 @@ function Order() {
     const [district, setDistrict] = useState();
     const [ward, setWard] = useState();
     const [shippingFee, setShippingFee] = useState(0);
+    const [serviceType, setServiceType] = useState({});
 
     useEffect(() => {
         async function getData() {
@@ -87,13 +88,27 @@ function Order() {
     }, [province, district]);
 
     useEffect(() => {
+        async function getServiceTypeAPI() {
+            if (district, ward) {
+                let service = await getService({
+                    to_district_id: district,
+                });
+                if (service.code === 200) {
+                    setServiceType({list: service.data, value: service.data[0]?.service_type_id});
+                }
+            } else setServiceType();
+        }
+        getServiceTypeAPI();
+    }, [district, ward]);
+    useEffect(() => {
         async function calShippingFeeAPI() {
-            if (district && ward && cart.totalProduct) {
+            if (district && ward && cart.totalProduct && serviceType) {
                 let fee = await calShipingFee({
-                    service_type_id: 2,
+                    service_type_id: serviceType.value,
                     to_district_id: district,
                     to_ward_code: ward,
-                    weight: 30 * cart.totalProduct,
+                    weight: 30 * cart.totalProduct < 30000 ? 30 * cart.totalProduct : 30000,
+                    height: cart.totalProduct < 150 ? cart.totalProduct : 150,
                 });
                 if (fee.code === 200) {
                     setShippingFee(fee.data.total);
@@ -101,11 +116,14 @@ function Order() {
             } else setShippingFee(0);
         }
         calShippingFeeAPI();
-    }, [district, cart.totalProduct, ward]);
+    }, [serviceType]);
 
     const handleChangeWard = (e) => {
         setUser({ ...user, ward: e.target.value });
         setWard(e.target.value);
+    };
+    const handleChangeService = (e) => {
+        setServiceType({...serviceType, value: e.target.value});
     };
     const handleChangeDistrict = (e) => {
         setUser({ ...user, district: e.target.value });
@@ -208,6 +226,16 @@ function Order() {
                 draggable: true,
                 progress: undefined,
             });
+        }else if(serviceType === undefined){
+            toast.error('Vui lòng chọn phương thức vận chuyển', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
         }
         else if(validator.isEmpty(user.address)){
             toast.error('Vui lòng nhập địa chỉ của bạn', {
@@ -223,7 +251,8 @@ function Order() {
         
         else {
             const wait = toast.loading('Vui lòng chờ ...');
-            let res = await makeAnOrder(paymentType, orderId, { ...user, shippingFee: shippingFee });
+            let res = await makeAnOrder(paymentType, orderId, { ...user, 
+                shippingFee: shippingFee, serviceType: serviceType.value });
             console.log(res.data.data)
             if (res.data.success) {
                 if (paymentType === 'cod') {
@@ -367,6 +396,31 @@ function Order() {
                         onChange={handleChangeAddress}
                     />
                 </Row>
+                <Row gap={1}>
+                    <FormControl sx={{ width: '90%', m:'unset' }} margin="normal">
+                        {/* <InputLabel id="ward-label">Phường/Xã</InputLabel> */}
+                        <Text css={{p: 'unset', lineHeight: '$md', marginTop: '0.5rem', mb: '6px'}} color='black' weight='normal' size={'1.125rem'}>Phương thức vận chuyển</Text>
+                        <Select
+                            labelId="service-label"
+                            displayEmpty
+                            // label="Phường/Xã"
+                            disabled={serviceType?.list === undefined ? true : false}
+                            id="service"
+                            sx={{ borderRadius: '1rem' }}
+                            value={serviceType?.value || ''}
+                            onChange={handleChangeService}
+                        >
+                            <MenuItem disabled value="">
+                            <Text css={{p: 'unset', lineHeight: '$md'}} color='black' weight='normal' size={'1.125rem'}>Phương thức vận chuyển</Text>
+                            </MenuItem>
+                            {serviceType?.list?.map((s) => (
+                                <MenuItem key={s.service_type_id} value={s.service_type_id}>
+                                    {s.short_name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </Row>
                 <Spacer y={1} />
                 <Row gap={1}>
                     <Text size={'$xl'}>Chọn phương thức thanh toán</Text>
@@ -484,7 +538,7 @@ function Order() {
                             <Text size={'$3xl'}>Tổng cộng:</Text>
                         </Col>
                         <Col offset={5}>
-                            <Text size={'$3xl'}>{formatPrice(cart.totalPrice)}</Text>
+                            <Text size={'$3xl'}>{formatPrice(cart.totalPrice + shippingFee)}</Text>
                         </Col>
                     </Row>
                 </Grid>
