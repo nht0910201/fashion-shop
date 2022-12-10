@@ -23,7 +23,7 @@ export const addProductToCart = async (data={}) => {
         const response = await post('/cart',data);
         return response
     } catch (error) { 
-        return error.response.data 
+        return error.response
     };
 }
 

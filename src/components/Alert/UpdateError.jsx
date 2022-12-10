@@ -7,7 +7,7 @@ export const UpdateError = (wait,msg) => {
             render: msg,
             type: "error",
             isLoading: false,
-            autoClose: 1500,
+            autoClose: 4000,
             pauseOnHover: false,
             draggable: true,
             closeOnClick: true,

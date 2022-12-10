@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { getFromLocalStorage } from '../utils/tokenHandle';
+import { clearFromLocalStorage, getFromLocalStorage } from '../utils/tokenHandle';
 import { API_ADDRESS, API_HOST, API_LOCAL, SHOP_ID, TOKEN_API_ADDRESS } from '../common/const';
+import { clearUserFromLocalStorage } from '../utils/userHanle';
 
 const axiosConfig = axios.create({
     baseURL: API_HOST
@@ -19,7 +20,18 @@ axiosConfig.interceptors.request.use(
         return Promise.reject(error);
     },
 );
-
+axiosConfig.interceptors.response.use(
+    function (response) {
+        return response;
+    },
+    function (error) {
+        if(error.response.status === 401){
+            clearFromLocalStorage()
+            clearUserFromLocalStorage()
+            window.location.href= '/'
+        }
+        return Promise.reject(error);
+    });
 export const getCountryPost = async (path,params={}) => {
     const response = await axiosCountry.post(path,params,{headers:{"token":TOKEN_API_ADDRESS,"ShopId":SHOP_ID}});
     return response.data;

@@ -214,7 +214,7 @@ function OrderDetail() {
                         </Text>
                     </Col>
                 </Row>
-                <Row gap={2} justify='center'>
+                {/* <Row gap={2} justify='center'>
                     <Col>
                         <Text size={'$xl'}>
                             Phí vận chuyển:
@@ -227,7 +227,7 @@ function OrderDetail() {
                                 :'Miễn phí'}
                         </Text>
                     </Col>
-                </Row>
+                </Row> */}
                 <Divider />
                 <Row gap={2}>
                     <Col>
