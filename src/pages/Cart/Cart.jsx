@@ -25,6 +25,7 @@ function Cart() {
             currency: 'VND',
         }).format(value);
     const [cart, setCart] = useState({});
+    const [cartLoad, setCartLoad] = useState(false);
     useEffect(() => {
         async function getData() {
             let res = await getCart();
@@ -34,14 +35,13 @@ function Cart() {
                 } else {
                     setCart(res.data);
                 }
-
             }
             else {
                 setCart('404')
             }
         }
         getData();
-    }, [cart]);
+    }, [cartLoad]);
     let curUser = getUserFromLocalStorage();
     const updateChangeCart = (productOptionId, color, quantity) => {
         if (quantity !== 0 && typeof quantity === 'number') {
@@ -55,10 +55,10 @@ function Cart() {
             let res = await addProductToCart({ productOptionId, color, quantity });
             console.log(res)
             if (res.data.success) {
-                cart.items.forEach((item) => {
-                    if (item.itemId === res.data.data.itemId) item.quantity = res.data.data.quantity;
-                });
-                setCart(cart);
+                // cart.items.forEach((item) => {
+                //     if (item.itemId === res.data.data.itemId) item.quantity = res.data.data.quantity;
+                // });
+                setCartLoad(!cartLoad);
                 UpdateSuccessReload(wait, 'Cập nhật giỏ hàng thành công', false);
             } else {
                 if(res.data.status===409){
@@ -77,6 +77,7 @@ function Cart() {
         const w = toast.loading('Vui lòng chờ ...');
         let res = await removeItemFromCart(id);
         if (res.success) {
+            setCartLoad(!cartLoad);
             UpdateSuccessReload(w, 'Xoá sản phẩm khỏi giỏ hàng thành công', false);
         } else {
             UpdateError(w, 'Xoá sản phẩm khỏi giỏ hàng thất bại');
@@ -86,7 +87,7 @@ function Cart() {
         navigate('/order');
     };
     return (
-        <Grid2 container spacing={3} sx={{ height: '100vh' }}>
+        <Grid2 container spacing={3} sx={{ }}>
             <Grid2 xs={6} md={8}>
                 <Row
                     align="center"
