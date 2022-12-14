@@ -99,7 +99,7 @@ export default function SignUp() {
             });
         }
         else if(province === undefined){
-            toast.error('Vui lòng chọn tỉnh thành', {
+            toast.error('Vui lòng chọn tỉnh/thành phố', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -110,7 +110,7 @@ export default function SignUp() {
             });
         }
         else if(district === undefined){
-            toast.error('Vui lòng chọn quận huyện', {
+            toast.error('Vui lòng chọn quận/huyện', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -121,7 +121,7 @@ export default function SignUp() {
             });
         }
         else if(ward === undefined){
-            toast.error('Vui lòng chọn xã phường', {
+            toast.error('Vui lòng chọn xã/phường', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -164,8 +164,8 @@ export default function SignUp() {
                 progress: undefined,
             });
         }
-        else if(password.length < 8){
-            toast.error('Vui lòng nhập mật khẩu của bạn có độ dài hơn 8 kí tự', {
+        else if(password.length < 6){
+            toast.error('Vui lòng nhập mật khẩu của bạn có độ dài hơn 6 kí tự', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -176,7 +176,7 @@ export default function SignUp() {
             });
         }
         else if(checkConfirmPass){
-            toast.error('Vui lòng nhập lại mật khẩu của bạn', {
+            toast.error('Mật khẩu nhập lại không đúng', {
                 position: "top-right",
                 autoClose: 3000,
                 hideProgressBar: false,
@@ -201,6 +201,28 @@ export default function SignUp() {
             let check = await register({ name, email, password, phone, province, district, ward, address, gender })
             if (check.data.success) {
                 setActiveStep(activeStep + 1);
+            }else{
+                if(check.data.status === 409){
+                    toast.warning('Email tồn tại. Vui lòng nhập email khác', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }else{
+                    toast.error('Đã xảy ra lỗi khi đăng ký', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }
             }
         }
     };
@@ -486,7 +508,7 @@ export default function SignUp() {
                             <Button
                                 variant="contained"
                                 onClick={handleOnClick}
-                                sx={{ mt: 3, ml: 1 }}
+                                sx={{ mt: 3, ml: 1,textTransform:'none' }}
                                 disabled={activeStep === steps.length - 1 ? false : true}
                             >
                                 Đăng ký

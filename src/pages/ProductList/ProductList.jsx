@@ -19,6 +19,8 @@ import { getProductByCategory, searchProduct } from "../../services/ProductServi
 import { Rating, Tooltip, Skeleton, Slider } from "@mui/material";
 import { filter } from 'smart-array-filter'
 import { Filter, FilterAlt } from "@mui/icons-material";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function ProductList() {
     const formatPrice = (value) =>
         new Intl.NumberFormat('vi-VN', {
@@ -34,7 +36,7 @@ export default function ProductList() {
         setValue(newValue);
     };
     const [gender, setGender] = useState([])
-    const [col,setCol] = useState([])
+    const [col, setCol] = useState([])
     const [loading, setLoad] = useState(false)
     const [filterProduct, setFilter] = useState([])
     const [products, setProducts] = useState([])
@@ -58,12 +60,23 @@ export default function ProductList() {
             setFilter(res.data.list)
             setLoad(false)
             filterPrice(res.data.list)
+        } else {
+            toast.error('Không tìm thấy sản phẩm nào', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: true,
+                progress: undefined,
+            });
+            setLoad(false);
         }
     }
-    const [sortPro,setSortPro] = useState('')
+    const [sortPro, setSortPro] = useState('')
     useEffect(() => {
         getData(sortPro)
-    }, [keySearch, id, page,sortPro])
+    }, [keySearch, id, page, sortPro])
     const sortArr = [
         { name: '', val: 'Nổi bật' },
         { name: 'new', val: 'Mới nhất' },
@@ -71,7 +84,7 @@ export default function ProductList() {
         { name: 'priceAsc', val: 'Giá thấp đến cao' },
         { name: 'priceDesc', val: 'Giá cao đến thấp' }
     ]
-    
+
     const [sort, setSort] = useState('')
     const sortProduct = (key) => {
         switch (key) {
@@ -95,10 +108,10 @@ export default function ProductList() {
 
     const filterPrice = (list = []) => {
         let arr = products.list
-        if(list.length > 0){
+        if (list.length > 0) {
             arr = list
         }
-        
+
         arr = filter(arr, {
             keywords: `price:${value[0]}..${value[1]}`
         });
@@ -119,7 +132,7 @@ export default function ProductList() {
     }
     const resetFilter = () => {
         setCol([])
-        setValue([100000,5000000])
+        setValue([100000, 5000000])
         setGender([])
         setFilter(products.list)
     }
@@ -130,17 +143,17 @@ export default function ProductList() {
                 <Popover placement="bottom-right">
                     <Popover.Trigger>
                         <Button auto light animated={false}>
-                            <FilterAlt/>
+                            <FilterAlt />
                         </Button>
                     </Popover.Trigger>
-                    <Popover.Content css={{marginRight:'$0',width:'50%'}}>
+                    <Popover.Content css={{ marginRight: '$0', width: '50%' }}>
                         <Grid.Container
                             css={{ borderRadius: "14px", padding: "$10" }}
                         >
                             <Row align="center">
                                 <Text b>Giá: {formatPrice(value[0])} - {formatPrice(value[1])}</Text>
                             </Row>
-                            <Row css={{ margin:'$10' }}>
+                            <Row css={{ margin: '$10' }}>
                                 <Slider
                                     getAriaLabel={() => 'Price range'}
                                     value={value}
@@ -151,7 +164,7 @@ export default function ProductList() {
                                     max={5000000}
                                     min={100000}
                                     disableSwap
-                                    valueLabelFormat={value =>formatPrice(value)}
+                                    valueLabelFormat={value => formatPrice(value)}
                                 />
                             </Row>
                             <Row align="center">
@@ -183,7 +196,7 @@ export default function ProductList() {
                                         </Badge>
                                     </Checkbox>
                                     <Checkbox value="#ffffff">
-                                    <Badge variant={'dot'} size="xl" style={{ backgroundColor: '#ffffff', border: '1px solid black', marginRight: 3 }}>
+                                        <Badge variant={'dot'} size="xl" style={{ backgroundColor: '#ffffff', border: '1px solid black', marginRight: 3 }}>
                                         </Badge>
                                     </Checkbox>
                                 </Checkbox.Group>
@@ -248,65 +261,70 @@ export default function ProductList() {
                     </Grid>
 
                 ))
-                : filterProduct?.map((product) => (
-                    <Grid xs={6} sm={3} lg={2} justify={"center"}>
-                        <Card css={{ filter: 'none', w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
-                            <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
-                                <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>-{product.discount}%</Badge>
-                            </Card.Header>
+                : filterProduct?.length === 0 ?
+                    <Grid css={{ minHeight: '100vh',alignItems:'center',justifyContent:'center' }} xs={12}justify={"center"}>
+                        <Text size={'$2xl'}>Không tìm thấy sản phẩm nào</Text>
+                    </Grid> :
+                    filterProduct?.map((product) => (
+                        <Grid xs={6} sm={3} lg={2} justify={"center"}>
+                            <Card css={{ filter: 'none', w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
+                                <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+                                    <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>-{product.discount}%</Badge>
+                                </Card.Header>
 
-                            <Card.Body css={{ p: 0 }}>
-                                <Card.Image
-                                    src={product.images[0]?.url}
-                                    onMouseOver={e => (e.currentTarget.src = product.images[1]?.url ?
-                                        product.images[1]?.url : product.images[0]?.url)}
-                                    onMouseOut={e => (e.currentTarget.src = product.images[0]?.url)}
-                                    objectFit="cover"
-                                    width="100%"
-                                    height="100%"
-                                    alt={product.name}
-                                />
-                            </Card.Body>
+                                <Card.Body css={{ p: 0 }}>
+                                    <Card.Image
+                                        src={product.images[0]?.url}
+                                        onMouseOver={e => (e.currentTarget.src = product.images[1]?.url ?
+                                            product.images[1]?.url : product.images[0]?.url)}
+                                        onMouseOut={e => (e.currentTarget.src = product.images[0]?.url)}
+                                        objectFit="cover"
+                                        width="100%"
+                                        height="100%"
+                                        alt={product.name}
+                                    />
+                                </Card.Body>
 
-                            <Card.Footer
-                                css={{ marginTop: "$2", zIndex: 1, overflow: 'unset' }}
-                            >
-                                <Row>
-                                    <Col>
-                                        <Tooltip title={product.name}>
-                                            <Typography noWrap variant="subtitle1" component="div">
-                                                {product.name}
-                                            </Typography>
-                                        </Tooltip>
-                                        <Row justify="space-between">
-                                            <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
-                                                {product.discount > 0 ? formatPrice(product.price) : ''}
-                                            </Text>
-                                            <Text color="black" b size={18} >
-                                                {formatPrice(product.discountPrice)}
-                                            </Text>
-                                        </Row>
-                                        <Row justify="space-between">
-                                            <Col>
-                                                {product.images.map((image) => (
-                                                    <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color, border: '1px solid black', marginRight: 3 }}>
-                                                    </Badge>
-                                                ))}
-                                            </Col>
-                                            <Rating size="small" precision={0.1} value={product.rate} readOnly />
+                                <Card.Footer
+                                    css={{ marginTop: "$2", zIndex: 1, overflow: 'unset' }}
+                                >
+                                    <Row>
+                                        <Col>
+                                            <Tooltip title={product.name}>
+                                                <Typography noWrap variant="subtitle1" component="div">
+                                                    {product.name}
+                                                </Typography>
+                                            </Tooltip>
+                                            <Row justify="space-between">
+                                                <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
+                                                    {product.discount > 0 ? formatPrice(product.price) : ''}
+                                                </Text>
+                                                <Text color="black" b size={18} >
+                                                    {formatPrice(product.discountPrice)}
+                                                </Text>
+                                            </Row>
+                                            <Row justify="space-between">
+                                                <Col>
+                                                    {product.images.map((image) => (
+                                                        <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color, border: '1px solid black', marginRight: 3 }}>
+                                                        </Badge>
+                                                    ))}
+                                                </Col>
+                                                <Rating size="small" precision={0.1} value={product.rate} readOnly />
 
-                                        </Row>
-                                    </Col>
-                                </Row>
-                            </Card.Footer>
-                        </Card>
-                    </Grid>
-                ))}
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                </Card.Footer>
+                            </Card>
+                        </Grid>
+                    ))}
             <Grid xs={12}>
                 <Row justify="center">
                     <Pagination color='warning' loop onChange={(page) => { setPage(page - 1) }} total={products.totalPage} />
                 </Row>
             </Grid>
+            <ToastContainer />
         </Grid.Container>
     );
 }

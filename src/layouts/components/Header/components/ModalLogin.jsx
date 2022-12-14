@@ -124,7 +124,7 @@ export default function ModalLogin() {
                         tabIndex={1}
                         color="warning"
                         size="lg"
-                        placeholder="Email"
+                        placeholder="Tài khoản"
                         value={username}
                         type='email'
                         onChange={onChangeUsernameHanle}

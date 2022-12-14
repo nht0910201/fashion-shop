@@ -97,7 +97,7 @@ export default function MyOrder() {
                             >
                                 <Table.Header>
                                     <Table.Column key={'id'}>MÃ ĐƠN HÀNG</Table.Column>
-                                    <Table.Column align='center' key={'createdDate'} allowsSorting>NGÀY ĐẶT</Table.Column>
+                                    <Table.Column align='center' key={'createdDate'} allowsSorting>NGÀY ĐẶT*</Table.Column>
                                     <Table.Column align='center' key={'userName'}>NGƯỜI ĐẶT</Table.Column>
                                     <Table.Column align='center' key={'totalPrice'} allowsSorting>TỔNG SỐ TIỀN*</Table.Column>
                                     <Table.Column align='center' key={'totalQuantity'} allowsSorting>SỐ LƯỢNG SẢN PHẨM*</Table.Column>

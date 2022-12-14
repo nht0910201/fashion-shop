@@ -9,7 +9,7 @@ function OrderSuccess() {
     let params = new URLSearchParams(locate.search);
     let success = params.get('success') === 'true';
     let cancel = params.get('cancel') === 'true';
-    console.log(typeof(success))
+    console.log(typeof (success))
     console.log(cancel)
     let navigate = useNavigate()
     const handleOnClick = () => {
@@ -24,28 +24,34 @@ function OrderSuccess() {
                         cancel === true ?
                             <>
                                 <Typography component="h1" variant="h4" align="center">
-                                    HUỶ ĐƠN HÀNG THÀNH CÔNG <CheckOutlined fontSize="large" color="success"/>
+                                    HUỶ ĐƠN HÀNG THÀNH CÔNG <CheckOutlined fontSize="large" color="success" />
                                 </Typography>
                             </>
 
                             :
-                            <Typography component="h1" variant="h4" align="center">
-                                ĐẶT HÀNG THÀNH CÔNG <CheckOutlined fontSize="large" color="success"/>
-                            </Typography>
+                            <>
+                                <Typography component="h1" variant="h4" align="center">
+                                    ĐẶT HÀNG THÀNH CÔNG <CheckOutlined fontSize="large" color="success" />
+                                </Typography>
+                            </>
+
                         :
                         cancel === true ?
                             <Typography component="h1" variant="h4" align="center">
-                                HUỶ ĐƠN HÀNG THẤT BẠI <CloseOutlined fontSize="large" color="error"/>
+                                HUỶ ĐƠN HÀNG THẤT BẠI <CloseOutlined fontSize="large" color="error" />
                             </Typography>
                             :
                             <>
                                 <Typography component="h1" variant="h4" align="center">
-                                    ĐẶT HÀNG THẤT BẠI <CloseOutlined fontSize="large" color="error"/>
+                                    ĐẶT HÀNG THẤT BẠI <CloseOutlined fontSize="large" color="error" />
                                 </Typography>
-                                
+
                             </>
                     }
-                    <Button css={{ marginLeft: 'auto', marginRight: 'auto', marginTop: '$10' }} onClick={handleOnClick} size={"md"} shadow color={'warning'}>Trang chủ</Button>
+                    <Button css={{ marginLeft: 'auto', marginRight: 'auto', marginTop: '$10',marginBottom:'$10' }} onClick={handleOnClick} size={"md"} shadow color={'warning'}>Trang chủ</Button>
+                    <Typography component="text" variant="subtitle1" align="center" justifyContent='center'>
+                        Liên hệ nếu có thắc mắc hoặc gặp lỗi: fsshopmail01@gmail.com
+                    </Typography>
                 </Paper>
             </Container>
         </ThemeProvider>

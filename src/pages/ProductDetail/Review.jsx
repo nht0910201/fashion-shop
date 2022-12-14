@@ -92,7 +92,7 @@ export default function Review({ productId, productName }) {
                     <Text css={{ textAlign: 'center' }} size={25}>{productName}</Text>
                     <Rating sx={{ marginLeft: 'auto', marginRight: 'auto' }} value={rate} onChange={handleChangeRate} precision={0.5} max={5} />
                     <Textarea
-                        label="Nhận xét"
+                        label="Nội dung đánh giá"
                         placeholder="Vui lòng nhập ý kiến của bạn"
                         value={content}
                         onChange={handleChangeContent}

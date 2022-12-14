@@ -190,7 +190,7 @@ function ForgotPassword() {
                                     <TextField
                                         required
                                         id="confirmPass"
-                                        label="Xác nhận lại mật khẩu"
+                                        label="Nhập lại mật khẩu mới"
                                         type={'password'}
                                         fullWidth
                                         variant="standard"

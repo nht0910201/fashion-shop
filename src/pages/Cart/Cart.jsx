@@ -87,7 +87,7 @@ function Cart() {
         navigate('/order');
     };
     return (
-        <Grid2 container spacing={3} sx={{ }}>
+        <Grid2 container spacing={3} sx={{minHeight:'100vh' }}>
             <Grid2 xs={6} md={8}>
                 <Row
                     align="center"
