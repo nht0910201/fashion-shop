@@ -170,8 +170,8 @@ export default function ModalLogin() {
                          : "Đăng nhập" }
                     </Button>
                     <Row justify="center">
-                        <Link css={{ marginRight: '$5' }} href="http://fashion.up.railway.app/oauth2/authorization/google"><Google /></Link>
-                        <Link href="http://fashion.up.railway.app/oauth2/authorization/facebook"><Facebook /></Link>
+                        <Link css={{ marginRight: '$5' }} href="http://localhost:8080/oauth2/authorization/google"><Google /></Link>
+                        <Link href="http://localhost:8080/oauth2/authorization/facebook"><Facebook /></Link>
                     </Row>
                 </Modal.Footer>
                 <ToastContainer />

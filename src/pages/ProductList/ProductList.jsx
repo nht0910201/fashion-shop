@@ -113,7 +113,7 @@ export default function ProductList() {
         }
 
         arr = filter(arr, {
-            keywords: `price:${value[0]}..${value[1]}`
+            keywords: `discountPrice:${value[0]}..${value[1]}`
         });
         if (gender.length > 0) {
             arr = filter(arr, {
