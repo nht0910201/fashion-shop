@@ -8,6 +8,7 @@ import { UpdateSuccessNavigate } from "../../components/Alert/UpdateSuccessNavig
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UpdateError } from "../../components/Alert/UpdateError";
+import Review from "./Review";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -121,8 +122,9 @@ function OrderDetail() {
                         </Grid>
 
                         <Col>
-                            <Row css={{ marginTop: '$5' }}>
+                            <Row css={{ marginTop: '$5' }} justify={'space-between'}>
                                 {item.name}
+                                <Review productId={item.id} productName={item.name}/>
                             </Row>
                             <Row align='center'>
                                 <Text size={18}>SL: {item.quantity} /</Text>

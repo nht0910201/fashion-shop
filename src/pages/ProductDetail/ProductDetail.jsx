@@ -54,7 +54,7 @@ function ProductDetail() {
         async function getData() {
             SetLoad(true);
             let res = await getProductByID(id);
-            console.log(res);
+            // console.log(res);
             if (res.success) {
                 setProduct(res.data);
                 setProductOptionId(res.data.options[0].id);
@@ -393,20 +393,6 @@ function ProductDetail() {
                                     </Table>
                                 </>
                             )}
-                            {/* {product?.attr?.length !== 0 ? (
-                                product?.attr?.map((attr) => (
-                                    <Row key={attr.id} css={{ marginLeft: '$20' }}>
-                                        <Col>
-                                            <Text size={'$lg'}>{attr.name}</Text>
-                                        </Col>
-                                        <Col>
-                                            <Text size={'$lg'}>{attr.val}</Text>
-                                        </Col>
-                                    </Row>
-                                ))
-                            ) : (
-                                <Text>Sản phẩm chưa có thông số</Text>
-                            )} */}
                         </Grid2>
                         <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
                             <Row>
@@ -414,12 +400,6 @@ function ProductDetail() {
                                     <Text css={{ marginLeft: '$10' }} size={30}>
                                         Đánh giá sản phẩm
                                     </Text>
-                                </Col>
-                                <Col
-                                    hidden={userCur?.id ? false : true}
-                                    css={{ display: 'flex', justifyContent: 'flex-end', marginRight: '$10' }}
-                                >
-                                    <Review productId={product.id} productName={product.name} />
                                 </Col>
                             </Row>
 

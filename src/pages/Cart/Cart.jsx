@@ -53,7 +53,6 @@ function Cart() {
         const wait = toast.loading('Vui lòng chờ ...');
         if (curUser?.id !== undefined) {
             let res = await addProductToCart({ productOptionId, color, quantity });
-            console.log(res)
             if (res.data.success) {
                 // cart.items.forEach((item) => {
                 //     if (item.itemId === res.data.data.itemId) item.quantity = res.data.data.quantity;
