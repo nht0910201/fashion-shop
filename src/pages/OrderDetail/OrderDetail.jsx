@@ -124,7 +124,9 @@ function OrderDetail() {
                         <Col>
                             <Row css={{ marginTop: '$5' }} justify={'space-between'}>
                                 {item.name}
+                                {order?.state === 'done' || order?.state === 'delivered' ? 
                                 <Review productId={item.id} productName={item.name}/>
+                                : <></>} 
                             </Row>
                             <Row align='center'>
                                 <Text size={18}>SL: {item.quantity} /</Text>
