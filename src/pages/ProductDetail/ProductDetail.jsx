@@ -176,26 +176,26 @@ function ProductDetail() {
                     >
                         {loading
                             ? Array.from(new Array(3)).map((index) => (
-                                  <SwiperSlide key={index}>
-                                      <Skeleton
-                                          variant="rounded"
-                                          width={'100%'}
-                                          height={'15vh'}
-                                          sx={{ marginBottom: 2 }}
-                                      />
-                                  </SwiperSlide>
-                              ))
+                                <SwiperSlide key={index}>
+                                    <Skeleton
+                                        variant="rounded"
+                                        width={'100%'}
+                                        height={'15vh'}
+                                        sx={{ marginBottom: 2 }}
+                                    />
+                                </SwiperSlide>
+                            ))
                             : product?.images?.map((image) => (
-                                  <SwiperSlide key={`${image.imageId}`}>
-                                      <Image
-                                          height={150}
-                                          src={`${image.url}`}
-                                          css={{ cursor: 'pointer' }}
-                                          alt="...Loading"
-                                          objectFit="contain"
-                                      />
-                                  </SwiperSlide>
-                              ))}
+                                <SwiperSlide key={`${image.imageId}`}>
+                                    <Image
+                                        height={150}
+                                        src={`${image.url}`}
+                                        css={{ cursor: 'pointer' }}
+                                        alt="...Loading"
+                                        objectFit="contain"
+                                    />
+                                </SwiperSlide>
+                            ))}
                     </Swiper>
                 </Grid2>
                 {loading ? (
@@ -236,7 +236,7 @@ function ProductDetail() {
                                     )}
                                 </Row>
                                 <Row align='center' justify='flex-end'>
-                                    <Rating readOnly precision={0.1} sx={{mr:'0.3rem'}} size="small" value={product.rate} /> 
+                                    <Rating readOnly precision={0.1} sx={{ mr: '0.3rem' }} size="small" value={product.rate} />
                                     {product.rateCount} đánh giá
                                 </Row>
                             </Row>
@@ -378,66 +378,74 @@ function ProductDetail() {
                                         <Table.Body>
                                             {loadMore
                                                 ? product?.attr?.map((attr) => (
-                                                      <Table.Row key={attr.id}>
-                                                          <Table.Cell>{attr.name}</Table.Cell>
-                                                          <Table.Cell>{attr.val}</Table.Cell>
-                                                      </Table.Row>
-                                                  ))
+                                                    <Table.Row key={attr.id}>
+                                                        <Table.Cell>{attr.name}</Table.Cell>
+                                                        <Table.Cell>{attr.val}</Table.Cell>
+                                                    </Table.Row>
+                                                ))
                                                 : product?.attr?.slice(0, 2).map((attr) => (
-                                                      <Table.Row key={attr.id}>
-                                                          <Table.Cell>{attr.name}</Table.Cell>
-                                                          <Table.Cell>{attr.val}</Table.Cell>
-                                                      </Table.Row>
-                                                  ))}
+                                                    <Table.Row key={attr.id}>
+                                                        <Table.Cell>{attr.name}</Table.Cell>
+                                                        <Table.Cell>{attr.val}</Table.Cell>
+                                                    </Table.Row>
+                                                ))}
                                         </Table.Body>
                                     </Table>
                                 </>
                             )}
                         </Grid2>
                         <Grid2 xs={12} sx={{ borderTop: 1, borderBlockColor: '#cfcfcf' }}>
-                            <Row>
+                            <Row justify='space-between'>
                                 <Col>
                                     <Text css={{ marginLeft: '$10' }} size={30}>
                                         Đánh giá sản phẩm
                                     </Text>
                                 </Col>
+                                <Col>
+                                    {reviews?.list?.length === 0 ?
+                                        <Text css={{ marginLeft: '$10' }} size={30}>
+                                            Sản phẩm chưa có đánh giá
+                                        </Text>
+                                        : <></>
+                                    }
+                                </Col>
                             </Row>
-
+                            
                             {reviews?.list?.length !== 0 ? (
                                 reviews?.list?.map((review) => (
                                     <>
-                                    <Row key={review.id} css={{ marginLeft: '$18' }}>
-                                        <Col>
-                                            <Row>
-                                                <User
-                                                    css={{ p: 'unset' }}
-                                                    text={review.reviewedBy}
-                                                    color="warning"
-                                                    bordered
-                                                    name={review.reviewedBy}
-                                                    description={review.createdDate}
-                                                />
-                                            </Row>
-                                            <Row gap={4.5}>
-                                                <Rating
-                                                    value={review.rate}
-                                                    readOnly
-                                                    defaultValue={0}
-                                                    precision={0.1}
-                                                    max={5}
-                                                />
-                                            </Row>
-                                            <Row gap={4.5}>
-                                                <Text css={{ m: 'unset' }}>{review.content}</Text>
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                    <Divider css={{mt: '$1', mb:'$3'}}/>
+                                        <Row key={review.id} css={{ marginLeft: '$18' }}>
+                                            <Col>
+                                                <Row>
+                                                    <User
+                                                        css={{ p: 'unset' }}
+                                                        text={review.reviewedBy}
+                                                        color="warning"
+                                                        bordered
+                                                        name={review.reviewedBy}
+                                                        description={review.createdDate}
+                                                    />
+                                                </Row>
+                                                <Row gap={4.5}>
+                                                    <Rating
+                                                        value={review.rate}
+                                                        readOnly
+                                                        defaultValue={0}
+                                                        precision={0.1}
+                                                        max={5}
+                                                    />
+                                                </Row>
+                                                <Row gap={4.5}>
+                                                    <Text css={{ m: 'unset' }}>{review.content}</Text>
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Divider css={{ mt: '$1', mb: '$3' }} />
                                     </>
                                 ))
-                            ) : (
-                                <Text>Sản phẩm chưa có đánh giá</Text>
-                            )}
+                            ) :
+                                <></>
+                            }
                             <Row hidden={reviews?.list?.length === 0 ? true : false} justify="center">
                                 <Pagination2
                                     color="warning"

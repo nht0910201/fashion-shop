@@ -43,5 +43,5 @@ export const getSortProducts = async (sort) =>{
     } catch (error) { 
         return error.response.data 
     };
-
 }
+
