@@ -72,5 +72,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 ### Tailwind: https://github.com/jareer12/Tailwind-Css-UI-Components.git
 ### git push -f deploy main
-### abc
+
 ### Admin: https://github.com/Siumauricio/nextui-dashboard-template
