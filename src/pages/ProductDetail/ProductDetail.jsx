@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addProductToCart, getProductByID } from '../../services/ProductService';
+import { addProductToCart, getProductByCategory, getProductByID } from '../../services/ProductService';
 import { getUserFromLocalStorage } from '../../utils/userHanle';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import { RadioGroup } from '@headlessui/react';
@@ -24,6 +24,7 @@ import {
     Tooltip,
     User,
     Table,
+    Grid,
 } from '@nextui-org/react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,7 +32,7 @@ import { UpdateSuccessReload } from '../../components/Alert/UpdateSuccessReload'
 import { UpdateError } from '../../components/Alert/UpdateError';
 import Review from './Review';
 import { getReviewsByProduct } from '../../services/ReviewService';
-import { Rating, Skeleton } from '@mui/material';
+import { Rating, Skeleton, Typography } from '@mui/material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './index.css';
@@ -49,19 +50,34 @@ function ProductDetail() {
     let [page, setPage] = useState(0);
     const [product, setProduct] = useState({});
     const [reviews, setReviews] = useState({});
+    const [newProduct, setProducts] = useState([])
     const { id } = useParams();
     useEffect(() => {
         async function getData() {
             SetLoad(true);
             let res = await getProductByID(id);
-            // console.log(res);
             if (res.success) {
                 setProduct(res.data);
                 setProductOptionId(res.data.options[0].id);
                 setColorList(res.data.options[0].variants);
                 setColor(res.data.options[0].variants[0].color);
                 setFee(res.data.options[0].extraFee);
-                SetLoad(false);
+                let result = await getProductByCategory(res.data.category, 0, '')
+                if (result.success) {
+                    setProducts(result.data.list)
+                    SetLoad(false);
+                } else {
+                    toast.error('Không tìm thấy sản phẩm liên quan nào', {
+                        position: "top-right",
+                        autoClose: 3000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: false,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                    SetLoad(false);
+                }
             }
         }
         getData();
@@ -127,6 +143,7 @@ function ProductDetail() {
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ');
     }
+
     return (
         <>
             <Grid2 container spacing={{ xs: 1, md: 1.5 }} columns={{ xs: 4, sm: 8, md: 12 }}>
@@ -410,7 +427,7 @@ function ProductDetail() {
                                     }
                                 </Col>
                             </Row>
-                            
+
                             {reviews?.list?.length !== 0 ? (
                                 reviews?.list?.map((review) => (
                                     <>
@@ -459,6 +476,95 @@ function ProductDetail() {
                             </Row>
                             <Divider />
                         </Grid2>
+                        {loading ?
+                            Array.from(new Array(6)).map(() => (
+                                <Grid xs={6} sm={3} lg={2} justify={"center"}>
+                                    <Card
+                                        css={{
+                                            filter: 'none',
+                                            w: '90%',
+                                            h: '90%',
+                                            backgroundColor: 'transparent',
+                                            border: 'none',
+                                            margin: '$8',
+                                        }}
+                                    >
+                                        <Card.Body css={{ p: 0 }}>
+                                            <Skeleton variant="rectangular" height={300} />
+                                            <Skeleton />
+                                            <Skeleton width="50%" />
+                                        </Card.Body>
+                                    </Card>
+                                </Grid>
+
+                            ))
+                            : newProduct?.length === 0 ?
+                                <Grid css={{ alignItems: 'center', justifyContent: 'center' }} xs={12} justify={"center"}>
+                                    <Text size={'$2xl'}>Không tìm thấy sản phẩm nào</Text>
+                                </Grid> : <>
+                                    <Row justify="center">
+                                        <Text size={35} b color="warning">
+                                            SẢN PHẨM LIÊN QUAN
+                                        </Text>
+                                    </Row>
+                                    {
+                                        newProduct?.map((product) => (
+                                            <Grid xs={6} sm={3} lg={2} justify={"center"}>
+                                                <Card css={{ filter: 'none', w: "100%", h: "400px", backgroundColor: 'transparent', border: 'none' }} isHoverable isPressable onPress={(e) => { window.location.href = `/productDetail/${product.id}` }} >
+                                                    <Card.Header css={{ position: "absolute", zIndex: 1, top: 5 }}>
+                                                        <Badge disableOutline enableShadow color={'error'} hidden={product.discount <= 0 ? true : false}>-{product.discount}%</Badge>
+                                                    </Card.Header>
+
+                                                    <Card.Body css={{ p: 0 }}>
+                                                        <Card.Image
+                                                            src={product.images[0]?.url}
+                                                            onMouseOver={e => (e.currentTarget.src = product.images[1]?.url ?
+                                                                product.images[1]?.url : product.images[0]?.url)}
+                                                            onMouseOut={e => (e.currentTarget.src = product.images[0]?.url)}
+                                                            objectFit="cover"
+                                                            width="100%"
+                                                            height="100%"
+                                                            alt={product.name}
+                                                        />
+                                                    </Card.Body>
+
+                                                    <Card.Footer
+                                                        css={{ marginTop: "$2", zIndex: 1, overflow: 'unset' }}
+                                                    >
+                                                        <Row>
+                                                            <Col>
+                                                                <Tooltip title={product.name}>
+                                                                    <Typography noWrap variant="subtitle1" component="div">
+                                                                        {product.name}
+                                                                    </Typography>
+                                                                </Tooltip>
+                                                                <Row justify="space-between">
+                                                                    <Text color="black" b size={14} del={product.discount > 0 ? true : false}>
+                                                                        {product.discount > 0 ? formatPrice(product.price) : ''}
+                                                                    </Text>
+                                                                    <Text color="black" b size={18} >
+                                                                        {formatPrice(product.discountPrice)}
+                                                                    </Text>
+                                                                </Row>
+                                                                <Row justify="space-between">
+                                                                    <Col>
+                                                                        {product.images.map((image) => (
+                                                                            <Badge isPressable variant={'dot'} size="xl" style={{ backgroundColor: image.color, border: '1px solid black', marginRight: 3 }}>
+                                                                            </Badge>
+                                                                        ))}
+                                                                    </Col>
+                                                                    <Rating size="small" precision={0.1} value={product.rate} readOnly />
+
+                                                                </Row>
+                                                            </Col>
+                                                        </Row>
+                                                    </Card.Footer>
+                                                </Card>
+                                            </Grid>
+                                        ))
+                                    }
+                                </>
+                        }
                     </>
                 )}
                 <ToastContainer />

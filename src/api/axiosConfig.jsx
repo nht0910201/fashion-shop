@@ -4,7 +4,7 @@ import { API_ADDRESS, API_HOST, API_LOCAL, SHOP_ID, TOKEN_API_ADDRESS } from '..
 import { clearUserFromLocalStorage } from '../utils/userHanle';
 
 const axiosConfig = axios.create({
-    baseURL: API_HOST
+    baseURL: API_LOCAL
 });
 const axiosCountry = axios.create({
     baseURL:API_ADDRESS,
